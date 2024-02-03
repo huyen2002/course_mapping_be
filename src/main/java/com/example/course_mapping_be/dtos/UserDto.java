@@ -18,5 +18,8 @@ public class UserDto {
     String name;
     Date create_at;
     Date update_at;
+    String role;
+    boolean is_active;
+    
 
 }

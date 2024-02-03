@@ -1,6 +1,7 @@
 package com.example.course_mapping_be.models;
 
 
+import com.example.course_mapping_be.constraints.RoleType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -44,14 +45,25 @@ public class User {
     private String name;
 
     @CreatedDate
+    @Column(name = "create_at", nullable = false)
     private Date create_at;
 
     @LastModifiedDate
+    @Column(name = "update_at", nullable = false)
     private Date update_at;
 
-    public User(String email, String password, String name) {
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private RoleType role;
+
+    @Column(name = "is_active", nullable = false)
+    private boolean is_active = true;
+    
+
+    public User(String email, String password, String name, RoleType role) {
         this.email = email;
         this.password = password;
         this.name = name;
+        this.role = role;
     }
 }

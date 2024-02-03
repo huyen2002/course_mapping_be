@@ -29,7 +29,7 @@ public class UserService {
         if (userRepository.findByEmail(userCreateDto.getEmail()).isPresent()) {
             throw new Error("Email is existed");
         }
-        User user = new User(userCreateDto.getEmail(), userCreateDto.getPassword(), userCreateDto.getName());
+        User user = new User(userCreateDto.getEmail(), userCreateDto.getPassword(), userCreateDto.getName(), userCreateDto.getRole());
         userRepository.save(user);
 
         UserDto userDto = modelMapper.map(user, UserDto.class);
