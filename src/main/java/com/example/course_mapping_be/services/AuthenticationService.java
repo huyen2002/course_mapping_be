@@ -1,6 +1,7 @@
 package com.example.course_mapping_be.services;
 
 import com.example.course_mapping_be.constraints.RoleType;
+import com.example.course_mapping_be.dtos.BaseResponse;
 import com.example.course_mapping_be.dtos.UserCreateDto;
 import com.example.course_mapping_be.dtos.UserDto;
 import com.example.course_mapping_be.models.User;
@@ -26,13 +27,16 @@ public class AuthenticationService {
         this.universityService = universityService;
     }
 
-    public UserDto register(UserCreateDto userCreateDto) {
+    public BaseResponse<UserDto> register(UserCreateDto userCreateDto) {
+        BaseResponse<UserDto> baseResponse = new BaseResponse<>();
         User user = userService.createUser(userCreateDto);
 
         if (user.getRole() == RoleType.UNIVERSITY) {
             universityService.createEmptyUniversity(user);
         }
 
-        return modelMapper.map(user, UserDto.class);
+        baseResponse.setData(modelMapper.map(user, UserDto.class));
+        baseResponse.success();
+        return baseResponse;
     }
 }
