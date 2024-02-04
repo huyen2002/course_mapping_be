@@ -60,4 +60,9 @@ public class UserService {
         baseResponse.success();
         return baseResponse;
     }
+
+    public User getUserByEmail(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        return user.orElse(null);
+    }
 }

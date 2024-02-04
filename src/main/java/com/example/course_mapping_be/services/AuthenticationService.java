@@ -2,12 +2,23 @@ package com.example.course_mapping_be.services;
 
 import com.example.course_mapping_be.constraints.RoleType;
 import com.example.course_mapping_be.dtos.BaseResponse;
+import com.example.course_mapping_be.dtos.LoginRequestDto;
 import com.example.course_mapping_be.dtos.UserCreateDto;
 import com.example.course_mapping_be.dtos.UserDto;
 import com.example.course_mapping_be.models.User;
+import com.example.course_mapping_be.security.CustomUserDetails;
+import com.example.course_mapping_be.security.JsonWebTokenProvider;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.Map;
 
 @Service
 public class AuthenticationService {
@@ -20,6 +31,9 @@ public class AuthenticationService {
 
     @Autowired
     private final UniversityService universityService;
+
+    private AuthenticationManager authenticationManager;
+    private JsonWebTokenProvider tokenProvider;
 
     public AuthenticationService(UserService userService, ModelMapper modelMapper, UniversityService universityService) {
         this.userService = userService;
@@ -38,5 +52,25 @@ public class AuthenticationService {
         baseResponse.setData(modelMapper.map(user, UserDto.class));
         baseResponse.success();
         return baseResponse;
+    }
+
+    public Map<String, Object> login(LoginRequestDto loginRequestDto) {
+        User user = userService.getUserByEmail(loginRequestDto.getEmail());
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        user.getEmail(),
+                        loginRequestDto.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        //  Return JWT
+        String jwt = tokenProvider.generateToken((User) authentication.getPrincipal());
+        return Map.of(
+                "tokenType", "Bearer",
+                "accessToken", jwt,
+                "user", modelMapper.map(user, UserDto.class)
+        );
+//        return new JsonWebTokenModel("Bearer", jwt);
     }
 }
