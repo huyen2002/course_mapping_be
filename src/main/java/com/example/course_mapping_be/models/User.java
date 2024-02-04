@@ -58,7 +58,7 @@ public class User {
 
     @Column(name = "is_active", nullable = false)
     private boolean is_active = true;
-    
+
 
     public User(String email, String password, String name, RoleType role) {
         this.email = email;

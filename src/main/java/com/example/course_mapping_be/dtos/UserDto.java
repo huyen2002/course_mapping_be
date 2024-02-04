@@ -20,6 +20,6 @@ public class UserDto {
     Date update_at;
     String role;
     boolean is_active;
-    
+
 
 }

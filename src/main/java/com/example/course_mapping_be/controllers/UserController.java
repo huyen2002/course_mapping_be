@@ -30,8 +30,5 @@ public class UserController {
         return userService.getUserById(id);
     }
 
-    @PostMapping(path = "user/create")
-    public UserDto create(@RequestBody @Valid UserCreateDto userCreateDto) {
-        return userService.createUser(userCreateDto);
-    }
+
 }

@@ -25,16 +25,12 @@ public class UserService {
         this.modelMapper = modelMapper;
     }
 
-    public UserDto createUser(UserCreateDto userCreateDto) {
+    public User createUser(UserCreateDto userCreateDto) {
         if (userRepository.findByEmail(userCreateDto.getEmail()).isPresent()) {
             throw new Error("Email is existed");
         }
         User user = new User(userCreateDto.getEmail(), userCreateDto.getPassword(), userCreateDto.getName(), userCreateDto.getRole());
-        userRepository.save(user);
-
-        UserDto userDto = modelMapper.map(user, UserDto.class);
-        System.out.println(userDto);
-        return userDto;
+        return userRepository.saveAndFlush(user);
     }
 
     public UserDto getUserById(Long id) {
