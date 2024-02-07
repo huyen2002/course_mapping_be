@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,16 +26,19 @@ public class UserService {
     @Autowired
     private final ModelMapper modelMapper;
 
-    public UserService(UserRepository userRepository, ModelMapper modelMapper) {
+    private final PasswordEncoder passwordEncoder;
+
+    public UserService(UserRepository userRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User createUser(UserCreateDto userCreateDto) {
         if (userRepository.findByEmail(userCreateDto.getEmail()).isPresent()) {
             throw new Error("Email is existed");
         }
-        User user = new User(userCreateDto.getEmail(), userCreateDto.getPassword(), userCreateDto.getName(), userCreateDto.getRole());
+        User user = new User(userCreateDto.getEmail(), passwordEncoder.encode(userCreateDto.getPassword()), userCreateDto.getName(), userCreateDto.getRole());
         return userRepository.saveAndFlush(user);
     }
 

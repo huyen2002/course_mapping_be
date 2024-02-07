@@ -13,11 +13,11 @@ public class JsonWebTokenProvider {
     private static final String JWT_SECRET = "COURSE_MAPPING";
     private static final Long JWT_EXPIRATION = 604800000L;
 
-    public String generateToken(User user) {
+    public String generateToken(CustomUserDetails customUserDetails) {
         Date now = new Date();
         Date expirationDate = new Date(now.getTime() + JWT_EXPIRATION);
         return Jwts.builder()
-                .setSubject(user.getId().toString())
+                .setSubject(customUserDetails.getUser().getId().toString())
                 .setIssuedAt(now)
                 .setExpiration(expirationDate)
                 .signWith(SignatureAlgorithm.HS512, JWT_SECRET)

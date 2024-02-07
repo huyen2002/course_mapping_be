@@ -8,7 +8,6 @@ import com.example.course_mapping_be.dtos.UserDto;
 import com.example.course_mapping_be.models.User;
 import com.example.course_mapping_be.security.CustomUserDetails;
 import com.example.course_mapping_be.security.JsonWebTokenProvider;
-import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,7 +15,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Map;
 
@@ -32,13 +30,15 @@ public class AuthenticationService {
     @Autowired
     private final UniversityService universityService;
 
-    private AuthenticationManager authenticationManager;
-    private JsonWebTokenProvider tokenProvider;
+    private final AuthenticationManager authenticationManager;
+    private final JsonWebTokenProvider tokenProvider;
 
-    public AuthenticationService(UserService userService, ModelMapper modelMapper, UniversityService universityService) {
+    public AuthenticationService(UserService userService, ModelMapper modelMapper, UniversityService universityService, AuthenticationManager authenticationManager, JsonWebTokenProvider tokenProvider) {
         this.userService = userService;
         this.modelMapper = modelMapper;
         this.universityService = universityService;
+        this.authenticationManager = authenticationManager;
+        this.tokenProvider = tokenProvider;
     }
 
     public BaseResponse<UserDto> register(UserCreateDto userCreateDto) {
@@ -65,7 +65,7 @@ public class AuthenticationService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         //  Return JWT
-        String jwt = tokenProvider.generateToken((User) authentication.getPrincipal());
+        String jwt = tokenProvider.generateToken((CustomUserDetails) authentication.getPrincipal());
         return Map.of(
                 "tokenType", "Bearer",
                 "accessToken", jwt,
