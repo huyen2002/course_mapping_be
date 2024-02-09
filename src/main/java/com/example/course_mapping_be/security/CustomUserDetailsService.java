@@ -22,14 +22,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Email is not exist"));
-        CustomUserDetails customUserDetails = new CustomUserDetails(user);
-        return customUserDetails;
+        return new CustomUserDetails(user);
     }
 
 
     public UserDetails loadUserById(Long userId) throws Exception {
         User user = userRepository.findById(userId).orElseThrow(() -> new Exception("User with id is not found"));
-        CustomUserDetails customUserDetails = new CustomUserDetails(user);
-        return customUserDetails;
+        return new CustomUserDetails(user);
     }
 }

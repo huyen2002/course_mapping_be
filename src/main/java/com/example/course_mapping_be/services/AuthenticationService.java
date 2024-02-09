@@ -8,6 +8,7 @@ import com.example.course_mapping_be.dtos.UserDto;
 import com.example.course_mapping_be.models.User;
 import com.example.course_mapping_be.security.CustomUserDetails;
 import com.example.course_mapping_be.security.JsonWebTokenProvider;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,27 +20,17 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 @Service
+@AllArgsConstructor
 public class AuthenticationService {
 
-    @Autowired
-    private final UserService userService;
+    private UserService userService;
 
-    @Autowired
-    private final ModelMapper modelMapper;
+    private ModelMapper modelMapper;
 
-    @Autowired
-    private final UniversityService universityService;
+    private UniversityService universityService;
 
-    private final AuthenticationManager authenticationManager;
-    private final JsonWebTokenProvider tokenProvider;
-
-    public AuthenticationService(UserService userService, ModelMapper modelMapper, UniversityService universityService, AuthenticationManager authenticationManager, JsonWebTokenProvider tokenProvider) {
-        this.userService = userService;
-        this.modelMapper = modelMapper;
-        this.universityService = universityService;
-        this.authenticationManager = authenticationManager;
-        this.tokenProvider = tokenProvider;
-    }
+    private AuthenticationManager authenticationManager;
+    private JsonWebTokenProvider tokenProvider;
 
     public BaseResponse<UserDto> register(UserCreateDto userCreateDto) {
         BaseResponse<UserDto> baseResponse = new BaseResponse<>();

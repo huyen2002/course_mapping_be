@@ -27,10 +27,16 @@ public class BaseResponse<T> {
         this.status = status;
     }
 
+
     public void success() {
         this.message = Constants.ResponseMessage.SUCCESS;
         this.status = HttpStatus.OK.value();
     }
 
-    
+    public void updatePagination(QueryParams params, Long total) {
+        this.setPage(params.getPage());
+        this.setSize(params.getSize());
+        this.setTotal(total);
+    }
+
 }

@@ -1,10 +1,10 @@
 package com.example.course_mapping_be.security;
 
 import com.example.course_mapping_be.constraints.Error;
-import com.example.course_mapping_be.models.User;
 import io.jsonwebtoken.*;
-import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Component;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Date;
 

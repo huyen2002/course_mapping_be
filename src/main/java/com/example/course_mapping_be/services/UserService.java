@@ -6,6 +6,7 @@ import com.example.course_mapping_be.dtos.UserCreateDto;
 import com.example.course_mapping_be.dtos.UserDto;
 import com.example.course_mapping_be.models.User;
 import com.example.course_mapping_be.repositories.UserRepository;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,20 +20,13 @@ import java.util.Optional;
 
 
 @Service
+@AllArgsConstructor
 public class UserService {
-    @Autowired
     private final UserRepository userRepository;
 
-    @Autowired
     private final ModelMapper modelMapper;
 
     private final PasswordEncoder passwordEncoder;
-
-    public UserService(UserRepository userRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.modelMapper = modelMapper;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     public User createUser(UserCreateDto userCreateDto) {
         if (userRepository.findByEmail(userCreateDto.getEmail()).isPresent()) {
@@ -58,9 +52,7 @@ public class UserService {
         List<UserDto> userDtoList = users.stream().map(user -> modelMapper.map(user, UserDto.class)).toList();
         BaseResponse<List<UserDto>> baseResponse = new BaseResponse<>();
         baseResponse.setData(userDtoList);
-        baseResponse.setPage(users.getNumber());
-        baseResponse.setSize(users.getSize());
-        baseResponse.setTotal(users.getTotalElements());
+        baseResponse.updatePagination(params, users.getTotalElements());
         baseResponse.success();
         return baseResponse;
     }
