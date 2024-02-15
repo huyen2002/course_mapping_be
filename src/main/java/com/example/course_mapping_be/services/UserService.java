@@ -61,4 +61,19 @@ public class UserService {
         Optional<User> user = userRepository.findByEmail(email);
         return user.orElse(null);
     }
+
+    public BaseResponse<UserDto> update(Long id, UserDto userDto) throws Exception {
+        User user = userRepository.findById(id).orElseThrow(() -> new Exception("User with id is not found"));
+        if (userDto.getName() != null) {
+            user.setName(userDto.getName());
+        }
+        if (userDto.isEnabled() != user.isEnabled()) {
+            user.setEnabled(userDto.isEnabled());
+        }
+        userRepository.save(user);
+        BaseResponse<UserDto> baseResponse = new BaseResponse<>();
+        baseResponse.setData(modelMapper.map(user, UserDto.class));
+        baseResponse.success();
+        return baseResponse;
+    }
 }

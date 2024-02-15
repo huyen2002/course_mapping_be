@@ -9,8 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -56,8 +54,8 @@ public class User {
     @Column(name = "role", nullable = false)
     private RoleType role;
 
-    @Column(name = "is_active", nullable = false)
-    private boolean is_active = true;
+    @Column(name = "enabled", nullable = false)
+    private boolean enabled = true;
 
 
     public User(String email, String password, String name, RoleType role) {

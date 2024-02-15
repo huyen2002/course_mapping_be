@@ -19,7 +19,5 @@ public class UserDto {
     Date create_at;
     Date update_at;
     String role;
-    boolean is_active;
-
-
+    boolean enabled;
 }

@@ -33,5 +33,10 @@ public class UserController {
         return ResponseEntity.ok(baseResponse);
     }
 
+    @PutMapping(path = "user/update/{id}")
+    public ResponseEntity<BaseResponse<UserDto>> update(@PathVariable Long id, @RequestBody UserDto userDto) throws Exception {
+        BaseResponse<UserDto> baseResponse = userService.update(id, userDto);
+        return ResponseEntity.ok(baseResponse);
+    }
 
 }
