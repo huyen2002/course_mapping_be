@@ -29,16 +29,13 @@ public class User {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @NotBlank(message = "Email is required")
     @Email(message = "Email is invalid")
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @NotBlank(message = "Password is required")
     @Column(name = "password", nullable = false)
     private String password;
 
-    @NotBlank(message = "Name is required")
     @Column(name = "name", nullable = false)
     private String name;
 

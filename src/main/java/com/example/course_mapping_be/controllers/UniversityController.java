@@ -13,7 +13,6 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
 
-@Controller
 @AllArgsConstructor
 @RestController
 public class UniversityController {
