@@ -1,6 +1,5 @@
 package com.example.course_mapping_be.dtos;
 
-import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

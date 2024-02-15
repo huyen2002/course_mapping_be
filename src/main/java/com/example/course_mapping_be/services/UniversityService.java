@@ -43,7 +43,7 @@ public class UniversityService {
     public BaseResponse<UniversityDto> update(UniversityDto universityDto, HttpServletRequest request) throws Exception {
         BaseResponse<UniversityDto> baseResponse = new BaseResponse<>();
         Long userId = tokenProvider.getUserIdFromRequest(request);
-        University university = universityRepository.findByUserId(userId).orElseThrow(() -> new Exception("Company is not found"));
+        University university = universityRepository.findByUserId(userId).orElseThrow(() -> new Exception("University is not found"));
         if (universityDto.getCode() != null) {
             university.setCode(universityDto.getCode());
         }

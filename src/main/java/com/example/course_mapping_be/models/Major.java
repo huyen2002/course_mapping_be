@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "majors")
 @Getter
@@ -24,6 +26,8 @@ public class Major {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @OneToMany(mappedBy = "major")
+    private List<ProgramEducation> programEducations;
 
     public Major(String code, String name) {
         this.code = code;
