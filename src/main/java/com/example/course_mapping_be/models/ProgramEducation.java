@@ -4,7 +4,8 @@ import com.example.course_mapping_be.constraints.LevelEducationType;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.util.List;
+
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -36,7 +37,7 @@ public class ProgramEducation {
     @Column(name = "level_of_education", nullable = false)
     private LevelEducationType level_of_education;
 
-    @Column(name = "num_credits")
+    @Column(name = "num_credits", nullable = false)
     private Integer num_credits;
 
     @Column(name = "outline")
@@ -55,4 +56,8 @@ public class ProgramEducation {
     @ManyToOne
     @JoinColumn(name = "major_id", nullable = false)
     private Major major;
+
+    @OneToMany(mappedBy = "program_education")
+    private List<ProgramEducationCourse> programEducationCourses;
+
 }

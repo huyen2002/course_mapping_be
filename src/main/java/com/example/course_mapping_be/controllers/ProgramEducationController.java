@@ -3,7 +3,6 @@ package com.example.course_mapping_be.controllers;
 import com.example.course_mapping_be.dtos.BaseResponse;
 import com.example.course_mapping_be.dtos.ProgramEducationDto;
 import com.example.course_mapping_be.dtos.QueryParams;
-import com.example.course_mapping_be.models.ProgramEducation;
 import com.example.course_mapping_be.services.ProgramEducationService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;

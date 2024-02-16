@@ -42,4 +42,7 @@ public class University {
 
     @OneToMany(mappedBy = "university")
     private List<ProgramEducation> programEducations;
+
+    @OneToMany(mappedBy = "university")
+    private List<Course> courses;
 }
