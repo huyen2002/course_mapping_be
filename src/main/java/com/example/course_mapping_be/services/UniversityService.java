@@ -13,7 +13,6 @@ import com.example.course_mapping_be.security.JsonWebTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -45,6 +44,9 @@ public class UniversityService {
         Long userId = tokenProvider.getUserIdFromRequest(request);
         University university = universityRepository.findByUserId(userId).orElseThrow(() -> new Exception("University is not found"));
         if (universityDto.getCode() != null) {
+            if (universityRepository.findByCode(universityDto.getCode()).isPresent()) {
+                throw new Exception("University with code is existed");
+            }
             university.setCode(universityDto.getCode());
         }
         if (universityDto.getIntroduction() != null) {

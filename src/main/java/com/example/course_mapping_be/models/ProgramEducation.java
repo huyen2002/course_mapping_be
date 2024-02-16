@@ -4,6 +4,8 @@ import com.example.course_mapping_be.constraints.LevelEducationType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
@@ -40,6 +42,11 @@ public class ProgramEducation {
     @Column(name = "outline")
     private String outline;
 
+    @Column(name = "start_year", nullable = false)
+    private Integer start_year;
+
+    @Column(name = "end_year", nullable = false)
+    private Integer end_year;
 
     @ManyToOne
     @JoinColumn(name = "university_id", nullable = false)

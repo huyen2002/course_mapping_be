@@ -17,12 +17,13 @@ public class UniversityDto {
     Long id;
 
     UserDto user;
-    
+
     @NotNull(message = "Code is required")
     @NotBlank(message = "Code is required")
     String code;
+
     String feature;
     String introduction;
-
+    
     AddressDto address;
 }

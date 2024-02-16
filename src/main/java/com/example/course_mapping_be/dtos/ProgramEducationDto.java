@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.Date;
+
 @Data
 @Setter
 @Getter
@@ -32,6 +34,12 @@ public class ProgramEducationDto {
     private Integer num_credits;
 
     private String outline;
+
+    @NotNull(message = "Start year is required")
+    private Integer start_year;
+
+    @NotNull(message = "End year is required")
+    private Integer end_year;
 
     private UniversityDto university;
 
