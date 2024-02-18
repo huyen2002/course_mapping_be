@@ -30,10 +30,10 @@ public class Course {
     @Column(name = "outline")
     private String outline;
 
-    @ManyToOne
-    @JoinColumn(name = "university_id")
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "university_id", nullable = false)
     private University university;
 
-    @OneToMany(mappedBy = "course")
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProgramEducationCourse> programEducationCourses;
 }

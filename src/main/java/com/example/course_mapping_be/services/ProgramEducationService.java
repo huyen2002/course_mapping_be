@@ -128,4 +128,12 @@ public class ProgramEducationService {
         return baseResponse;
 
     }
+
+    public BaseResponse<ProgramEducationDto> getById(Long id) throws Exception {
+        ProgramEducation programEducation = programEducationRepository.findById(id).orElseThrow(() -> new Exception("Program education is not found"));
+        BaseResponse<ProgramEducationDto> baseResponse = new BaseResponse<>();
+        baseResponse.setData(modelMapper.map(programEducation, ProgramEducationDto.class));
+        baseResponse.success();
+        return baseResponse;
+    }
 }

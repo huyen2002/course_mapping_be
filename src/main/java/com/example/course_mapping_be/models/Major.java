@@ -26,7 +26,7 @@ public class Major {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "major")
+    @OneToMany(mappedBy = "major", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProgramEducation> programEducations;
 
     public Major(String code, String name) {

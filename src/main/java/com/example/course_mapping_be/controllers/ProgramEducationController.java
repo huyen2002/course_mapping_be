@@ -40,4 +40,10 @@ public class ProgramEducationController {
         BaseResponse<ProgramEducationDto> baseResponse = programEducationService.update(id, programEducationDto, request);
         return ResponseEntity.ok(baseResponse);
     }
+
+    @GetMapping(path = "program_education/{id}")
+    public ResponseEntity<BaseResponse<ProgramEducationDto>> getById(@PathVariable Long id) throws Exception {
+        BaseResponse<ProgramEducationDto> baseResponse = programEducationService.getById(id);
+        return ResponseEntity.ok(baseResponse);
+    }
 }

@@ -49,15 +49,15 @@ public class ProgramEducation {
     @Column(name = "end_year", nullable = false)
     private Integer end_year;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "university_id", nullable = false)
     private University university;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "major_id", nullable = false)
     private Major major;
 
-    @OneToMany(mappedBy = "program_education")
+    @OneToMany(mappedBy = "program_education", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProgramEducationCourse> programEducationCourses;
 
 }
