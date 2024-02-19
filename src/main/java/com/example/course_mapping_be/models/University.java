@@ -3,10 +3,9 @@ package com.example.course_mapping_be.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
@@ -40,9 +39,14 @@ public class University {
     @JoinColumn(name = "address_id")
     private Address address;
 
-    @OneToMany(mappedBy = "university")
+
+    @EqualsAndHashCode.Exclude
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProgramEducation> programEducations;
 
-    @OneToMany(mappedBy = "university")
+    @EqualsAndHashCode.Exclude
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Course> courses;
 }

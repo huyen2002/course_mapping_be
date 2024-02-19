@@ -1,10 +1,9 @@
 package com.example.course_mapping_be.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
@@ -26,6 +25,8 @@ public class Major {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @EqualsAndHashCode.Exclude
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @OneToMany(mappedBy = "major", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProgramEducation> programEducations;
 

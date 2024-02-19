@@ -136,4 +136,16 @@ public class ProgramEducationService {
         baseResponse.success();
         return baseResponse;
     }
+
+    public Boolean deleteById(Long id, HttpServletRequest request) throws Exception {
+        Long userId = tokenProvider.getUserIdFromRequest(request);
+        University university = universityRepository.findByUserId(userId).orElseThrow(() -> new Exception("University is not found"));
+        ProgramEducation programEducation = programEducationRepository.findById(id).orElseThrow(() -> new Exception("Program education is not found"));
+        if (!programEducation.getUniversity().getId().equals(university.getId())) {
+            throw new Exception("You are not authorized to delete this program education");
+        }
+        programEducationRepository.deleteById(id);
+        return true;
+
+    }
 }

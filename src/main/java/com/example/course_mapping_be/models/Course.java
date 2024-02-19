@@ -2,6 +2,8 @@ package com.example.course_mapping_be.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
@@ -30,10 +32,12 @@ public class Course {
     @Column(name = "outline")
     private String outline;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn(name = "university_id", nullable = false)
     private University university;
 
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<ProgramEducationCourse> programEducationCourses;
 }

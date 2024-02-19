@@ -26,4 +26,9 @@ public class ProgramEducationCourseController {
         BaseResponse<List<ProgramEducationCourseDto>> baseResponse = programEducationCourseService.getAllCoursesByProgramEducationId(id, params);
         return ResponseEntity.ok(baseResponse);
     }
+
+    @DeleteMapping(path = "program_education_course/delete/{id}")
+    public ResponseEntity<Object> delete(@PathVariable Long id) throws Exception {
+        return ResponseEntity.ok(programEducationCourseService.deleteById(id));
+    }
 }

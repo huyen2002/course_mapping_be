@@ -62,4 +62,9 @@ public class ProgramEducationCourseService {
         baseResponse.updatePagination(params, programEducationCourses.getTotalElements());
         return baseResponse;
     }
+
+    public Boolean deleteById(Long id) {
+        programEducationCourseRepository.deleteById(id);
+        return true;
+    }
 }

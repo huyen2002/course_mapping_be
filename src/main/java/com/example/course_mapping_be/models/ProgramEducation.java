@@ -3,6 +3,8 @@ package com.example.course_mapping_be.models;
 import com.example.course_mapping_be.constraints.LevelEducationType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
@@ -49,15 +51,17 @@ public class ProgramEducation {
     @Column(name = "end_year", nullable = false)
     private Integer end_year;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn(name = "university_id", nullable = false)
     private University university;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinColumn(name = "major_id", nullable = false)
     private Major major;
 
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "program_education", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<ProgramEducationCourse> programEducationCourses;
 
 }

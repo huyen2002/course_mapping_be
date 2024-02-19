@@ -46,4 +46,9 @@ public class ProgramEducationController {
         BaseResponse<ProgramEducationDto> baseResponse = programEducationService.getById(id);
         return ResponseEntity.ok(baseResponse);
     }
+
+    @DeleteMapping(path = "program_education/delete/{id}")
+    public ResponseEntity<Object> deleteById(@PathVariable Long id, HttpServletRequest request) throws Exception {
+        return ResponseEntity.ok(programEducationService.deleteById(id, request));
+    }
 }
