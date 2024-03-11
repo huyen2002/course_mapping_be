@@ -4,6 +4,7 @@ import com.example.course_mapping_be.constraints.LevelEducationType;
 import com.example.course_mapping_be.dtos.BaseResponse;
 import com.example.course_mapping_be.dtos.ProgramEducationDto;
 import com.example.course_mapping_be.dtos.QueryParams;
+import com.example.course_mapping_be.dtos.SearchProgramDto;
 import com.example.course_mapping_be.models.Major;
 import com.example.course_mapping_be.models.ProgramEducation;
 import com.example.course_mapping_be.models.University;
@@ -47,6 +48,7 @@ public class ProgramEducationService {
                 .start_year(programEducationDto.getStart_year())
                 .end_year(programEducationDto.getEnd_year())
                 .build();
+
 
         programEducationRepository.save(programEducation);
         BaseResponse<ProgramEducationDto> baseResponse = new BaseResponse<>();
@@ -147,5 +149,27 @@ public class ProgramEducationService {
         programEducationRepository.deleteById(id);
         return true;
 
+    }
+
+    public BaseResponse<List<ProgramEducationDto>> getAll(QueryParams params) {
+        BaseResponse<List<ProgramEducationDto>> baseResponse = new BaseResponse<>();
+
+        Page<ProgramEducation> programEducations = programEducationRepository.findAll(PageRequest.of(params.getPage(), params.getSize()));
+        List<ProgramEducationDto> programEducationDtos = programEducations.map(programEducation -> modelMapper.map(programEducation, ProgramEducationDto.class)).getContent();
+        baseResponse.setData(programEducationDtos);
+        baseResponse.success();
+        baseResponse.updatePagination(params, programEducations.getTotalElements());
+        return baseResponse;
+    }
+
+    public BaseResponse<List<ProgramEducationDto>> search(SearchProgramDto searchProgramDto, QueryParams params) {
+        BaseResponse<List<ProgramEducationDto>> baseResponse = new BaseResponse<>();
+
+        Page<ProgramEducation> programEducations = programEducationRepository.searchPrograms(searchProgramDto, PageRequest.of(params.getPage(), params.getSize()));
+        List<ProgramEducationDto> programEducationDtos = programEducations.map(programEducation -> modelMapper.map(programEducation, ProgramEducationDto.class)).getContent();
+        baseResponse.setData(programEducationDtos);
+        baseResponse.success();
+        baseResponse.updatePagination(params, programEducations.getTotalElements());
+        return baseResponse;
     }
 }

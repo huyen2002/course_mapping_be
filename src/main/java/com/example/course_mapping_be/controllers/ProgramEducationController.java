@@ -3,6 +3,7 @@ package com.example.course_mapping_be.controllers;
 import com.example.course_mapping_be.dtos.BaseResponse;
 import com.example.course_mapping_be.dtos.ProgramEducationDto;
 import com.example.course_mapping_be.dtos.QueryParams;
+import com.example.course_mapping_be.dtos.SearchProgramDto;
 import com.example.course_mapping_be.services.ProgramEducationService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -51,4 +52,17 @@ public class ProgramEducationController {
     public ResponseEntity<Object> deleteById(@PathVariable Long id, HttpServletRequest request) throws Exception {
         return ResponseEntity.ok(programEducationService.deleteById(id, request));
     }
+
+    @GetMapping(path = "program_educations/all")
+    public ResponseEntity<BaseResponse<List<ProgramEducationDto>>> getAll(QueryParams params) {
+        BaseResponse<List<ProgramEducationDto>> baseResponse = programEducationService.getAll(params);
+        return ResponseEntity.ok(baseResponse);
+    }
+
+    @GetMapping(path = "program_educations/search")
+    public ResponseEntity<BaseResponse<List<ProgramEducationDto>>> search(SearchProgramDto searchProgramDto, QueryParams params) {
+        BaseResponse<List<ProgramEducationDto>> baseResponse = programEducationService.search(searchProgramDto, params);
+        return ResponseEntity.ok(baseResponse);
+    }
+
 }

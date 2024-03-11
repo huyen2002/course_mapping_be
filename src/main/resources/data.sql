@@ -38,7 +38,8 @@ INSERT INTO program_educations (id, name, language, duration_year, level_of_educ
 (2, 'Công nghệ thông tin Chất lượng cao', 'VI', 4, 'BACHELOR', 130, 2020, 2025, 1, 1),
 (3, 'Khoa học máy tính', 'VI', 4, 'BACHELOR', 120, 2019, 2025, 3, 3),
 (4, 'Trí tuệ nhân tạo', 'VI', 4, 'BACHELOR', 120, 2019, 2025, 1, 9),
-(5, 'Kế toán', 'VI', 4, 'BACHELOR', 120, 2019, 2025, 2, 13);
+(5, 'Kế toán', 'VI', 4, 'BACHELOR', 120, 2019, 2025, 2, 13),
+(6, 'Kinh tế quốc tế - TT23', 'VI', 4, 'BACHELOR', 110, 2019, 2022, 2, 11);
 
 INSERT INTO courses (id, name, code, language, university_id) VALUES
 (1, 'Công nghệ phần mềm', 'INT_2345', 'VI', 1),

@@ -24,6 +24,6 @@ public class UniversityDto {
 
     String feature;
     String introduction;
-    
+
     AddressDto address;
 }

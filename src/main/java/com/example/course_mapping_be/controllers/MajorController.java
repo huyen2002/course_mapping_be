@@ -3,6 +3,8 @@ package com.example.course_mapping_be.controllers;
 import com.example.course_mapping_be.dtos.BaseResponse;
 import com.example.course_mapping_be.dtos.MajorDto;
 import com.example.course_mapping_be.dtos.QueryParams;
+import com.example.course_mapping_be.dtos.SearchMajorDto;
+import com.example.course_mapping_be.models.Major;
 import com.example.course_mapping_be.services.MajorService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,12 @@ public class MajorController {
     @GetMapping(path = "majors/all")
     public ResponseEntity<BaseResponse<List<MajorDto>>> getAll(QueryParams params) {
         BaseResponse<List<MajorDto>> baseResponse = majorService.getAll(params);
+        return ResponseEntity.ok(baseResponse);
+    }
+
+    @GetMapping(path = "majors/search")
+    public ResponseEntity<BaseResponse<List<MajorDto>>> searchMajors(SearchMajorDto searchMajorDto, QueryParams params) {
+        BaseResponse<List<MajorDto>> baseResponse = majorService.searchMajors(searchMajorDto, params);
         return ResponseEntity.ok(baseResponse);
     }
 

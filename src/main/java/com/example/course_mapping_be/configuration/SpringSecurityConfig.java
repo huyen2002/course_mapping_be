@@ -27,8 +27,12 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class SpringSecurityConfig {
 
-    @Value("${client.url}")
-    private String clientUrl;
+    @Value("${dev.client.url}")
+    private String devClientUrl;
+
+    @Value("${prod.client.url}")
+    private String prodClientUrl;
+
 
     private CustomUserDetailsService userDetailsService;
 
@@ -53,7 +57,7 @@ public class SpringSecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins(clientUrl)
+                        .allowedOrigins(devClientUrl, prodClientUrl)
                         .allowedMethods(CorsConfiguration.ALL)
                         .allowedHeaders(CorsConfiguration.ALL)
                         .allowCredentials(true);

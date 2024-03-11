@@ -20,4 +20,6 @@ public class MajorDto {
     @NotNull(message = "Name is required")
     @NotBlank(message = "Name is required")
     String name;
+
+    Integer numberOfProgramEducations;
 }

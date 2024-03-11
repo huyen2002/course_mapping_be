@@ -49,4 +49,5 @@ public class University {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Course> courses;
+
 }

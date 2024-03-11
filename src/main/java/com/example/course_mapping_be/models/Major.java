@@ -30,6 +30,7 @@ public class Major {
     @OneToMany(mappedBy = "major", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProgramEducation> programEducations;
 
+
     public Major(String code, String name) {
         this.code = code;
         this.name = name;

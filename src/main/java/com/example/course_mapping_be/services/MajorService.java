@@ -4,6 +4,7 @@ package com.example.course_mapping_be.services;
 import com.example.course_mapping_be.dtos.BaseResponse;
 import com.example.course_mapping_be.dtos.MajorDto;
 import com.example.course_mapping_be.dtos.QueryParams;
+import com.example.course_mapping_be.dtos.SearchMajorDto;
 import com.example.course_mapping_be.models.Major;
 import com.example.course_mapping_be.repositories.MajorRepository;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,12 @@ public class MajorService {
 
     private ModelMapper modelMapper;
 
+    public MajorDto convertToDto(Major major) {
+        MajorDto majorDto = modelMapper.map(major, MajorDto.class);
+        majorDto.setNumberOfProgramEducations(major.getProgramEducations().size());
+        return majorDto;
+    }
+
     public BaseResponse<MajorDto> create(MajorDto majorDto) throws Exception {
         BaseResponse<MajorDto> baseResponse = new BaseResponse<>();
         if (majorRepository.findByCode(majorDto.getCode()).isPresent()) {
@@ -39,7 +46,9 @@ public class MajorService {
     public BaseResponse<List<MajorDto>> getAll(QueryParams params) {
         BaseResponse<List<MajorDto>> baseResponse = new BaseResponse<>();
         Page<Major> majors = majorRepository.findAll(PageRequest.of(params.getPage(), params.getSize()));
-        List<MajorDto> majorDtos = majors.stream().map(major -> modelMapper.map(major, MajorDto.class)).toList();
+
+        List<MajorDto> majorDtos = majors.map(this::convertToDto).getContent();
+
         baseResponse.setData(majorDtos);
         baseResponse.updatePagination(params, majors.getTotalElements());
         baseResponse.success();
@@ -71,5 +80,15 @@ public class MajorService {
         majorRepository.findById(id).orElseThrow(() -> new Exception("Major with id is not found"));
         majorRepository.deleteById(id);
         return true;
+    }
+
+    public BaseResponse<List<MajorDto>> searchMajors(SearchMajorDto searchMajorDto, QueryParams params) {
+        BaseResponse<List<MajorDto>> baseResponse = new BaseResponse<>();
+        Page<Major> majors = majorRepository.searchMajors(searchMajorDto, PageRequest.of(params.getPage(), params.getSize()));
+        List<MajorDto> majorDtos = majors.map(this::convertToDto).getContent();
+        baseResponse.setData(majorDtos);
+        baseResponse.updatePagination(params, majors.getTotalElements());
+        baseResponse.success();
+        return baseResponse;
     }
 }
