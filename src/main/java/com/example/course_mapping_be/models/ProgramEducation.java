@@ -25,14 +25,17 @@ public class ProgramEducation {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "code", nullable = false)
+    private String code;
+
     @Column(name = "language", nullable = false)
     private String language;
 
-    @Column(name = "introduction")
+    @Column(name = "introduction", columnDefinition = "TEXT")
     private String introduction;
 
-    @Column(name = "duration_year")
-    private Integer duration_year;
+    @Column(name = "duration_year", nullable = false)
+    private Float duration_year;
 
 
     @Enumerated(EnumType.STRING)

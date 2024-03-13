@@ -1,10 +1,7 @@
 package com.example.course_mapping_be.services;
 
 import com.example.course_mapping_be.constraints.LevelEducationType;
-import com.example.course_mapping_be.dtos.BaseResponse;
-import com.example.course_mapping_be.dtos.ProgramEducationDto;
-import com.example.course_mapping_be.dtos.QueryParams;
-import com.example.course_mapping_be.dtos.SearchProgramDto;
+import com.example.course_mapping_be.dtos.*;
 import com.example.course_mapping_be.models.Major;
 import com.example.course_mapping_be.models.ProgramEducation;
 import com.example.course_mapping_be.models.University;
@@ -14,12 +11,18 @@ import com.example.course_mapping_be.repositories.UniversityRepository;
 import com.example.course_mapping_be.security.JsonWebTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import org.apache.tomcat.util.json.JSONParser;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -32,6 +35,7 @@ public class ProgramEducationService {
     private MajorRepository majorRepository;
     private ProgramEducationRepository programEducationRepository;
     private ModelMapper modelMapper;
+
 
     public BaseResponse<ProgramEducationDto> create(ProgramEducationDto programEducationDto, HttpServletRequest request) throws Exception {
         Long userId = tokenProvider.getUserIdFromRequest(request);
@@ -172,4 +176,44 @@ public class ProgramEducationService {
         baseResponse.updatePagination(params, programEducations.getTotalElements());
         return baseResponse;
     }
+
+    public BaseResponse<List<ProgramEducationDto>> getTopSimilar(Long id) throws Exception {
+        ProgramEducation programEducation = programEducationRepository.findById(id).orElseThrow(() -> new Exception("Program education is not found"));
+
+        final String uri = "http://127.0.0.1:5000/api/top_n_most_similar";
+
+        RestTemplate restTemplate = new RestTemplate();
+        ProgramOutlineDto programOutlineDto = new ProgramOutlineDto(programEducation.getIntroduction());
+
+        String result = restTemplate.postForObject(uri, programOutlineDto, String.class);
+        JSONObject jsonObject = new JSONObject(result);
+        List<String> files = new ArrayList<>();
+        try {
+            JSONArray fileList = (JSONArray) jsonObject.get("list");
+            for (Object item : fileList) {
+                JSONArray innerArray = (JSONArray) item;
+                String fileName = (String) innerArray.get(0);
+                files.add(fileName);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        List<ProgramEducationDto> programEducationDtos = new ArrayList<>();
+        for (String file : files) {
+            List<String> fileParts = List.of(file.replace(".txt", "").split("_"));
+            String universityCode = fileParts.get(1);
+            String programEducationCode = fileParts.get(2);
+            ProgramEducation program = programEducationRepository.findByUniversityCodeAndProgramEducationCode(universityCode, programEducationCode);
+            if (program == null) continue;
+            if (!Objects.equals(program.getId(), id))
+                programEducationDtos.add(modelMapper.map(program, ProgramEducationDto.class));
+        }
+        BaseResponse<List<ProgramEducationDto>> baseResponse = new BaseResponse<>();
+        baseResponse.setData(programEducationDtos);
+        baseResponse.success();
+        return baseResponse;
+    }
+
+
 }

@@ -24,6 +24,12 @@ public class ProgramEducationController {
         return ResponseEntity.ok(baseResponse);
     }
 
+    @GetMapping(path = "program_education/{id}/top_similar")
+    public ResponseEntity<BaseResponse<List<ProgramEducationDto>>> getTopSimilar(@PathVariable Long id) throws Exception {
+        BaseResponse<List<ProgramEducationDto>> baseResponse = programEducationService.getTopSimilar(id);
+        return ResponseEntity.ok(baseResponse);
+    }
+
     @GetMapping(path = "university/{id}/program_educations/all")
     public ResponseEntity<BaseResponse<List<ProgramEducationDto>>> getAllByUniversityId(@PathVariable Long id, QueryParams params) throws Exception {
         BaseResponse<List<ProgramEducationDto>> baseResponse = programEducationService.getAllByUniversityId(id, params);

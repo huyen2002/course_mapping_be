@@ -19,13 +19,18 @@ public class ProgramEducationDto {
     @NotBlank(message = "Name is required")
     private String name;
 
+    @NotNull(message = "Code is required")
+    @NotBlank(message = "Code is required")
+    private String code;
+
     @NotNull(message = "Language is required")
     @NotBlank(message = "Language is required")
     private String language;
 
     private String introduction;
 
-    private Integer duration_year;
+    @NotNull(message = "Duration year is required")
+    private Float duration_year;
 
     @NotNull(message = "Level of education is required")
     private String level_of_education;

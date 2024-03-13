@@ -22,4 +22,7 @@ public interface ProgramEducationRepository extends JpaRepository<ProgramEducati
                     "(:#{#searchProgramDto.status} is NULL OR (p.end_year > YEAR(CURRENT_DATE) AND :#{#searchProgramDto.status} = 'ACTIVE') OR (p.end_year < YEAR(CURRENT_DATE) AND :#{#searchProgramDto.status} = 'INACTIVE'))"
             )
     Page<ProgramEducation> searchPrograms(SearchProgramDto searchProgramDto, Pageable pageable);
+
+    @Query("SELECT p FROM ProgramEducation p WHERE p.university.code = :universityCode AND p.code = :programEducationCode")
+    ProgramEducation findByUniversityCodeAndProgramEducationCode(String universityCode, String programEducationCode);
 }
