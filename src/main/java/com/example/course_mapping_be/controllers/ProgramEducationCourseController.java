@@ -1,6 +1,7 @@
 package com.example.course_mapping_be.controllers;
 
 import com.example.course_mapping_be.dtos.BaseResponse;
+import com.example.course_mapping_be.dtos.ComparedCourseDto;
 import com.example.course_mapping_be.dtos.ProgramEducationCourseDto;
 import com.example.course_mapping_be.dtos.QueryParams;
 import com.example.course_mapping_be.services.ProgramEducationCourseService;
@@ -30,5 +31,11 @@ public class ProgramEducationCourseController {
     @DeleteMapping(path = "program_education_course/delete/{id}")
     public ResponseEntity<Object> delete(@PathVariable Long id) throws Exception {
         return ResponseEntity.ok(programEducationCourseService.deleteById(id));
+    }
+
+    @GetMapping(path = "compare_courses_of_program_educations/{id1}/and/{id2}")
+    public ResponseEntity<BaseResponse<List<ComparedCourseDto>>> compareCoursesOfProgramEducations(@PathVariable Long id1, @PathVariable Long id2) throws Exception {
+        BaseResponse<List<ComparedCourseDto>> baseResponse = programEducationCourseService.compareCoursesOfProgramEducations(id1, id2);
+        return ResponseEntity.ok(baseResponse);
     }
 }

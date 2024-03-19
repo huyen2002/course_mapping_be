@@ -19,4 +19,7 @@ public interface ProgramEducationCourseRepository extends JpaRepository<ProgramE
 
     @Query("SELECT pec FROM ProgramEducationCourse pec WHERE pec.program_education.id = ?1")
     Page<ProgramEducationCourse> findAllByProgramEducationId(Long id, Pageable pageable);
+
+    @Query("SELECT pec FROM ProgramEducationCourse pec WHERE pec.program_education.id = ?1")
+    List<ProgramEducationCourse> findAllByProgramEducationId(Long id);
 }

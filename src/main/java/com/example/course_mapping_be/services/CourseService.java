@@ -10,9 +10,12 @@ import com.example.course_mapping_be.security.JsonWebTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
+
 
 @Service
 @AllArgsConstructor
@@ -24,6 +27,8 @@ public class CourseService {
 
     private JsonWebTokenProvider tokenProvider;
     private final UniversityRepository universityRepository;
+
+    private final DocumentService documentService;
 
     public BaseResponse<CourseDto> create(CourseDto courseDto, HttpServletRequest request) throws Exception {
         Long userId = tokenProvider.getUserIdFromRequest(request);
@@ -73,5 +78,33 @@ public class CourseService {
         baseResponse.setData(modelMapper.map(course, CourseDto.class));
         baseResponse.success();
         return baseResponse;
+    }
+
+    public Float compareTwoCourse(Long id1, Long id2) {
+        Course course1 = courseRepository.findById(id1).orElseThrow(() -> new RuntimeException("Course is not found"));
+        Course course2 = courseRepository.findById(id2).orElseThrow(() -> new RuntimeException("Course is not found"));
+        BaseResponse<Float> baseResponse = documentService.compareTwoDocuments(course1.getName(), course2.getName());
+        return baseResponse.getData();
+    }
+
+    public Pair<Course, Float> getMostSimilarCourse(Course course, List<Course> courseList) {
+        Pair<Course, Float> result = null;
+        Course mostSimilarCourse = null;
+        float maxSimilarity = 0;
+        for (Course c : courseList) {
+            if (!Objects.equals(c.getName(), course.getName())) {
+                float similarity = compareTwoCourse(course.getId(), c.getId());
+                if (similarity > maxSimilarity) {
+                    maxSimilarity = similarity;
+                    mostSimilarCourse = c;
+                }
+            } else {
+                return Pair.of(c, 100.0f);
+            }
+        }
+        if (mostSimilarCourse != null && maxSimilarity > 98.0f) {
+            result = Pair.of(mostSimilarCourse, maxSimilarity);
+        }
+        return result;
     }
 }
