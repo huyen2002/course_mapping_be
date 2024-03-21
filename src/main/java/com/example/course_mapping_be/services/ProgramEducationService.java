@@ -51,6 +51,7 @@ public class ProgramEducationService {
                 .outline(programEducationDto.getOutline())
                 .start_year(programEducationDto.getStart_year())
                 .end_year(programEducationDto.getEnd_year())
+                .source_links(programEducationDto.getSource_links())
                 .build();
 
 
@@ -126,6 +127,9 @@ public class ProgramEducationService {
         if (programEducationDto.getMajorId() != null) {
             Major major = majorRepository.findById(programEducationDto.getMajorId()).orElseThrow(() -> new Exception("Major is not found"));
             programEducation.setMajor(major);
+        }
+        if (programEducationDto.getSource_links() != null) {
+            programEducation.setSource_links(programEducationDto.getSource_links());
         }
         programEducationRepository.save(programEducation);
         BaseResponse<ProgramEducationDto> baseResponse = new BaseResponse<>();

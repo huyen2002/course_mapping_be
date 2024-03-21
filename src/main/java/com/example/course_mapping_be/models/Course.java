@@ -32,6 +32,9 @@ public class Course {
     @Column(name = "outline")
     private String outline;
 
+    @Column(name = "source_links", columnDefinition = "TEXT")
+    private String source_links;
+
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn(name = "university_id", nullable = false)
     private University university;

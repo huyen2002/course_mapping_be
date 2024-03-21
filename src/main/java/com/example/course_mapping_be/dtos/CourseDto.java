@@ -26,5 +26,7 @@ public class CourseDto {
 
     private String outline;
 
+    private String source_links;
+
 
 }

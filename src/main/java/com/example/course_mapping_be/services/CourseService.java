@@ -43,6 +43,7 @@ public class CourseService {
                 .code(courseDto.getCode())
                 .language(courseDto.getLanguage())
                 .outline(courseDto.getOutline())
+                .source_links(courseDto.getSource_links())
                 .university(university).build();
 
         courseRepository.save(course);
@@ -73,6 +74,9 @@ public class CourseService {
         }
         if (courseDto.getOutline() != null) {
             course.setOutline(courseDto.getOutline());
+        }
+        if (courseDto.getSource_links() != null) {
+            course.setSource_links(courseDto.getSource_links());
         }
         courseRepository.save(course);
         baseResponse.setData(modelMapper.map(course, CourseDto.class));

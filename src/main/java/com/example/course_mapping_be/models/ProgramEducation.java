@@ -5,8 +5,11 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.data.util.Pair;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 @NoArgsConstructor
@@ -53,6 +56,9 @@ public class ProgramEducation {
 
     @Column(name = "end_year", nullable = false)
     private Integer end_year;
+
+    @Column(name = "source_links", columnDefinition = "TEXT")
+    private String source_links;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn(name = "university_id", nullable = false)

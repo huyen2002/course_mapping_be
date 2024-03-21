@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,7 +44,7 @@ public class MajorService {
         return baseResponse;
     }
 
-    public BaseResponse<List<MajorDto>> getAll(QueryParams params) {
+    public BaseResponse<List<MajorDto>> getPage(QueryParams params) {
         BaseResponse<List<MajorDto>> baseResponse = new BaseResponse<>();
         Page<Major> majors = majorRepository.findAll(PageRequest.of(params.getPage(), params.getSize()));
 
@@ -51,6 +52,15 @@ public class MajorService {
 
         baseResponse.setData(majorDtos);
         baseResponse.updatePagination(params, majors.getTotalElements());
+        baseResponse.success();
+        return baseResponse;
+    }
+
+    public BaseResponse<List<MajorDto>> getAll() {
+        BaseResponse<List<MajorDto>> baseResponse = new BaseResponse<>();
+        List<Major> majors = majorRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
+        List<MajorDto> majorDtos = majors.stream().map(this::convertToDto).toList();
+        baseResponse.setData(majorDtos);
         baseResponse.success();
         return baseResponse;
     }
@@ -91,4 +101,6 @@ public class MajorService {
         baseResponse.success();
         return baseResponse;
     }
+
+
 }
