@@ -8,6 +8,7 @@ import com.example.course_mapping_be.dtos.UserDto;
 import com.example.course_mapping_be.models.User;
 import com.example.course_mapping_be.security.CustomUserDetails;
 import com.example.course_mapping_be.security.JsonWebTokenProvider;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,5 +64,10 @@ public class AuthenticationService {
                 "user", modelMapper.map(user, UserDto.class)
         );
 //        return new JsonWebTokenModel("Bearer", jwt);
+    }
+
+    public BaseResponse<UserDto> me(HttpServletRequest request) throws Exception {
+        Long id = tokenProvider.getUserIdFromRequest(request);
+        return userService.getUserById(id);
     }
 }

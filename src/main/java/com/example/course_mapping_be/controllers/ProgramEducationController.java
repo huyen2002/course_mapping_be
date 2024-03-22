@@ -71,4 +71,10 @@ public class ProgramEducationController {
         return ResponseEntity.ok(baseResponse);
     }
 
+    @GetMapping(path = "me/program_educations/all")
+    public ResponseEntity<BaseResponse<List<ProgramEducationDto>>> getAllByUser(HttpServletRequest request, QueryParams params) throws Exception {
+        BaseResponse<List<ProgramEducationDto>> baseResponse = programEducationService.getAllByUser(request, params);
+        return ResponseEntity.ok(baseResponse);
+    }
+
 }

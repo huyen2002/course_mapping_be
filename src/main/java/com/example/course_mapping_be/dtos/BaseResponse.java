@@ -1,6 +1,7 @@
 package com.example.course_mapping_be.dtos;
 
 import com.example.course_mapping_be.constraints.Constants;
+import com.example.course_mapping_be.models.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -38,5 +39,6 @@ public class BaseResponse<T> {
         this.setSize(params.getSize());
         this.setTotal(total);
     }
+
 
 }

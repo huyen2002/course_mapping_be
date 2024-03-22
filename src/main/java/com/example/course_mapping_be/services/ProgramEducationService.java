@@ -220,4 +220,10 @@ public class ProgramEducationService {
     }
 
 
+    public BaseResponse<List<ProgramEducationDto>> getAllByUser(HttpServletRequest request, QueryParams params) throws Exception {
+        Long userId = tokenProvider.getUserIdFromRequest(request);
+        University university = universityRepository.findByUserId(userId).orElseThrow(() -> new Exception("University is not found"));
+        return getAllByUniversityId(university.getId(), params);
+
+    }
 }
