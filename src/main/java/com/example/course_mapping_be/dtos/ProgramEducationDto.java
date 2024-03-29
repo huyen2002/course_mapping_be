@@ -30,22 +30,20 @@ public class ProgramEducationDto {
     private String introduction;
 
     @NotNull(message = "Duration year is required")
-    private Float duration_year;
+    private Float durationYear;
 
     @NotNull(message = "Level of education is required")
-    private String level_of_education;
+    private String levelOfEducation;
 
-    private Integer num_credits;
+    private Integer numCredits;
 
     private String outline;
 
-    @NotNull(message = "Start year is required")
-    private Integer start_year;
-    @NotNull(message = "End year is required")
-    private Integer end_year;
+    private Integer startYear;
+    private Integer endYear;
 
-    private String source_links;
-    
+    private String sourceLinks;
+
     private UniversityDto university;
 
     @NotNull(message = "Major is required")

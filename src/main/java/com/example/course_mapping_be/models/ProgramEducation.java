@@ -5,11 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.data.util.Pair;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 @NoArgsConstructor
@@ -37,35 +34,35 @@ public class ProgramEducation {
     @Column(name = "introduction", columnDefinition = "TEXT")
     private String introduction;
 
-    @Column(name = "duration_year", nullable = false)
-    private Float duration_year;
+    @Column(name = "durationYear", nullable = false)
+    private Float durationYear;
 
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "level_of_education", nullable = false)
-    private LevelEducationType level_of_education;
+    @Column(name = "levelOfEducation", nullable = false)
+    private LevelEducationType levelOfEducation;
 
-    @Column(name = "num_credits", nullable = false)
-    private Integer num_credits;
+    @Column(name = "numCredits", nullable = false)
+    private Integer numCredits;
 
     @Column(name = "outline")
     private String outline;
 
-    @Column(name = "start_year", nullable = false)
-    private Integer start_year;
+    @Column(name = "startYear")
+    private Integer startYear;
 
-    @Column(name = "end_year", nullable = false)
-    private Integer end_year;
+    @Column(name = "endYear")
+    private Integer endYear;
 
-    @Column(name = "source_links", columnDefinition = "TEXT")
-    private String source_links;
+    @Column(name = "sourceLinks", columnDefinition = "TEXT")
+    private String sourceLinks;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-    @JoinColumn(name = "university_id", nullable = false)
+    @JoinColumn(name = "universityId", nullable = false)
     private University university;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    @JoinColumn(name = "major_id", nullable = false)
+    @JoinColumn(name = "majorId", nullable = false)
     private Major major;
 
     @EqualsAndHashCode.Exclude

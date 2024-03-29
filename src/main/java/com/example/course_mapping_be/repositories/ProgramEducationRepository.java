@@ -18,8 +18,8 @@ public interface ProgramEducationRepository extends JpaRepository<ProgramEducati
             ("SELECT p FROM ProgramEducation p WHERE " +
                     "(:#{#searchProgramDto.name} IS NULL OR p.name LIKE %:#{#searchProgramDto.name}%) AND " +
                     "(:#{#searchProgramDto.majorCode} IS NULL OR p.major.code = :#{#searchProgramDto.majorCode}) AND " +
-                    "(:#{#searchProgramDto.levelOfEducation} is NULL OR p.level_of_education = :#{#searchProgramDto.levelOfEducation}) AND " +
-                    "(:#{#searchProgramDto.status} is NULL OR (p.end_year > YEAR(CURRENT_DATE) AND :#{#searchProgramDto.status} = 'ACTIVE') OR (p.end_year < YEAR(CURRENT_DATE) AND :#{#searchProgramDto.status} = 'INACTIVE'))"
+                    "(:#{#searchProgramDto.levelOfEducation} is NULL OR p.levelOfEducation = :#{#searchProgramDto.levelOfEducation}) AND " +
+                    "(:#{#searchProgramDto.status} is NULL OR (p.endYear > YEAR(CURRENT_DATE ) OR  p.endYear is null  AND :#{#searchProgramDto.status} = 'ACTIVE') OR (p.endYear < YEAR(CURRENT_DATE) AND :#{#searchProgramDto.status} = 'INACTIVE'))"
             )
     Page<ProgramEducation> searchPrograms(SearchProgramDto searchProgramDto, Pageable pageable);
 

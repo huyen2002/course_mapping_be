@@ -14,6 +14,7 @@ import java.util.List;
 @Setter
 @Getter
 @Entity
+@Table(name = "university") // hinh nhu duoc roi ma. may cai kia do create-drop hay sao thui
 public class University {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

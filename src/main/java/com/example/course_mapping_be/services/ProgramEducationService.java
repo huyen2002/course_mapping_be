@@ -11,7 +11,6 @@ import com.example.course_mapping_be.repositories.UniversityRepository;
 import com.example.course_mapping_be.security.JsonWebTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
-import org.apache.tomcat.util.json.JSONParser;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
@@ -43,15 +42,16 @@ public class ProgramEducationService {
         Major major = majorRepository.findById(programEducationDto.getMajorId()).orElseThrow(() -> new Exception("Major is not found"));
         ProgramEducation programEducation = ProgramEducation.builder().name(programEducationDto.getName())
                 .language(programEducationDto.getLanguage())
-                .level_of_education(LevelEducationType.valueOf(programEducationDto.getLevel_of_education()))
+                .levelOfEducation(LevelEducationType.valueOf(programEducationDto.getLevelOfEducation()))
                 .university(university)
+                .code(programEducationDto.getCode())
                 .major(major).introduction(programEducationDto.getIntroduction())
-                .duration_year(programEducationDto.getDuration_year())
-                .num_credits(programEducationDto.getNum_credits())
+                .durationYear(programEducationDto.getDurationYear())
+                .numCredits(programEducationDto.getNumCredits())
                 .outline(programEducationDto.getOutline())
-                .start_year(programEducationDto.getStart_year())
-                .end_year(programEducationDto.getEnd_year())
-                .source_links(programEducationDto.getSource_links())
+                .startYear(programEducationDto.getStartYear())
+                .endYear(programEducationDto.getEndYear())
+                .sourceLinks(programEducationDto.getSourceLinks())
                 .build();
 
 
@@ -106,30 +106,30 @@ public class ProgramEducationService {
         if (programEducationDto.getIntroduction() != null) {
             programEducation.setIntroduction(programEducationDto.getIntroduction());
         }
-        if (programEducationDto.getDuration_year() != null) {
-            programEducation.setDuration_year(programEducationDto.getDuration_year());
+        if (programEducationDto.getDurationYear() != null) {
+            programEducation.setDurationYear(programEducationDto.getDurationYear());
         }
-        if (programEducationDto.getLevel_of_education() != null) {
-            programEducation.setLevel_of_education(LevelEducationType.valueOf(programEducationDto.getLevel_of_education()));
+        if (programEducationDto.getLevelOfEducation() != null) {
+            programEducation.setLevelOfEducation(LevelEducationType.valueOf(programEducationDto.getLevelOfEducation()));
         }
-        if (programEducationDto.getNum_credits() != null) {
-            programEducation.setNum_credits(programEducationDto.getNum_credits());
+        if (programEducationDto.getNumCredits() != null) {
+            programEducation.setNumCredits(programEducationDto.getNumCredits());
         }
         if (programEducationDto.getOutline() != null) {
             programEducation.setOutline(programEducationDto.getOutline());
         }
-        if (programEducationDto.getStart_year() != null) {
-            programEducation.setStart_year(programEducationDto.getStart_year());
+        if (programEducationDto.getStartYear() != null) {
+            programEducation.setStartYear(programEducationDto.getStartYear());
         }
-        if (programEducationDto.getEnd_year() != null) {
-            programEducation.setEnd_year(programEducationDto.getEnd_year());
+        if (programEducationDto.getEndYear() != null) {
+            programEducation.setEndYear(programEducationDto.getEndYear());
         }
         if (programEducationDto.getMajorId() != null) {
             Major major = majorRepository.findById(programEducationDto.getMajorId()).orElseThrow(() -> new Exception("Major is not found"));
             programEducation.setMajor(major);
         }
-        if (programEducationDto.getSource_links() != null) {
-            programEducation.setSource_links(programEducationDto.getSource_links());
+        if (programEducationDto.getSourceLinks() != null) {
+            programEducation.setSourceLinks(programEducationDto.getSourceLinks());
         }
         programEducationRepository.save(programEducation);
         BaseResponse<ProgramEducationDto> baseResponse = new BaseResponse<>();
