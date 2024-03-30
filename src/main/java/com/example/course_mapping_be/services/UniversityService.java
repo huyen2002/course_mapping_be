@@ -39,6 +39,18 @@ public class UniversityService {
         return universityRepository.save(university);
     }
 
+    public BaseResponse<UniversityDto> create(UniversityDto universityDto) {
+        University university = University.builder()
+                .name(universityDto.getName()).code(universityDto.getCode()).user(null).
+                introduction(universityDto.getIntroduction()).address(null)
+                .feature(universityDto.getFeature()).build();
+
+        BaseResponse<UniversityDto> baseResponse = new BaseResponse<>();
+        baseResponse.setData(modelMapper.map(universityRepository.save(university), UniversityDto.class));
+        baseResponse.success();
+        return baseResponse;
+    }
+
     public BaseResponse<UniversityDto> update(UniversityDto universityDto, HttpServletRequest request) throws Exception {
         BaseResponse<UniversityDto> baseResponse = new BaseResponse<>();
         Long userId = tokenProvider.getUserIdFromRequest(request);
@@ -83,6 +95,15 @@ public class UniversityService {
         BaseResponse<List<UniversityDto>> baseResponse = new BaseResponse<>();
         baseResponse.setData(universityDtos);
         baseResponse.updatePagination(params, universities.getTotalElements());
+        baseResponse.success();
+        return baseResponse;
+    }
+
+    public BaseResponse<List<UniversityDto>> getList() {
+        List<University> universities = universityRepository.findAll();
+        List<UniversityDto> universityDtos = universities.stream().map(university -> modelMapper.map(university, UniversityDto.class)).toList();
+        BaseResponse<List<UniversityDto>> baseResponse = new BaseResponse<>();
+        baseResponse.setData(universityDtos);
         baseResponse.success();
         return baseResponse;
     }

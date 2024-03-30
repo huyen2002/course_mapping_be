@@ -14,7 +14,8 @@ import java.util.List;
 @Setter
 @Getter
 @Entity
-@Table(name = "university") // hinh nhu duoc roi ma. may cai kia do create-drop hay sao thui
+@Builder
+@Table(name = "university")
 public class University {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +25,11 @@ public class University {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Column(name = "name", nullable = false, unique = true)
+    @NotBlank(message = "Name is required")
+    @NotNull(message = "Name is required")
+    private String name;
 
     @NotBlank(message = "Code is required")
     @NotNull(message = "Code is required")

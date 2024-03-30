@@ -44,6 +44,8 @@ public class ProgramEducationDto {
 
     private String sourceLinks;
 
+    private Long universityId;
+    
     private UniversityDto university;
 
     @NotNull(message = "Major is required")

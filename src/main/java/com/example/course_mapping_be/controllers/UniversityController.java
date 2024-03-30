@@ -30,9 +30,21 @@ public class UniversityController {
         return ResponseEntity.ok(baseResponse);
     }
 
+    @GetMapping(path = "universities/list")
+    public ResponseEntity<BaseResponse<List<UniversityDto>>> getList() {
+        BaseResponse<List<UniversityDto>> baseResponse = universityService.getList();
+        return ResponseEntity.ok(baseResponse);
+    }
+
     @GetMapping(path = "university/{id}")
     public ResponseEntity<BaseResponse<UniversityDto>> getById(@PathVariable Long id) throws Exception {
         BaseResponse<UniversityDto> baseResponse = universityService.getById(id);
+        return ResponseEntity.ok(baseResponse);
+    }
+
+    @PostMapping(path = "university/create")
+    public ResponseEntity<BaseResponse<UniversityDto>> create(@RequestBody UniversityDto universityDto) {
+        BaseResponse<UniversityDto> baseResponse = universityService.create(universityDto);
         return ResponseEntity.ok(baseResponse);
     }
 }

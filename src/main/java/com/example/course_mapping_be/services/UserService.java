@@ -63,8 +63,8 @@ public class UserService {
 
     public BaseResponse<UserDto> update(Long id, UserDto userDto) throws Exception {
         User user = userRepository.findById(id).orElseThrow(() -> new Exception("User with id is not found"));
-        if (userDto.getName() != null) {
-            user.setName(userDto.getName());
+        if (userDto.getUsername() != null) {
+            user.setUsername(userDto.getUsername());
         }
         if (userDto.isEnabled() != user.isEnabled()) {
             user.setEnabled(userDto.isEnabled());

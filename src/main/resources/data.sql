@@ -1,27 +1,31 @@
 USE course_mapping;
 SET names 'utf8';
 
-INSERT INTO users (id, email, password, name, role, enabled, create_at, update_at) VALUES
+INSERT INTO users (id, email, password, username, role, enabled, create_at, update_at) VALUES
 (1, 'thanhhuyennt02@gmail.com', '$2a$10$JS5wbPFgs/n4pmsHjkIOBONvlvaGaTj0bIubHO6bVNSN3mxj4vqpK', 'Admin', 'ADMIN', true, '2024-02-18', '2024-02-18'),
-(2, '20020420@vnu.edu.vn', '$2a$10$JS5wbPFgs/n4pmsHjkIOBONvlvaGaTj0bIubHO6bVNSN3mxj4vqpK', 'Đại học Công nghệ - ĐHQGHN', 'UNIVERSITY', true, '2024-02-18', '2024-02-18'),
-(3, '20020421@neu.edu.vn', '$2a$10$JS5wbPFgs/n4pmsHjkIOBONvlvaGaTj0bIubHO6bVNSN3mxj4vqpK', 'Đại học Kinh tế Quốc dân', 'UNIVERSITY', true, '2024-02-18', '2024-02-18'),
-(4, '20020422@hust.edu.vn', '$2a$10$JS5wbPFgs/n4pmsHjkIOBONvlvaGaTj0bIubHO6bVNSN3mxj4vqpK', 'Đại học Bách Khoa Hà Nội', 'UNIVERSITY', true, '2024-02-18', '2024-02-18'),
+(2, '20020420@vnu.edu.vn', '$2a$10$JS5wbPFgs/n4pmsHjkIOBONvlvaGaTj0bIubHO6bVNSN3mxj4vqpK', 'qhi_admin', 'UNIVERSITY', true, '2024-02-18', '2024-02-18'),
+(3, '20020421@neu.edu.vn', '$2a$10$JS5wbPFgs/n4pmsHjkIOBONvlvaGaTj0bIubHO6bVNSN3mxj4vqpK', 'bka_admin', 'UNIVERSITY', true, '2024-02-18', '2024-02-18'),
+(4, '20020422@hust.edu.vn', '$2a$10$JS5wbPFgs/n4pmsHjkIOBONvlvaGaTj0bIubHO6bVNSN3mxj4vqpK', 'kha_admin', 'UNIVERSITY', true, '2024-02-18', '2024-02-18'),
 (5, 'thanhhuyen@gmail.com', '$2a$10$JS5wbPFgs/n4pmsHjkIOBONvlvaGaTj0bIubHO6bVNSN3mxj4vqpK', 'Huyen', 'USER', true, '2024-02-18', '2024-02-18');
 
 INSERT INTO address (id, detail, district, city, country) VALUES
 (1, '144 Xuân Thủy', 'Cầu Giấy', 'Hà Nội', 'Việt Nam'),
 (2, 'Số 1 Đại Cồ Việt', 'Hai Bà Trưng', 'Hà Nội', 'Việt Nam'),
-(3, '207 Đường Giải Phóng', 'Hai Bà Trưng', 'Hà Nội', 'Việt Nam');
+(3, '207 Đường Giải Phóng', 'Hai Bà Trưng', 'Hà Nội', 'Việt Nam'),
+(4, '91 Chùa Láng', 'Đống Đa', 'Hà Nội', 'Việt Nam'),
+(5, '122 Hoàng Quốc Việt', 'Cầu Giấy', 'Hà Nội', 'Việt Nam');
 
-INSERT INTO university (id, user_id, code, introduction, address_id ) VALUES
-(1, 2, 'QHI', 'Đại học Công nghệ - ĐHQGHN được thành lập năm 2005. Đào tạo 20 chuyên ngành.', 1),
-(2, 3, 'KHA', 'Đại học Kinh tế Quốc dân được thành lập năm 2009. Đào tạo 25 chuyên ngành', 3),
-(3, 4, 'BKA', 'Đại học Bách Khoa Hà Nội được thành lập năm 2010. Đào tạo 30 chuyên ngành', 2);
+INSERT INTO university (id, user_id, name, code, introduction, address_id ) VALUES
+(1, 2,'Đại học Công nghệ - ĐHQGHN', 'QHI', 'Đại học Công nghệ - ĐHQGHN được thành lập năm 2005. Đào tạo 20 chuyên ngành.', 1),
+(2, 3,'Đại học Kinh tế Quốc dân', 'KHA', 'Đại học Kinh tế Quốc dân được thành lập năm 2009. Đào tạo 25 chuyên ngành', 3),
+(3, 4,'Đại học Bách khoa Hà Nội', 'BKA', 'Đại học Bách Khoa Hà Nội được thành lập năm 2010. Đào tạo 30 chuyên ngành', 2),
+(4, null,'Đại học Ngoại thương', 'FTU', 'Đại học Ngoại thương được thành lập năm 2012. Đào tạo 15 chuyên ngành', 4),
+(5, null, 'Học viện Bưu chính viễn thông', 'PTIT', 'Học viện Bưu chính viễn thông được thành lập năm 2015. Đào tạo 10 chuyên ngành', 5);
 
 INSERT INTO majors (id, code, name) VALUES
 (1, '7480201', 'Công nghệ thông tin'),
 (2, '7480202', 'Kỹ thuật phần mềm'),
-(3, '7480203', 'Khoa học máy tính'),
+(3, '7480101', 'Khoa học máy tính'),
 (4, '7480204', 'Kỹ thuật điện tử - viễn thông'),
 (5, '7480205', 'Kỹ thuật điều khiển và tự động hóa'),
 (6, '7480206', 'Kỹ thuật máy tính và mạng'),
@@ -51,7 +55,10 @@ INSERT INTO program_educations (id, name, code, language, durationYear, levelOfE
 (6, 'Kinh tế quốc tế - TT23','7310106', 'VI', 4, 'BACHELOR', 110, 2019, 2022, 2, 11, null, null),
 (7, 'Hệ thống thông tin', 'CN14', 'VI', 4.5, 'BACHELOR', 130, 2020, 2023, 1, 1, 'Chương trình đào tạo cử nhân Hệ thống thông tin (HTTT)  tại Trường Đại học Công nghệ (ĐHCN) thuộc Đại học Quốc gia Hà Nội (ĐHQGHN) nhằm mục tiêu đào tạo các sinh viên trở thành các chuyên gia HTTT chất lượng cao có phẩm chất tốt, có trình độ chuyên môn giỏi, có năng lực tự học suốt đời về HTTT, định hướng vào bốn chủ đề hiện đại của Công nghệ Thông tin (CNTT) trong thời đại số hóa (còn được gọi là Công nghiệp 4.0) là tích hợp dịch vụ, quản lý dữ liệu lớn, khoa học dữ liệu và phân tích kinh doanh.','[{"name":"Chương trình đào tạo ngành Hệ thống thông tin - UET","link":"https://uet.vnu.edu.vn/chuong-trinh-dao-tao-nganh-thong-thong-tin-12/"}]'),
 (8, 'Khoa học máy tính', 'IT1', 'VI', 4, 'BACHELOR', 130, 2020, 2025, 3, 1, 'Ngành Khoa học máy tính cung cấp cho sinh viên các kiến thức, kỹ năng cơ bản và hiện đại trong các lĩnh vực truyền thống của CNTT như công nghệ phần mềm, cơ sở dữ liệu, mạng máy tính, kiến trúc máy tính; song các lĩnh vực mới và không kém phần thú vị như xử lý ngôn ngữ tự nhiên, học máy – trí tuệ nhân tạo, tin sinh học, xử lý tiếng nói, xử lý ảnh, tương tác người – máy,… cũng được chú trọng phát triển và đào tạo.', '[{"name":"Tổng hợp các chương trình đào tạo Đại học Bách Khoa Hà Nội","link":"https://ts.hust.edu.vn/tin-tuc/chuong-trinh-dao-tao-chuan-truong-dai-hoc-bach-khoa-ha-noi"}]'),
-(9, 'Kỹ thuật máy tính','IT2', 'VI', 4, 'BACHELOR', 120, 2019, 2025, 3, 3, 'Ngành Kỹ thuật máy tính cung cấp cho sinh viên các kiến thức, kỹ năng cơ bản và hiện đại trong các lĩnh vực truyền thống của CNTT như công nghệ phần mềm, cơ sở dữ liệu, mạng máy tính, kiến trúc máy tính; song các lĩnh vực mới và không kém phần thú vị như xử lý ngôn ngữ tự nhiên, học máy – trí tuệ nhân tạo, tin sinh học, xử lý tiếng nói, xử lý ảnh, tương tác người – máy,… cũng được chú trọng phát triển và đào tạo.', '[{"name":"Tổng hợp các chương trình đào tạo Đại học Bách Khoa Hà Nội","link":"https://ts.hust.edu.vn/tin-tuc/chuong-trinh-dao-tao-chuan-truong-dai-hoc-bach-khoa-ha-noi"}]');
+(9, 'Kỹ thuật máy tính','IT2', 'VI', 4, 'BACHELOR', 120, 2019, 2025, 3, 3, 'Ngành Kỹ thuật máy tính cung cấp cho sinh viên các kiến thức, kỹ năng cơ bản và hiện đại trong các lĩnh vực truyền thống của CNTT như công nghệ phần mềm, cơ sở dữ liệu, mạng máy tính, kiến trúc máy tính; song các lĩnh vực mới và không kém phần thú vị như xử lý ngôn ngữ tự nhiên, học máy – trí tuệ nhân tạo, tin sinh học, xử lý tiếng nói, xử lý ảnh, tương tác người – máy,… cũng được chú trọng phát triển và đào tạo.', '[{"name":"Tổng hợp các chương trình đào tạo Đại học Bách Khoa Hà Nội","link":"https://ts.hust.edu.vn/tin-tuc/chuong-trinh-dao-tao-chuan-truong-dai-hoc-bach-khoa-ha-noi"}]'),
+
+(10, 'Công nghệ thông tin', '', 'VI',4, 'BACHELOR', 145, null,null,5,1,'', '[{"name":"Tổng hợp các chương trình đào tạo Học viện Bưu chính viễn thông","link":"https://portal.ptit.edu.vn/chuong-trinh-dao-tao/"}]'),
+(11, 'Khoa học máy tính', '', 'VI', 4, 'ENGINEER', 150, null, null,5,3,'', '[{"name":"Tổng hợp các chương trình đào tạo Học viện Bưu chính viễn thông","link":"https://portal.ptit.edu.vn/chuong-trinh-dao-tao/"}]' );
 
 
 INSERT INTO courses (id, name, code, language, university_id) VALUES
@@ -117,7 +124,23 @@ INSERT INTO courses (id, name, code, language, university_id) VALUES
 (56, 'Giới thiệu về trí tuệ nhân tạo','AIT1002', 'VI', 1),
 (57, 'Cơ sở hệ thống máy tính', 'AIT2002', 'VI', 1),
 (58, 'Lập trình trí tuệ nhân tạo','AIT3002', 'VI', 1),
-(59, 'Lập trình xử lý dữ liệu','AIT2006', 'VI', 1);
+(59, 'Lập trình xử lý dữ liệu','AIT2006', 'VI', 1),
+
+(60,'Những nguyên lý cơ bản của chủ nghĩa Mác-Lênin 1', 'BAS1111', 'VI', 5),
+(61, 'Tư tưởng Hồ Chí Minh', 'BAS1122', 'VI', 5),
+(62, 'Giải tích 1', 'BAS1203', 'VI', 5),
+(63, 'Giải tích 2', 'BAS1204', 'VI', 5),
+(64, 'Đại số', 'BAS1201', 'VI', 5),
+(65, 'Vật lý 1 và thí nghiệm', 'BAS1224', 'VI', 5),
+(66, 'Toán rời rạc 1', 'INT1358', 'VI', 5),
+(67, 'Toán rời rạc 2', 'INT1359', 'VI', 5),
+(68, 'Ngôn ngữ lập trình C++', 'INT1339', 'VI', 5),
+(69, 'Cấu trúc dữ liệu và giải thuật', 'INT306', 'VI', 5),
+(70, 'Cơ sở dữ liệu', 'INT1313', 'VI', 5),
+(71, 'Hệ điều hành', 'INT1319', 'VI', 5),
+(72, 'Học máy', 'INT14153', 'VI', 5),
+(73, 'Nhập môn học sâu', 'INT14154', 'VI', 5);
+
 
 
 INSERT INTO program_education_course (id, course_id, program_education_id, compulsory, num_credits) VALUES
@@ -266,4 +289,31 @@ INSERT INTO program_education_course (id, course_id, program_education_id, compu
 
 (137,54,3,true, 4),
 
-(138, 55, 2, true, 4);
+(138, 55, 2, true, 4),
+
+(139, 60, 10, true, 2),
+(140, 61, 10, true, 2),
+(141, 62, 10, true, 3),
+(142, 63, 10, true, 3),
+(143, 64, 10, true, 3),
+(144, 65, 10, true, 3),
+(145, 66, 10, true, 3),
+(146, 67, 10, true, 3),
+(147, 68, 10, true, 3),
+(148, 69, 10, true, 3),
+(149, 70, 10, true, 3),
+(150, 71, 10, true, 3),
+(151, 60, 11, true, 3),
+(152, 61, 11, true, 3),
+(153, 62, 11, true, 3),
+(154, 63, 11, true, 3),
+(155, 64, 11, true, 3),
+(156, 65, 11, true, 3),
+(157, 66, 11, true, 3),
+(158, 67, 11, true, 3),
+(159, 68, 11, true, 3),
+(160, 69, 11, true, 3),
+(161, 70, 11, true, 3),
+(162, 71, 11, true, 3),
+(163, 72, 11, true, 3),
+(164, 73, 11, true, 3);

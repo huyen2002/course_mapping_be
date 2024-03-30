@@ -4,7 +4,6 @@ package com.example.course_mapping_be.models;
 import com.example.course_mapping_be.constraints.RoleType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,8 +35,8 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "username", nullable = false)
+    private String username;
 
     @CreatedDate
     @Column(name = "create_at", nullable = false)
@@ -55,10 +54,10 @@ public class User {
     private boolean enabled = true;
 
 
-    public User(String email, String password, String name, RoleType role) {
+    public User(String email, String password, String username, RoleType role) {
         this.email = email;
         this.password = password;
-        this.name = name;
+        this.username = username;
         this.role = role;
     }
 }
