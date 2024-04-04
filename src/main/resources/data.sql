@@ -13,14 +13,16 @@ INSERT INTO address (id, detail, district, city, country) VALUES
 (2, 'Số 1 Đại Cồ Việt', 'Hai Bà Trưng', 'Hà Nội', 'Việt Nam'),
 (3, '207 Đường Giải Phóng', 'Hai Bà Trưng', 'Hà Nội', 'Việt Nam'),
 (4, '91 Chùa Láng', 'Đống Đa', 'Hà Nội', 'Việt Nam'),
-(5, '122 Hoàng Quốc Việt', 'Cầu Giấy', 'Hà Nội', 'Việt Nam');
+(5, '122 Hoàng Quốc Việt', 'Cầu Giấy', 'Hà Nội', 'Việt Nam'),
+(6, 'Pontypridd', 'Pontypridd', 'Wales', 'United Kingdom');
 
 INSERT INTO university (id, user_id, name, code, introduction, address_id ) VALUES
 (1, 2,'Đại học Công nghệ - ĐHQGHN', 'QHI', 'Đại học Công nghệ - ĐHQGHN được thành lập năm 2005. Đào tạo 20 chuyên ngành.', 1),
 (2, 3,'Đại học Kinh tế Quốc dân', 'KHA', 'Đại học Kinh tế Quốc dân được thành lập năm 2009. Đào tạo 25 chuyên ngành', 3),
 (3, 4,'Đại học Bách khoa Hà Nội', 'BKA', 'Đại học Bách Khoa Hà Nội được thành lập năm 2010. Đào tạo 30 chuyên ngành', 2),
 (4, null,'Đại học Ngoại thương', 'FTU', 'Đại học Ngoại thương được thành lập năm 2012. Đào tạo 15 chuyên ngành', 4),
-(5, null, 'Học viện Bưu chính viễn thông', 'PTIT', 'Học viện Bưu chính viễn thông được thành lập năm 2015. Đào tạo 10 chuyên ngành', 5);
+(5, null, 'Học viện Bưu chính viễn thông', 'PTIT', 'Học viện Bưu chính viễn thông được thành lập năm 2015. Đào tạo 10 chuyên ngành', 5),
+(6, null, 'The University of South Wales', 'USW', 'The University of South Wales is a public university in Wales, United Kingdom.', 6);
 
 INSERT INTO majors (id, code, name) VALUES
 (1, '7480201', 'Công nghệ thông tin'),
@@ -58,8 +60,10 @@ INSERT INTO program_educations (id, name, code, language, durationYear, levelOfE
 (9, 'Kỹ thuật máy tính','IT2', 'VI', 4, 'BACHELOR', 120, 2019, 2025, 3, 3, 'Ngành Kỹ thuật máy tính cung cấp cho sinh viên các kiến thức, kỹ năng cơ bản và hiện đại trong các lĩnh vực truyền thống của CNTT như công nghệ phần mềm, cơ sở dữ liệu, mạng máy tính, kiến trúc máy tính; song các lĩnh vực mới và không kém phần thú vị như xử lý ngôn ngữ tự nhiên, học máy – trí tuệ nhân tạo, tin sinh học, xử lý tiếng nói, xử lý ảnh, tương tác người – máy,… cũng được chú trọng phát triển và đào tạo.', '[{"name":"Tổng hợp các chương trình đào tạo Đại học Bách Khoa Hà Nội","link":"https://ts.hust.edu.vn/tin-tuc/chuong-trinh-dao-tao-chuan-truong-dai-hoc-bach-khoa-ha-noi"}]'),
 
 (10, 'Công nghệ thông tin', '', 'VI',4, 'BACHELOR', 145, null,null,5,1,'', '[{"name":"Tổng hợp các chương trình đào tạo Học viện Bưu chính viễn thông","link":"https://portal.ptit.edu.vn/chuong-trinh-dao-tao/"}]'),
-(11, 'Khoa học máy tính', '', 'VI', 4, 'ENGINEER', 150, null, null,5,3,'', '[{"name":"Tổng hợp các chương trình đào tạo Học viện Bưu chính viễn thông","link":"https://portal.ptit.edu.vn/chuong-trinh-dao-tao/"}]' );
-
+(11, 'Khoa học máy tính', '', 'VI', 4, 'ENGINEER', 150, null, null,5,3,'', '[{"name":"Tổng hợp các chương trình đào tạo Học viện Bưu chính viễn thông","link":"https://portal.ptit.edu.vn/chuong-trinh-dao-tao/"}]' ),
+(12, 'Information Technology','BSC', 'EN', 4, 'BACHELOR',150, null, null, 6, 1, 'The Information Technology program at the University of South Wales is designed to provide students with a solid foundation in the principles of computer science and information systems. The program covers a wide range of topics, including programming, databases, networks, software engineering, and web development. Students will also have the opportunity to gain practical experience through a range of hands-on projects and work placements.','[{"name":"Information Technology program - USW","link":"https://www.southwales.ac.uk/courses/ba-hons-information-technology/"}]'),
+(13, 'Computer Science','CS', 'EN', 4, 'BACHELOR',150, null, null, 6, 3, 'The Computer Science program at the University of South Wales is designed to provide students with a solid foundation in the principles of computer science and information systems. The program covers a wide range of topics, including programming, databases, networks, software engineering, and web development. Students will also have the opportunity to gain practical experience through a range of hands-on projects and work placements.','[{"name":"Computer Science program - USW","link":"https://www.southwales.ac.uk/courses/ba-hons-computer-science/"}]'),
+(14, 'Artificial Intelligence','AI', 'EN', 4, 'BACHELOR',150, null, null, 6, 9, 'The Artificial Intelligence program at the University of South Wales is designed to provide students with a solid foundation in the principles of computer science and information systems. The program covers a wide range of topics, including programming, databases, networks, software engineering, and web development. Students will also have the opportunity to gain practical experience through a range of hands-on projects and work placements.','[{"name":"Artificial Intelligence program - USW","link":"https://www.southwales.ac.uk/courses/ba-hons-artificial-intelligence/"}]');
 
 INSERT INTO courses (id, name, code, language, university_id) VALUES
 (1, 'Công nghệ phần mềm', 'INT2208', 'VI', 1),

@@ -52,7 +52,7 @@ public class ProgramEducationService {
             throw new Exception("You are not authorized to create program education");
 
         }
-        
+
         Major major = majorRepository.findById(programEducationDto.getMajorId()).orElseThrow(() -> new Exception("Major is not found"));
         ProgramEducation programEducation = ProgramEducation.builder().name(programEducationDto.getName())
                 .language(programEducationDto.getLanguage())
@@ -210,7 +210,9 @@ public class ProgramEducationService {
             JSONArray fileList = (JSONArray) jsonObject.get("list");
             for (Object item : fileList) {
                 JSONArray innerArray = (JSONArray) item;
+                System.out.println(innerArray);
                 String fileName = (String) innerArray.get(0);
+
                 files.add(fileName);
             }
         } catch (Exception e) {
