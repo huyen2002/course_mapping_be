@@ -2,7 +2,11 @@ package com.example.course_mapping_be;
 
 import com.example.course_mapping_be.constraints.SourceLink;
 import com.example.course_mapping_be.dtos.ProgramEducationDto;
+import com.example.course_mapping_be.services.DocumentService;
 import com.example.course_mapping_be.services.ProgramEducationService;
+import com.example.course_mapping_be.services.ReadFileService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,8 +14,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @SpringBootApplication
 @EnableJpaAuditing
@@ -23,14 +26,13 @@ public class CourseMappingBeApplication {
         SpringApplication.run(CourseMappingBeApplication.class, args);
 
         System.out.println("hello world, I have just started up");
-        List<SourceLink> sourceLinks = new ArrayList<>();
+        ReadFileService readFileService = new ReadFileService();
+        String text = readFileService.readData("https://firebasestorage.googleapis.com/v0/b/course-mapping-489fd.appspot.com/o/program_educations%2FVN_QHI_CN2.txt?alt=media&token=85f806a1-dcd3-498d-8bd2-d87ed2bb1fbe");
+//        System.out.println(text);
+//        DocumentService documentService = new DocumentService();
+//        String vector = documentService.convertDocumentToVector(text).getData();
+//        System.out.println(vector);
 
-        SourceLink link1 = (new SourceLink("Chương trình đào tạo ngành công nghệ thông tin chuẩn - UET", "https://uet.vnu.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-thong-tin-4/"));
-        SourceLink link2 = (new SourceLink("Nội dung chương trình đào tạo ngành công nghệ thông tin chuẩn - UET", "https://uet.vnu.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-thong-tin-10/"));
-
-        sourceLinks.add(link1);
-        sourceLinks.add(link2);
-        System.out.println(sourceLinks);
     }
 
 

@@ -7,6 +7,7 @@ import com.example.course_mapping_be.dtos.SearchProgramDto;
 import com.example.course_mapping_be.services.ProgramEducationService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,8 +26,8 @@ public class ProgramEducationController {
     }
 
     @GetMapping(path = "program_education/{id}/top_similar")
-    public ResponseEntity<BaseResponse<List<ProgramEducationDto>>> getTopSimilar(@PathVariable Long id) throws Exception {
-        BaseResponse<List<ProgramEducationDto>> baseResponse = programEducationService.getTopSimilar(id);
+    public ResponseEntity<BaseResponse<List<Pair<ProgramEducationDto, Float>>>> getTopSimilar(@PathVariable Long id) throws Exception {
+        BaseResponse<List<Pair<ProgramEducationDto, Float>>> baseResponse = programEducationService.getTopSimilar(id);
         return ResponseEntity.ok(baseResponse);
     }
 
@@ -74,6 +75,12 @@ public class ProgramEducationController {
     @GetMapping(path = "me/program_educations/all")
     public ResponseEntity<BaseResponse<List<ProgramEducationDto>>> getAllByUser(HttpServletRequest request, QueryParams params) throws Exception {
         BaseResponse<List<ProgramEducationDto>> baseResponse = programEducationService.getAllByUser(request, params);
+        return ResponseEntity.ok(baseResponse);
+    }
+
+    @PostMapping(path = "/compare_program_educations/{programId1}/and/{programId2}")
+    public ResponseEntity<BaseResponse<Float>> compareTwoPrograms(@PathVariable Long programId1, @PathVariable Long programId2) throws Exception {
+        BaseResponse<Float> baseResponse = programEducationService.compareTwoPrograms(programId1, programId2);
         return ResponseEntity.ok(baseResponse);
     }
 

@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -38,6 +39,8 @@ public class ProgramEducationService {
     private ProgramEducationRepository programEducationRepository;
     private ModelMapper modelMapper;
     private UserRepository userRepository;
+    private ReadFileService readFileService;
+    private DocumentService documentService;
 
     public BaseResponse<ProgramEducationDto> create(ProgramEducationDto programEducationDto, HttpServletRequest request) throws Exception {
         Long userId = tokenProvider.getUserIdFromRequest(request);
@@ -195,44 +198,91 @@ public class ProgramEducationService {
         return baseResponse;
     }
 
-    public BaseResponse<List<ProgramEducationDto>> getTopSimilar(Long id) throws Exception {
-        ProgramEducation programEducation = programEducationRepository.findById(id).orElseThrow(() -> new Exception("Program education is not found"));
+    public BaseResponse<Float> compareTwoPrograms(Long id1, Long id2) throws Exception {
+        BaseResponse<Float> baseResponse = new BaseResponse<>();
 
-        final String uri = "http://127.0.0.1:5000/api/top_n_most_similar";
-
+        ProgramEducation programEducation1 = programEducationRepository.findById(id1).orElseThrow(() -> new Exception("Program education is not found"));
+        ProgramEducation programEducation2 = programEducationRepository.findById(id2).orElseThrow(() -> new Exception("Program education is not found"));
+        if (programEducation1.getVectorDocument() == null || programEducation2.getVectorDocument() == null) {
+            baseResponse.setData((float) 0);
+            baseResponse.success();
+            return baseResponse;
+        }
+        JSONObject jsonObject1 = new JSONObject(programEducation1.getVectorDocument());
+        JSONObject jsonObject2 = new JSONObject(programEducation2.getVectorDocument());
+       
+        List<Object> vector1 = jsonObject1.getJSONArray("vector").toList();
+        List<Object> vector2 = jsonObject2.getJSONArray("vector").toList();
+        String uri = "http://localhost:5000/api/cossim_between_two_vectors";
         RestTemplate restTemplate = new RestTemplate();
-        ProgramOutlineDto programOutlineDto = new ProgramOutlineDto(programEducation.getIntroduction());
-
-        String result = restTemplate.postForObject(uri, programOutlineDto, String.class);
-        JSONObject jsonObject = new JSONObject(result);
-        List<String> files = new ArrayList<>();
-        try {
-            JSONArray fileList = (JSONArray) jsonObject.get("list");
-            for (Object item : fileList) {
-                JSONArray innerArray = (JSONArray) item;
-                System.out.println(innerArray);
-                String fileName = (String) innerArray.get(0);
-
-                files.add(fileName);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        List<ProgramEducationDto> programEducationDtos = new ArrayList<>();
-        for (String file : files) {
-            List<String> fileParts = List.of(file.replace(".txt", "").split("_"));
-            String universityCode = fileParts.get(1);
-            String programEducationCode = fileParts.get(2);
-            ProgramEducation program = programEducationRepository.findByUniversityCodeAndProgramEducationCode(universityCode, programEducationCode);
-            if (program == null) continue;
-            if (!Objects.equals(program.getId(), id))
-                programEducationDtos.add(modelMapper.map(program, ProgramEducationDto.class));
-        }
-        BaseResponse<List<ProgramEducationDto>> baseResponse = new BaseResponse<>();
-        baseResponse.setData(programEducationDtos);
+        CompareTwoVectorsDto compareTwoVectorsDto = new CompareTwoVectorsDto(vector1, vector2);
+        Float result = restTemplate.postForObject(uri, compareTwoVectorsDto, Float.class);
+        baseResponse.setData(result);
         baseResponse.success();
         return baseResponse;
+
+    }
+
+    public BaseResponse<List<Pair<ProgramEducationDto, Float>>> getTopSimilar(Long id) throws Exception {
+        ProgramEducation programEducation = programEducationRepository.findById(id).orElseThrow(() -> new Exception("Program education is not found"));
+        List<ProgramEducation> programEducations = programEducationRepository.findAll();
+        List<Pair<ProgramEducationDto, Float>> programEducationDtos = new ArrayList<>();
+        // similarity between program education and other program educations and sort by similarity from high to low
+        for (ProgramEducation program : programEducations) {
+            if (!Objects.equals(program.getId(), id)) {
+                Float similarity = compareTwoPrograms(id, program.getId()).getData();
+                programEducationDtos.add(Pair.of(modelMapper.map(program, ProgramEducationDto.class), similarity));
+            }
+
+        }
+        // sort programEducationDtos by similarity from high to low
+        programEducationDtos.sort((o1, o2) -> {
+            if (o1.getSecond() > o2.getSecond()) return -1;
+            if (o1.getSecond() < o2.getSecond()) return 1;
+            return 0;
+        });
+        BaseResponse<List<Pair<ProgramEducationDto, Float>>> baseResponse = new BaseResponse<>();
+        // return top 10 most similar program educations
+        baseResponse.setData(programEducationDtos.subList(0, 10));
+        baseResponse.success();
+        return baseResponse;
+
+
+//        final String uri = "http://127.0.0.1:5000/api/top_n_most_similar";
+//
+//        RestTemplate restTemplate = new RestTemplate();
+//        ProgramOutlineDto programOutlineDto = new ProgramOutlineDto(programEducation.getIntroduction());
+//
+//        String result = restTemplate.postForObject(uri, programOutlineDto, String.class);
+//        JSONObject jsonObject = new JSONObject(result);
+//        List<String> files = new ArrayList<>();
+//        try {
+//            JSONArray fileList = (JSONArray) jsonObject.get("list");
+//            for (Object item : fileList) {
+//                JSONArray innerArray = (JSONArray) item;
+//                System.out.println(innerArray);
+//                String fileName = (String) innerArray.get(0);
+//
+//                files.add(fileName);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        List<ProgramEducationDto> programEducationDtos = new ArrayList<>();
+//        for (String file : files) {
+//            List<String> fileParts = List.of(file.replace(".txt", "").split("_"));
+//            String universityCode = fileParts.get(1);
+//            String programEducationCode = fileParts.get(2);
+//            ProgramEducation program = programEducationRepository.findByUniversityCodeAndProgramEducationCode(universityCode, programEducationCode);
+//            if (program == null) continue;
+//            if (!Objects.equals(program.getId(), id))
+//                programEducationDtos.add(modelMapper.map(program, ProgramEducationDto.class));
+//        }
+//        BaseResponse<List<ProgramEducationDto>> baseResponse = new BaseResponse<>();
+//        baseResponse.setData(programEducationDtos);
+//        baseResponse.success();
+//        return baseResponse;
     }
 
 
