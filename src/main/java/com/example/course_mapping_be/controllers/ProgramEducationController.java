@@ -1,9 +1,6 @@
 package com.example.course_mapping_be.controllers;
 
-import com.example.course_mapping_be.dtos.BaseResponse;
-import com.example.course_mapping_be.dtos.ProgramEducationDto;
-import com.example.course_mapping_be.dtos.QueryParams;
-import com.example.course_mapping_be.dtos.SearchProgramDto;
+import com.example.course_mapping_be.dtos.*;
 import com.example.course_mapping_be.services.ProgramEducationService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -26,8 +23,8 @@ public class ProgramEducationController {
     }
 
     @GetMapping(path = "program_education/{id}/top_similar")
-    public ResponseEntity<BaseResponse<List<Pair<ProgramEducationDto, Float>>>> getTopSimilar(@PathVariable Long id) throws Exception {
-        BaseResponse<List<Pair<ProgramEducationDto, Float>>> baseResponse = programEducationService.getTopSimilar(id);
+    public ResponseEntity<BaseResponse<List<Pair<ProgramEducationDto, Float>>>> getTopSimilar(@PathVariable Long id, FilterParams filterParams) throws Exception {
+        BaseResponse<List<Pair<ProgramEducationDto, Float>>> baseResponse = programEducationService.getTopSimilar(id, filterParams);
         return ResponseEntity.ok(baseResponse);
     }
 

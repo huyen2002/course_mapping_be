@@ -1,5 +1,6 @@
 package com.example.course_mapping_be.services;
 
+import com.example.course_mapping_be.constraints.FilterType;
 import com.example.course_mapping_be.constraints.LevelEducationType;
 import com.example.course_mapping_be.constraints.RoleType;
 import com.example.course_mapping_be.dtos.*;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -210,7 +212,7 @@ public class ProgramEducationService {
         }
         JSONObject jsonObject1 = new JSONObject(programEducation1.getVectorDocument());
         JSONObject jsonObject2 = new JSONObject(programEducation2.getVectorDocument());
-       
+
         List<Object> vector1 = jsonObject1.getJSONArray("vector").toList();
         List<Object> vector2 = jsonObject2.getJSONArray("vector").toList();
         String uri = "http://localhost:5000/api/cossim_between_two_vectors";
@@ -223,7 +225,7 @@ public class ProgramEducationService {
 
     }
 
-    public BaseResponse<List<Pair<ProgramEducationDto, Float>>> getTopSimilar(Long id) throws Exception {
+    public BaseResponse<List<Pair<ProgramEducationDto, Float>>> getTopSimilar(Long id, FilterParams filterParams) throws Exception {
         ProgramEducation programEducation = programEducationRepository.findById(id).orElseThrow(() -> new Exception("Program education is not found"));
         List<ProgramEducation> programEducations = programEducationRepository.findAll();
         List<Pair<ProgramEducationDto, Float>> programEducationDtos = new ArrayList<>();
@@ -242,8 +244,41 @@ public class ProgramEducationService {
             return 0;
         });
         BaseResponse<List<Pair<ProgramEducationDto, Float>>> baseResponse = new BaseResponse<>();
-        // return top 10 most similar program educations
-        baseResponse.setData(programEducationDtos.subList(0, 10));
+        switch (filterParams.getFilterType()) {
+            case SIMILARITY_DESC:
+                // get top 10 most similar program educations
+                baseResponse.setData(programEducationDtos.subList(0, Math.min(10, programEducationDtos.size())));
+                break;
+            case SIMILARITY_ASC:
+                // get top 10 least similar program educations and sort by similarity from low to high
+                List<Pair<ProgramEducationDto, Float>> result = programEducationDtos.subList(Math.max(0, programEducationDtos.size() - 10), programEducationDtos.size());
+                // reverse the order of result
+                List<Pair<ProgramEducationDto, Float>> reversedResult = new ArrayList<>();
+                for (int i = result.size() - 1; i >= 0; i--) {
+                    reversedResult.add(result.get(i));
+                }
+                baseResponse.setData(reversedResult);
+                break;
+            case ALPHABET_DESC:
+                // sort programEducationDtos by first's name from  Z to A
+                programEducationDtos.sort((o1, o2) -> {
+                    if (o1.getFirst().getName().compareTo(o2.getFirst().getName()) > 0) return -1;
+                    if (o1.getFirst().getName().compareTo(o2.getFirst().getName()) < 0) return 1;
+                    return 0;
+                });
+                baseResponse.setData(programEducationDtos.subList(0, Math.min(10, programEducationDtos.size())));
+                break;
+            case ALPHABET_ASC:
+                // sort programEducationDtos by first's name from A to Z
+                programEducationDtos.sort(Comparator.comparing(o -> o.getFirst().getName()));
+                baseResponse.setData(programEducationDtos.subList(0, Math.min(10, programEducationDtos.size())));
+                break;
+
+            default:
+                baseResponse.setData(programEducationDtos.subList(0, Math.min(10, programEducationDtos.size())));
+                break;
+        }
+//        baseResponse.setData(programEducationDtos);
         baseResponse.success();
         return baseResponse;
 
