@@ -1,8 +1,8 @@
 package com.example.course_mapping_be.services;
 
-import com.example.course_mapping_be.dtos.BaseResponse;
-import com.example.course_mapping_be.dtos.CourseDto;
+import com.example.course_mapping_be.dtos.*;
 import com.example.course_mapping_be.models.Course;
+import com.example.course_mapping_be.models.ProgramEducation;
 import com.example.course_mapping_be.models.University;
 import com.example.course_mapping_be.repositories.CourseRepository;
 import com.example.course_mapping_be.repositories.UniversityRepository;
@@ -10,6 +10,9 @@ import com.example.course_mapping_be.security.JsonWebTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +46,7 @@ public class CourseService {
                 .code(courseDto.getCode())
                 .language(courseDto.getLanguage())
                 .outline(courseDto.getOutline())
-                .source_links(courseDto.getSource_links())
+                .sourceLinks(courseDto.getSourceLinks())
                 .university(university).build();
 
         courseRepository.save(course);
@@ -75,8 +78,8 @@ public class CourseService {
         if (courseDto.getOutline() != null) {
             course.setOutline(courseDto.getOutline());
         }
-        if (courseDto.getSource_links() != null) {
-            course.setSource_links(courseDto.getSource_links());
+        if (courseDto.getSourceLinks() != null) {
+            course.setSourceLinks(courseDto.getSourceLinks());
         }
         courseRepository.save(course);
         baseResponse.setData(modelMapper.map(course, CourseDto.class));
@@ -106,9 +109,32 @@ public class CourseService {
                 return Pair.of(c, 100.0f);
             }
         }
-        if (mostSimilarCourse != null && maxSimilarity > 98.0f) {
+        if (mostSimilarCourse != null && maxSimilarity > 70.0f) {
             result = Pair.of(mostSimilarCourse, maxSimilarity);
         }
         return result;
+    }
+
+    public BaseResponse<List<CourseDto>> getAllByUniversity(Long id, QueryParams params) {
+        University university = universityRepository.findById(id).orElseThrow(() -> new RuntimeException("University is not found"));
+        Page<Course> courses = courseRepository.findByUniversityId(id, PageRequest.of(params.getPage(), params.getSize()));
+        List<CourseDto> courseDtos = courses.stream().map(course -> modelMapper.map(course, CourseDto.class)).toList();
+        BaseResponse<List<CourseDto>> baseResponse = new BaseResponse<>();
+        baseResponse.setData(courseDtos);
+        baseResponse.updatePagination(params, courses.getTotalElements());
+        baseResponse.success();
+        return baseResponse;
+
+    }
+
+    public BaseResponse<List<CourseDto>> search(Long universityId, SearchCourseDto searchCourseDto, QueryParams params) {
+        BaseResponse<List<CourseDto>> baseResponse = new BaseResponse<>();
+
+        Page<Course> programEducations = courseRepository.search(universityId, searchCourseDto, PageRequest.of(params.getPage(), params.getSize()));
+        List<CourseDto> courseDtos = programEducations.stream().map(course -> modelMapper.map(course, CourseDto.class)).toList();
+        baseResponse.setData(courseDtos);
+        baseResponse.success();
+        baseResponse.updatePagination(params, programEducations.getTotalElements());
+        return baseResponse;
     }
 }

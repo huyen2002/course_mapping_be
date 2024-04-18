@@ -2,11 +2,16 @@ package com.example.course_mapping_be.controllers;
 
 import com.example.course_mapping_be.dtos.BaseResponse;
 import com.example.course_mapping_be.dtos.CourseDto;
+import com.example.course_mapping_be.dtos.QueryParams;
+import com.example.course_mapping_be.dtos.SearchCourseDto;
 import com.example.course_mapping_be.services.CourseService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -22,6 +27,18 @@ public class CourseController {
     @PutMapping(path = "course/{id}/update")
     public ResponseEntity<BaseResponse<CourseDto>> update(@PathVariable Long id, @RequestBody CourseDto courseDto, HttpServletRequest request) throws Exception {
         BaseResponse<CourseDto> baseResponse = courseService.update(id, courseDto, request);
+        return ResponseEntity.ok(baseResponse);
+    }
+
+    @GetMapping(path = "university/{id}/courses")
+    public ResponseEntity<BaseResponse<List<CourseDto>>> getAllByUniversity(@PathVariable Long id, QueryParams params) throws Exception {
+        BaseResponse<List<CourseDto>> baseResponse = courseService.getAllByUniversity(id, params);
+        return ResponseEntity.ok(baseResponse);
+    }
+
+    @GetMapping(path = "university/{id}/courses/search")
+    public ResponseEntity<BaseResponse<List<CourseDto>>> search(@PathVariable Long id, SearchCourseDto searchCourseDto, QueryParams params) throws Exception {
+        BaseResponse<List<CourseDto>> baseResponse = courseService.search(id, searchCourseDto, params);
         return ResponseEntity.ok(baseResponse);
     }
 }

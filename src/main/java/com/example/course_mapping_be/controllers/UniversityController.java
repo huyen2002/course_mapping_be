@@ -47,4 +47,10 @@ public class UniversityController {
         BaseResponse<UniversityDto> baseResponse = universityService.create(universityDto);
         return ResponseEntity.ok(baseResponse);
     }
+
+    @GetMapping(path = "university/me")
+    public ResponseEntity<BaseResponse<UniversityDto>> getByUser(HttpServletRequest request) throws Exception {
+        BaseResponse<UniversityDto> baseResponse = universityService.getByUser(request);
+        return ResponseEntity.ok(baseResponse);
+    }
 }

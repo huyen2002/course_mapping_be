@@ -115,4 +115,13 @@ public class UniversityService {
         baseResponse.success();
         return baseResponse;
     }
+
+    public BaseResponse<UniversityDto> getByUser(HttpServletRequest request) throws Exception {
+        Long userId = tokenProvider.getUserIdFromRequest(request);
+        University university = universityRepository.findByUserId(userId).orElse(null);
+        BaseResponse<UniversityDto> baseResponse = new BaseResponse<>();
+        baseResponse.setData(modelMapper.map(university, UniversityDto.class));
+        baseResponse.success();
+        return baseResponse;
+    }
 }

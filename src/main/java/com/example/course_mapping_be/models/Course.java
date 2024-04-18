@@ -32,8 +32,8 @@ public class Course {
     @Column(name = "outline")
     private String outline;
 
-    @Column(name = "source_links", columnDefinition = "TEXT")
-    private String source_links;
+    @Column(name = "sourceLinks", columnDefinition = "TEXT")
+    private String sourceLinks;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn(name = "university_id", nullable = false)
