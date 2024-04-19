@@ -17,17 +17,17 @@ public class ProgramEducationCourse {
     private Long id;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    @JoinColumn(name = "program_education_id", nullable = false)
-    private ProgramEducation program_education;
+    @JoinColumn(name = "programEducationId", nullable = false)
+    private ProgramEducation programEducation;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-    @JoinColumn(name = "course_id", nullable = false)
+    @JoinColumn(name = "courseId", nullable = false)
     private Course course;
 
     @Column(name = "compulsory")
     private Boolean compulsory = false;
 
-    @Column(name = "num_credits", nullable = false)
-    private Integer num_credits;
+    @Column(name = "numCredits", nullable = false)
+    private Integer numCredits;
 
 }

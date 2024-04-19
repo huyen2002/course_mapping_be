@@ -149,7 +149,7 @@ INSERT INTO courses (id, name, code, language, university_id) VALUES
 
 
 
-INSERT INTO program_education_course (id, course_id, program_education_id, compulsory, num_credits) VALUES
+INSERT INTO program_education_course (id, courseId, programEducationId, compulsory, numCredits) VALUES
 (1, 1, 1, true, 3),
 (2,2,1,true, 4),
 (3,3,1,true, 4),

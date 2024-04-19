@@ -27,8 +27,8 @@ public class CourseMappingBeApplication {
 
         System.out.println("hello world, I have just started up");
         ReadFileService readFileService = new ReadFileService();
-        String text = readFileService.readData("https://firebasestorage.googleapis.com/v0/b/course-mapping-489fd.appspot.com/o/program_educations%2Ftest.pdf?alt=media&token=44fae099-1f65-41b3-b5bd-9778022b0886");
-        System.out.println(text);
+//        String text = readFileService.readData("https://firebasestorage.googleapis.com/v0/b/course-mapping-489fd.appspot.com/o/program_educations%2Ftest.pdf?alt=media&token=44fae099-1f65-41b3-b5bd-9778022b0886");
+//        System.out.println(text);
 //        DocumentService documentService = new DocumentService();
 //        String vector = documentService.convertDocumentToVector(text).getData();
 //        System.out.println(vector);

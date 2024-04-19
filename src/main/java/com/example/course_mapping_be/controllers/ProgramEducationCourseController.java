@@ -1,9 +1,6 @@
 package com.example.course_mapping_be.controllers;
 
-import com.example.course_mapping_be.dtos.BaseResponse;
-import com.example.course_mapping_be.dtos.ComparedCourseDto;
-import com.example.course_mapping_be.dtos.ProgramEducationCourseDto;
-import com.example.course_mapping_be.dtos.QueryParams;
+import com.example.course_mapping_be.dtos.*;
 import com.example.course_mapping_be.services.ProgramEducationCourseService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +19,9 @@ public class ProgramEducationCourseController {
         return ResponseEntity.ok(baseResponse);
     }
 
-    @GetMapping(path = "program_education/{id}/courses")
-    public ResponseEntity<BaseResponse<List<ProgramEducationCourseDto>>> getAllCoursesByProgramEducationId(@PathVariable Long id, QueryParams params) throws Exception {
-        BaseResponse<List<ProgramEducationCourseDto>> baseResponse = programEducationCourseService.getAllCoursesByProgramEducationId(id, params);
+    @GetMapping(path = "program_education_courses/search")
+    public ResponseEntity<BaseResponse<List<ProgramEducationCourseDto>>> search(SearchCourseDto searchCourseDto, QueryParams params) throws Exception {
+        BaseResponse<List<ProgramEducationCourseDto>> baseResponse = programEducationCourseService.search(searchCourseDto, params);
         return ResponseEntity.ok(baseResponse);
     }
 
@@ -38,4 +35,6 @@ public class ProgramEducationCourseController {
         BaseResponse<List<ComparedCourseDto>> baseResponse = programEducationCourseService.compareCoursesOfProgramEducations(id1, id2);
         return ResponseEntity.ok(baseResponse);
     }
+
+
 }

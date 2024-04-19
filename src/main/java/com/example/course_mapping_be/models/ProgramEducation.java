@@ -69,7 +69,7 @@ public class ProgramEducation {
     private Major major;
 
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "program_education", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "programEducation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<ProgramEducationCourse> programEducationCourses;
 

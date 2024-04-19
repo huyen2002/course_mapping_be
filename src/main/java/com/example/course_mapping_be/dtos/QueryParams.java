@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class QueryParams {
     private Integer page = 0;
-    private Integer size = 2;
+    private Integer size = 5;
 }

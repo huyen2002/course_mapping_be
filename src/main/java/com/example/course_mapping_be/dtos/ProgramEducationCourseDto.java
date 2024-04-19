@@ -14,16 +14,16 @@ public class ProgramEducationCourseDto {
     Long id;
 
     @NotNull(message = "Program education id is required")
-    Long program_education_id;
+    Long programEducationId;
 
     @NotNull(message = "Course id is required")
-    Long course_id;
+    Long courseId;
 
     CourseDto course;
 
     Boolean compulsory;
 
     @NotNull(message = "Number of credits is required")
-    Integer num_credits;
+    Integer numCredits;
 
 }

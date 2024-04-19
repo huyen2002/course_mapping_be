@@ -13,4 +13,5 @@ public class SearchProgramDto {
     public String majorCode;
     public LevelEducationType levelOfEducation;
     public String status;
+    
 }
