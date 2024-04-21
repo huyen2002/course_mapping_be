@@ -1,6 +1,5 @@
 package com.example.course_mapping_be.services;
 
-import com.example.course_mapping_be.constraints.FilterType;
 import com.example.course_mapping_be.constraints.LevelEducationType;
 import com.example.course_mapping_be.constraints.RoleType;
 import com.example.course_mapping_be.dtos.*;
@@ -15,7 +14,6 @@ import com.example.course_mapping_be.repositories.UserRepository;
 import com.example.course_mapping_be.security.JsonWebTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -225,9 +223,9 @@ public class ProgramEducationService {
 
     }
 
-    public BaseResponse<List<Pair<ProgramEducationDto, Float>>> getTopSimilar(Long id, FilterParams filterParams) throws Exception {
+    public BaseResponse<List<Pair<ProgramEducationDto, Float>>> getTopSimilar(Long id, SortParam sortParam, FilterProgramParams filterProgramParams) throws Exception {
         ProgramEducation programEducation = programEducationRepository.findById(id).orElseThrow(() -> new Exception("Program education is not found"));
-        List<ProgramEducation> programEducations = programEducationRepository.findAll();
+        List<ProgramEducation> programEducations = programEducationRepository.findAllByFilterParams(filterProgramParams);
         List<Pair<ProgramEducationDto, Float>> programEducationDtos = new ArrayList<>();
         // similarity between program education and other program educations and sort by similarity from high to low
         for (ProgramEducation program : programEducations) {
@@ -244,7 +242,7 @@ public class ProgramEducationService {
             return 0;
         });
         BaseResponse<List<Pair<ProgramEducationDto, Float>>> baseResponse = new BaseResponse<>();
-        switch (filterParams.getFilterType()) {
+        switch (sortParam.getSortType()) {
             case SIMILARITY_DESC:
                 // get top 10 most similar program educations
                 baseResponse.setData(programEducationDtos.subList(0, Math.min(10, programEducationDtos.size())));

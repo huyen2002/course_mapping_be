@@ -23,8 +23,8 @@ public class ProgramEducationController {
     }
 
     @GetMapping(path = "program_education/{id}/top_similar")
-    public ResponseEntity<BaseResponse<List<Pair<ProgramEducationDto, Float>>>> getTopSimilar(@PathVariable Long id, FilterParams filterParams) throws Exception {
-        BaseResponse<List<Pair<ProgramEducationDto, Float>>> baseResponse = programEducationService.getTopSimilar(id, filterParams);
+    public ResponseEntity<BaseResponse<List<Pair<ProgramEducationDto, Float>>>> getTopSimilar(@PathVariable Long id, SortParam sortParam, FilterProgramParams filterProgramParams) throws Exception {
+        BaseResponse<List<Pair<ProgramEducationDto, Float>>> baseResponse = programEducationService.getTopSimilar(id, sortParam, filterProgramParams);
         return ResponseEntity.ok(baseResponse);
     }
 
