@@ -126,11 +126,7 @@ public class ProgramEducationCourseService {
             ProgramEducation programEducation = programEducationRepository.findById(programEducationCourseDto.getProgramEducationId()).orElseThrow(() -> new Exception("Program education is not found"));
             programEducationCourse.setProgramEducation(programEducation);
         }
-        if (programEducationCourseDto.getCourseId() != null) {
-            Course course = courseRepository.findById(programEducationCourseDto.getCourseId()).orElseThrow(() -> new Exception("Course is not found"));
-            programEducationCourse.setCourse(course);
-            updateComparableProgramStatus(id);
-        }
+      
         if (programEducationCourseDto.getCompulsory() != null) {
             programEducationCourse.setCompulsory(programEducationCourseDto.getCompulsory());
         }
