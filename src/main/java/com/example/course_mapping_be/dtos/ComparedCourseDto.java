@@ -10,9 +10,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ComparedCourseDto {
-    private CourseDto course1;
-    private CourseDto course2;
+    private Long id;
+    private CourseDto firstCourse;
+    private CourseDto secondCourse;
     private Float similarity;
 
-
+    public ComparedCourseDto(CourseDto firstCourse, CourseDto secondCourse, Float similarity) {
+        this.firstCourse = firstCourse;
+        this.secondCourse = secondCourse;
+        this.similarity = similarity;
+    }
 }

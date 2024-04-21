@@ -4,6 +4,7 @@ import com.example.course_mapping_be.dtos.*;
 import com.example.course_mapping_be.models.Course;
 import com.example.course_mapping_be.models.ProgramEducation;
 import com.example.course_mapping_be.models.ProgramEducationCourse;
+import com.example.course_mapping_be.repositories.ComparableProgramEducationRepository;
 import com.example.course_mapping_be.repositories.CourseRepository;
 import com.example.course_mapping_be.repositories.ProgramEducationCourseRepository;
 import com.example.course_mapping_be.repositories.ProgramEducationRepository;
@@ -26,6 +27,11 @@ public class ProgramEducationCourseService {
     private ModelMapper modelMapper;
     private final ProgramEducationCourseRepository programEducationCourseRepository;
     private CourseService courseService;
+    private final ComparableProgramEducationRepository comparableProgramEducationRepository;
+
+    public void updateComparableProgramStatus(Long programCourseId) {
+        programEducationCourseRepository.findById(programCourseId).ifPresent(programEducationCourse -> comparableProgramEducationRepository.updateStatusByProgramId(programEducationCourse.getProgramEducation().getId()));
+    }
 
     public ProgramEducationCourseDto convertToDto(ProgramEducationCourse programEducationCourse) {
         ProgramEducationCourseDto programEducationCourseDto = modelMapper.map(programEducationCourse, ProgramEducationCourseDto.class);
@@ -47,6 +53,7 @@ public class ProgramEducationCourseService {
                 .numCredits(programEducationCourseDto.getNumCredits()).build();
 
         programEducationCourseRepository.save(programEducationCourse);
+        updateComparableProgramStatus(programEducationCourse.getId());
         BaseResponse<ProgramEducationCourseDto> baseResponse = new BaseResponse<>();
         baseResponse.setData(convertToDto(programEducationCourse));
         baseResponse.success();
@@ -74,15 +81,15 @@ public class ProgramEducationCourseService {
             Pair<Course, Float> mostSimilarCourse = courseService.getMostSimilarCourse(course, courseList2);
             if (mostSimilarCourse != null) {
                 comparedCourseDtos.add(ComparedCourseDto.builder()
-                        .course1(modelMapper.map(course, CourseDto.class))
-                        .course2(modelMapper.map(mostSimilarCourse.getFirst(), CourseDto.class))
+                        .firstCourse(modelMapper.map(course, CourseDto.class))
+                        .secondCourse(modelMapper.map(mostSimilarCourse.getFirst(), CourseDto.class))
                         .similarity(mostSimilarCourse.getSecond())
                         .build());
                 copyCourseList2.remove(mostSimilarCourse.getFirst());
             } else {
                 comparedCourseDtos.add(ComparedCourseDto.builder()
-                        .course1(modelMapper.map(course, CourseDto.class))
-                        .course2(null)
+                        .firstCourse(modelMapper.map(course, CourseDto.class))
+                        .secondCourse(null)
                         .similarity(0f)
                         .build());
             }
@@ -92,8 +99,8 @@ public class ProgramEducationCourseService {
         if (!copyCourseList2.isEmpty()) {
             for (Course course : copyCourseList2) {
                 comparedCourseDtos.add(ComparedCourseDto.builder()
-                        .course1(null)
-                        .course2(modelMapper.map(course, CourseDto.class))
+                        .firstCourse(null)
+                        .secondCourse(modelMapper.map(course, CourseDto.class))
                         .similarity(0f)
                         .build());
             }
@@ -105,8 +112,37 @@ public class ProgramEducationCourseService {
 
     }
 
+
     public Boolean deleteById(Long id) {
+        updateComparableProgramStatus(id);
         programEducationCourseRepository.deleteById(id);
+
         return true;
+    }
+
+    public BaseResponse<ProgramEducationCourseDto> update(Long id, ProgramEducationCourseDto programEducationCourseDto) throws Exception {
+        ProgramEducationCourse programEducationCourse = programEducationCourseRepository.findById(id).orElseThrow(() -> new Exception("Program education course is not found"));
+        if (programEducationCourseDto.getProgramEducationId() != null) {
+            ProgramEducation programEducation = programEducationRepository.findById(programEducationCourseDto.getProgramEducationId()).orElseThrow(() -> new Exception("Program education is not found"));
+            programEducationCourse.setProgramEducation(programEducation);
+        }
+        if (programEducationCourseDto.getCourseId() != null) {
+            Course course = courseRepository.findById(programEducationCourseDto.getCourseId()).orElseThrow(() -> new Exception("Course is not found"));
+            programEducationCourse.setCourse(course);
+            updateComparableProgramStatus(id);
+        }
+        if (programEducationCourseDto.getCompulsory() != null) {
+            programEducationCourse.setCompulsory(programEducationCourseDto.getCompulsory());
+        }
+        if (programEducationCourseDto.getNumCredits() != null) {
+            programEducationCourse.setNumCredits(programEducationCourseDto.getNumCredits());
+        }
+        programEducationCourseRepository.save(programEducationCourse);
+        BaseResponse<ProgramEducationCourseDto> baseResponse = new BaseResponse<>();
+        baseResponse.setData(convertToDto(programEducationCourse));
+        baseResponse.success();
+        return baseResponse;
+
+
     }
 }

@@ -1,9 +1,9 @@
 package com.example.course_mapping_be;
 
 import com.example.course_mapping_be.constraints.SourceLink;
-import com.example.course_mapping_be.dtos.ProgramEducationDto;
-import com.example.course_mapping_be.services.DocumentService;
-import com.example.course_mapping_be.services.ProgramEducationService;
+import com.example.course_mapping_be.dtos.ComparedCourseDto;
+import com.example.course_mapping_be.dtos.CourseDto;
+
 import com.example.course_mapping_be.services.ReadFileService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.Socket;
 import java.util.*;
 
 @SpringBootApplication
@@ -32,6 +33,22 @@ public class CourseMappingBeApplication {
 //        DocumentService documentService = new DocumentService();
 //        String vector = documentService.convertDocumentToVector(text).getData();
 //        System.out.println(vector);
+        Socket socket = new Socket();
+        socket.setKeepAlive(true);
+
+        List<ComparedCourseDto> comparedCourseDtos = new ArrayList<>();
+        CourseDto courseDto1 = new CourseDto();
+        courseDto1.setName("CSC 101");
+        CourseDto courseDto2 = new CourseDto();
+        courseDto2.setName("CSC 102");
+        comparedCourseDtos.add(new ComparedCourseDto(courseDto1, courseDto2, 0.5f));
+        comparedCourseDtos.add(new ComparedCourseDto(courseDto1, courseDto2, 1f));
+        //convert list of comparedCourseDtos to json using ObjectMapper
+        ObjectMapper objectMapper = new ObjectMapper();
+        String comparedCourseDtosJson = objectMapper.writeValueAsString(comparedCourseDtos);
+        System.out.println(comparedCourseDtosJson);
+        System.out.println(comparedCourseDtosJson.getClass());
+
 
     }
 

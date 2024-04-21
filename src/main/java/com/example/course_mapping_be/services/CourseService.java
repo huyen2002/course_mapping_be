@@ -5,6 +5,7 @@ import com.example.course_mapping_be.models.Course;
 import com.example.course_mapping_be.models.ProgramEducation;
 import com.example.course_mapping_be.models.University;
 import com.example.course_mapping_be.repositories.CourseRepository;
+import com.example.course_mapping_be.repositories.ProgramEducationCourseRepository;
 import com.example.course_mapping_be.repositories.UniversityRepository;
 import com.example.course_mapping_be.security.JsonWebTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,6 +33,7 @@ public class CourseService {
     private final UniversityRepository universityRepository;
 
     private final DocumentService documentService;
+    private final ProgramEducationCourseRepository programEducationCourseRepository;
 
     public BaseResponse<CourseDto> create(CourseDto courseDto, HttpServletRequest request) throws Exception {
         Long userId = tokenProvider.getUserIdFromRequest(request);
@@ -77,6 +79,7 @@ public class CourseService {
         }
         if (courseDto.getOutline() != null) {
             course.setOutline(courseDto.getOutline());
+
         }
         if (courseDto.getSourceLinks() != null) {
             course.setSourceLinks(courseDto.getSourceLinks());
@@ -127,10 +130,10 @@ public class CourseService {
 
     }
 
-    public BaseResponse<List<CourseDto>> search(Long universityId, SearchCourseDto searchCourseDto, QueryParams params) {
+    public BaseResponse<List<CourseDto>> search(SearchCourseDto searchCourseDto, QueryParams params) {
         BaseResponse<List<CourseDto>> baseResponse = new BaseResponse<>();
 
-        Page<Course> programEducations = courseRepository.search(universityId, searchCourseDto, PageRequest.of(params.getPage(), params.getSize()));
+        Page<Course> programEducations = courseRepository.search(searchCourseDto, PageRequest.of(params.getPage(), params.getSize()));
         List<CourseDto> courseDtos = programEducations.stream().map(course -> modelMapper.map(course, CourseDto.class)).toList();
         baseResponse.setData(courseDtos);
         baseResponse.success();
