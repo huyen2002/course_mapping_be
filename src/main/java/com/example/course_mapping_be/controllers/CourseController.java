@@ -36,9 +36,9 @@ public class CourseController {
         return ResponseEntity.ok(baseResponse);
     }
 
-    @GetMapping(path = "university/{id}/courses/search")
-    public ResponseEntity<BaseResponse<List<CourseDto>>> search(@PathVariable Long id, SearchCourseDto searchCourseDto, QueryParams params) throws Exception {
-        BaseResponse<List<CourseDto>> baseResponse = courseService.search(id, searchCourseDto, params);
+    @GetMapping(path = "courses/search")
+    public ResponseEntity<BaseResponse<List<CourseDto>>> search(SearchCourseDto searchCourseDto, QueryParams params) throws Exception {
+        BaseResponse<List<CourseDto>> baseResponse = courseService.search(searchCourseDto, params);
         return ResponseEntity.ok(baseResponse);
     }
 }

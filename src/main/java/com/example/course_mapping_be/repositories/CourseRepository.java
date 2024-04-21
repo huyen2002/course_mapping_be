@@ -15,6 +15,8 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     @Query("SELECT c FROM Course c WHERE c.university.id = ?1")
     Page<Course> findByUniversityId(Long id, Pageable pageable);
 
-    @Query("SELECT c FROM Course c WHERE c.university.id = ?1 AND c.name LIKE %:#{#searchCourseDto.name}%")
-    Page<Course> search(Long universityId, SearchCourseDto searchCourseDto, Pageable pageable);
+    @Query("SELECT c FROM Course c WHERE " +
+            "(:#{#searchCourseDto.name} IS NULL OR c.name LIKE %:#{#searchCourseDto.name}%) AND " +
+            "(:#{#searchCourseDto.universityId} IS NULL OR c.university.id = :#{#searchCourseDto.universityId})")
+    Page<Course> search(SearchCourseDto searchCourseDto, Pageable pageable);
 }
