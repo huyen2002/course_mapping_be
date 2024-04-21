@@ -81,4 +81,10 @@ public class ProgramEducationController {
         return ResponseEntity.ok(baseResponse);
     }
 
+    @GetMapping(path = "program_educations/filter")
+    public ResponseEntity<BaseResponse<List<ProgramEducationDto>>> filterProgramEducations(FilterProgramParams filterProgramParams) {
+        BaseResponse<List<ProgramEducationDto>> baseResponse = programEducationService.filterProgramEducations(filterProgramParams);
+        return ResponseEntity.ok(baseResponse);
+    }
+
 }

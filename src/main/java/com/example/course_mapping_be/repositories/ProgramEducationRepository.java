@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface ProgramEducationRepository extends JpaRepository<ProgramEducation, Long> {
+public interface ProgramEducationRepository extends JpaRepository<ProgramEducation, Long>, CustomProgramEducationRepository {
     Page<ProgramEducation> findAllByUniversityId(Long id, Pageable pageable);
 
     Page<ProgramEducation> findAllByMajorId(Long id, Pageable pageable);
@@ -31,8 +31,4 @@ public interface ProgramEducationRepository extends JpaRepository<ProgramEducati
     ProgramEducation findByUniversityCodeAndProgramEducationCode(String universityCode, String programEducationCode);
 
 
-    // select all program by filter params: if one field is null, it will not be used to filter. If field contains "!" at the beginning, it will be used to filter not equal
-    // if field don't contain "!", it will be used to filter equal
-    
-    List<ProgramEducation> findAllByFilterParams(FilterProgramParams filterProgramParams);
 }

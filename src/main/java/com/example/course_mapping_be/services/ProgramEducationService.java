@@ -235,7 +235,6 @@ public class ProgramEducationService {
             }
 
         }
-        // sort programEducationDtos by similarity from high to low
         programEducationDtos.sort((o1, o2) -> {
             if (o1.getSecond() > o2.getSecond()) return -1;
             if (o1.getSecond() < o2.getSecond()) return 1;
@@ -258,7 +257,6 @@ public class ProgramEducationService {
                 baseResponse.setData(reversedResult);
                 break;
             case ALPHABET_DESC:
-                // sort programEducationDtos by first's name from  Z to A
                 programEducationDtos.sort((o1, o2) -> {
                     if (o1.getFirst().getName().compareTo(o2.getFirst().getName()) > 0) return -1;
                     if (o1.getFirst().getName().compareTo(o2.getFirst().getName()) < 0) return 1;
@@ -267,7 +265,6 @@ public class ProgramEducationService {
                 baseResponse.setData(programEducationDtos.subList(0, Math.min(10, programEducationDtos.size())));
                 break;
             case ALPHABET_ASC:
-                // sort programEducationDtos by first's name from A to Z
                 programEducationDtos.sort(Comparator.comparing(o -> o.getFirst().getName()));
                 baseResponse.setData(programEducationDtos.subList(0, Math.min(10, programEducationDtos.size())));
                 break;
@@ -276,46 +273,9 @@ public class ProgramEducationService {
                 baseResponse.setData(programEducationDtos.subList(0, Math.min(10, programEducationDtos.size())));
                 break;
         }
-//        baseResponse.setData(programEducationDtos);
         baseResponse.success();
         return baseResponse;
 
-
-//        final String uri = "http://127.0.0.1:5000/api/top_n_most_similar";
-//
-//        RestTemplate restTemplate = new RestTemplate();
-//        ProgramOutlineDto programOutlineDto = new ProgramOutlineDto(programEducation.getIntroduction());
-//
-//        String result = restTemplate.postForObject(uri, programOutlineDto, String.class);
-//        JSONObject jsonObject = new JSONObject(result);
-//        List<String> files = new ArrayList<>();
-//        try {
-//            JSONArray fileList = (JSONArray) jsonObject.get("list");
-//            for (Object item : fileList) {
-//                JSONArray innerArray = (JSONArray) item;
-//                System.out.println(innerArray);
-//                String fileName = (String) innerArray.get(0);
-//
-//                files.add(fileName);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        List<ProgramEducationDto> programEducationDtos = new ArrayList<>();
-//        for (String file : files) {
-//            List<String> fileParts = List.of(file.replace(".txt", "").split("_"));
-//            String universityCode = fileParts.get(1);
-//            String programEducationCode = fileParts.get(2);
-//            ProgramEducation program = programEducationRepository.findByUniversityCodeAndProgramEducationCode(universityCode, programEducationCode);
-//            if (program == null) continue;
-//            if (!Objects.equals(program.getId(), id))
-//                programEducationDtos.add(modelMapper.map(program, ProgramEducationDto.class));
-//        }
-//        BaseResponse<List<ProgramEducationDto>> baseResponse = new BaseResponse<>();
-//        baseResponse.setData(programEducationDtos);
-//        baseResponse.success();
-//        return baseResponse;
     }
 
 
@@ -324,5 +284,19 @@ public class ProgramEducationService {
         University university = universityRepository.findByUserId(userId).orElseThrow(() -> new Exception("University is not found"));
         return getAllByUniversityId(university.getId(), params);
 
+    }
+
+    public BaseResponse<List<ProgramEducationDto>> filterProgramEducations(FilterProgramParams filterProgramParams) {
+        BaseResponse<List<ProgramEducationDto>> baseResponse = new BaseResponse<>();
+        List<ProgramEducation> programEducations = programEducationRepository.findAllByFilterParams(filterProgramParams);
+        System.out.println(programEducations.size());
+        List<ProgramEducationDto> programEducationDtos = new ArrayList<>();
+        for (ProgramEducation programEducation : programEducations) {
+            programEducationDtos.add(modelMapper.map(programEducation, ProgramEducationDto.class));
+        }
+        baseResponse.setData(programEducationDtos);
+        baseResponse.success();
+        baseResponse.updatePagination(new QueryParams(), (long) programEducations.size());
+        return baseResponse;
     }
 }

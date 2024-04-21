@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 
 public class FilterProgramParams {
-    private String nation;
+    private String country;
     private String language;
-    private String majorType;
+    private String major;
 }
