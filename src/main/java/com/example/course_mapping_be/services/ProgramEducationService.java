@@ -57,6 +57,13 @@ public class ProgramEducationService {
         }
 
         Major major = majorRepository.findById(programEducationDto.getMajorId()).orElseThrow(() -> new Exception("Major is not found"));
+        String documentVector = null;
+        String vectorName = documentService.convertDocumentToVectorDbow(programEducationDto.getName()).getData();
+        if (programEducationDto.getOutline() != null) {
+            String outline = readFileService.readData(programEducationDto.getOutline());
+            documentVector = documentService.convertDocumentToVector(outline).getData();
+        }
+
         ProgramEducation programEducation = ProgramEducation.builder().name(programEducationDto.getName())
                 .language(programEducationDto.getLanguage())
                 .levelOfEducation(LevelEducationType.valueOf(programEducationDto.getLevelOfEducation()))
@@ -69,6 +76,8 @@ public class ProgramEducationService {
                 .startYear(programEducationDto.getStartYear())
                 .endYear(programEducationDto.getEndYear())
                 .sourceLinks(programEducationDto.getSourceLinks())
+                .vectorOutline(documentVector)
+                .vectorName(vectorName)
                 .build();
 
 
@@ -110,12 +119,23 @@ public class ProgramEducationService {
     public BaseResponse<ProgramEducationDto> update(Long id, ProgramEducationDto programEducationDto, HttpServletRequest request) throws Exception {
         ProgramEducation programEducation = programEducationRepository.findById(id).orElseThrow(() -> new Exception("Program education is not found"));
         Long userId = tokenProvider.getUserIdFromRequest(request);
-        University university = universityRepository.findByUserId(userId).orElseThrow(() -> new Exception("University is not found"));
-        if (!programEducation.getUniversity().getId().equals(university.getId())) {
-            throw new Exception("You are not authorized to update this program education");
+        User user = userRepository.findById(userId).orElseThrow(() -> new Exception("User is not found"));
+        if (user.getRole() != RoleType.UNIVERSITY && user.getRole() != RoleType.ADMIN) {
+            throw new Exception("You are not authorized to update program education");
         }
+        if (user.getRole() == RoleType.UNIVERSITY) {
+            University university = universityRepository.findByUserId(userId).orElseThrow(() -> new Exception("University is not found"));
+            if (!programEducation.getUniversity().getId().equals(university.getId())) {
+                throw new Exception("You are not authorized to update this program education");
+            }
+        }
+
         if (programEducationDto.getName() != null) {
             programEducation.setName(programEducationDto.getName());
+            programEducation.setVectorName(documentService.convertDocumentToVectorDbow(programEducationDto.getName()).getData());
+        }
+        if (programEducationDto.getCode() != null) {
+            programEducation.setCode(programEducationDto.getCode());
         }
         if (programEducationDto.getLanguage() != null) {
             programEducation.setLanguage(programEducationDto.getLanguage());
@@ -134,6 +154,9 @@ public class ProgramEducationService {
         }
         if (programEducationDto.getOutline() != null) {
             programEducation.setOutline(programEducationDto.getOutline());
+            String data = readFileService.readData(programEducationDto.getOutline());
+            String vectorDocument = documentService.convertDocumentToVector(data).getData();
+            programEducation.setVectorOutline(vectorDocument);
         }
         if (programEducationDto.getStartYear() != null) {
             programEducation.setStartYear(programEducationDto.getStartYear());
@@ -145,9 +168,14 @@ public class ProgramEducationService {
             Major major = majorRepository.findById(programEducationDto.getMajorId()).orElseThrow(() -> new Exception("Major is not found"));
             programEducation.setMajor(major);
         }
+        if (programEducationDto.getUniversityId() != null) {
+            University university = universityRepository.findById(programEducationDto.getUniversityId()).orElseThrow(() -> new Exception("University is not found"));
+            programEducation.setUniversity(university);
+        }
         if (programEducationDto.getSourceLinks() != null) {
             programEducation.setSourceLinks(programEducationDto.getSourceLinks());
         }
+
         programEducationRepository.save(programEducation);
         BaseResponse<ProgramEducationDto> baseResponse = new BaseResponse<>();
         baseResponse.setData(modelMapper.map(programEducation, ProgramEducationDto.class));
@@ -198,26 +226,31 @@ public class ProgramEducationService {
         return baseResponse;
     }
 
-    public BaseResponse<Float> compareTwoPrograms(Long id1, Long id2) throws Exception {
-        BaseResponse<Float> baseResponse = new BaseResponse<>();
-
-        ProgramEducation programEducation1 = programEducationRepository.findById(id1).orElseThrow(() -> new Exception("Program education is not found"));
-        ProgramEducation programEducation2 = programEducationRepository.findById(id2).orElseThrow(() -> new Exception("Program education is not found"));
-        if (programEducation1.getVectorDocument() == null || programEducation2.getVectorDocument() == null) {
-            baseResponse.setData((float) 0);
-            baseResponse.success();
-            return baseResponse;
-        }
-        JSONObject jsonObject1 = new JSONObject(programEducation1.getVectorDocument());
-        JSONObject jsonObject2 = new JSONObject(programEducation2.getVectorDocument());
-
+    public Float compareTwoVectorsFromString(String firstVector, String secondVector) {
+        JSONObject jsonObject1 = new JSONObject(firstVector);
+        JSONObject jsonObject2 = new JSONObject(secondVector);
         List<Object> vector1 = jsonObject1.getJSONArray("vector").toList();
         List<Object> vector2 = jsonObject2.getJSONArray("vector").toList();
         String uri = "http://localhost:5000/api/cossim_between_two_vectors";
         RestTemplate restTemplate = new RestTemplate();
         CompareTwoVectorsDto compareTwoVectorsDto = new CompareTwoVectorsDto(vector1, vector2);
         Float result = restTemplate.postForObject(uri, compareTwoVectorsDto, Float.class);
-        baseResponse.setData(result);
+        return result;
+    }
+
+    public BaseResponse<Float> compareTwoPrograms(Long id1, Long id2) throws Exception {
+        BaseResponse<Float> baseResponse = new BaseResponse<>();
+
+        ProgramEducation programEducation1 = programEducationRepository.findById(id1).orElseThrow(() -> new Exception("Program education is not found"));
+        ProgramEducation programEducation2 = programEducationRepository.findById(id2).orElseThrow(() -> new Exception("Program education is not found"));
+        if (programEducation1.getVectorOutline() == null || programEducation2.getVectorOutline() == null) {
+            Float similarity = compareTwoVectorsFromString(programEducation1.getVectorName(), programEducation2.getVectorName());
+            baseResponse.setData(similarity);
+            baseResponse.success();
+            return baseResponse;
+        }
+        Float similarity = compareTwoVectorsFromString(programEducation1.getVectorOutline(), programEducation2.getVectorOutline());
+        baseResponse.setData(similarity);
         baseResponse.success();
         return baseResponse;
 

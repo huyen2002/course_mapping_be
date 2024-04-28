@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ComparableProgramEducationDto {
-    
+
     @NotNull(message = "First program id is required")
     private Long firstProgramId;
 
@@ -18,7 +18,6 @@ public class ComparableProgramEducationDto {
 
     private String coursesMapping;
 
-    private String status;
 
     public ComparableProgramEducationDto(Long firstProgramId, Long secondProgramId) {
         this.firstProgramId = firstProgramId;

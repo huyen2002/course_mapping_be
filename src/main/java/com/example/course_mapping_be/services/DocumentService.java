@@ -38,4 +38,15 @@ public class DocumentService {
         baseResponse.success();
         return baseResponse;
     }
+
+    public BaseResponse<String> convertDocumentToVectorDbow(String data) {
+        BaseResponse<String> baseResponse = new BaseResponse<>();
+        final String uri = "http://localhost:5000/api/infer_vector_dbow";
+        RestTemplate restTemplate = new RestTemplate();
+        DocumentDto document = new DocumentDto(data);
+        String result = restTemplate.postForObject(uri, document, String.class);
+        baseResponse.setData(result);
+        baseResponse.success();
+        return baseResponse;
+    }
 }

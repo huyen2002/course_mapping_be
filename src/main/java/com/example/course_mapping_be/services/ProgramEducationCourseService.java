@@ -1,6 +1,7 @@
 package com.example.course_mapping_be.services;
 
 import com.example.course_mapping_be.dtos.*;
+import com.example.course_mapping_be.models.ComparedCourseElement;
 import com.example.course_mapping_be.models.Course;
 import com.example.course_mapping_be.models.ProgramEducation;
 import com.example.course_mapping_be.models.ProgramEducationCourse;
@@ -29,8 +30,12 @@ public class ProgramEducationCourseService {
     private CourseService courseService;
     private final ComparableProgramEducationRepository comparableProgramEducationRepository;
 
-    public void updateComparableProgramStatus(Long programCourseId) {
-        programEducationCourseRepository.findById(programCourseId).ifPresent(programEducationCourse -> comparableProgramEducationRepository.updateStatusByProgramId(programEducationCourse.getProgramEducation().getId()));
+    public void deleteComparableProgram(Long programCourseId) {
+        ProgramEducationCourse programEducationCourse = programEducationCourseRepository.findById(programCourseId).orElse(null);
+        if (programEducationCourse == null) {
+            return;
+        }
+        comparableProgramEducationRepository.deleteByProgramId(programEducationCourse.getProgramEducation().getId());
     }
 
     public ProgramEducationCourseDto convertToDto(ProgramEducationCourse programEducationCourse) {
@@ -44,7 +49,8 @@ public class ProgramEducationCourseService {
     public BaseResponse<ProgramEducationCourseDto> create(ProgramEducationCourseDto programEducationCourseDto) throws Exception {
         ProgramEducation programEducation = programEducationRepository.findById(programEducationCourseDto.getProgramEducationId()).orElseThrow(() -> new Exception("Program education is not found"));
         Course course = courseRepository.findById(programEducationCourseDto.getCourseId()).orElseThrow(() -> new Exception("Course is not found"));
-        if (programEducationCourseRepository.findByProgramEducationIdAndCourseId(programEducation.getId(), course.getId()).isPresent()) {
+        ProgramEducationCourse findProgramEducationCourse = programEducationCourseRepository.findByProgramEducationIdAndCourseId(programEducation.getId(), course.getId()).orElse(null);
+        if (findProgramEducationCourse != null) {
             throw new Exception("Program education course is already exist");
         }
         ProgramEducationCourse programEducationCourse = ProgramEducationCourse.builder()
@@ -53,7 +59,7 @@ public class ProgramEducationCourseService {
                 .numCredits(programEducationCourseDto.getNumCredits()).build();
 
         programEducationCourseRepository.save(programEducationCourse);
-        updateComparableProgramStatus(programEducationCourse.getId());
+        deleteComparableProgram(programEducationCourse.getId());
         BaseResponse<ProgramEducationCourseDto> baseResponse = new BaseResponse<>();
         baseResponse.setData(convertToDto(programEducationCourse));
         baseResponse.success();
@@ -70,43 +76,36 @@ public class ProgramEducationCourseService {
         return baseResponse;
     }
 
-    public BaseResponse<List<ComparedCourseDto>> compareCoursesOfProgramEducations(Long programId1, Long programId2) {
+    public BaseResponse<List<ComparedCourseElement>> compareCoursesOfProgramEducations(Long programId1, Long programId2) {
         List<ProgramEducationCourse> programCourseList1 = programEducationCourseRepository.findAllByProgramEducationId(programId1);
         List<ProgramEducationCourse> programCourseList2 = programEducationCourseRepository.findAllByProgramEducationId(programId2);
         List<Course> courseList1 = programCourseList1.stream().map(ProgramEducationCourse::getCourse).toList();
         List<Course> courseList2 = programCourseList2.stream().map(ProgramEducationCourse::getCourse).toList();
-        List<ComparedCourseDto> comparedCourseDtos = new ArrayList<>();
+        List<ComparedCourseElement> comparedCourseElements = new ArrayList<>();
         List<Course> copyCourseList2 = new ArrayList<>(courseList2);
         for (Course course : courseList1) {
             Pair<Course, Float> mostSimilarCourse = courseService.getMostSimilarCourse(course, courseList2);
             if (mostSimilarCourse != null) {
-                comparedCourseDtos.add(ComparedCourseDto.builder()
-                        .firstCourse(modelMapper.map(course, CourseDto.class))
-                        .secondCourse(modelMapper.map(mostSimilarCourse.getFirst(), CourseDto.class))
-                        .similarity(mostSimilarCourse.getSecond())
-                        .build());
+                comparedCourseElements.add(
+                        new ComparedCourseElement(course.getId(), mostSimilarCourse.getFirst().getId(), mostSimilarCourse.getSecond()));
+
                 copyCourseList2.remove(mostSimilarCourse.getFirst());
             } else {
-                comparedCourseDtos.add(ComparedCourseDto.builder()
-                        .firstCourse(modelMapper.map(course, CourseDto.class))
-                        .secondCourse(null)
-                        .similarity(0f)
-                        .build());
+                comparedCourseElements.add(
+                        new ComparedCourseElement(course.getId(), null, 0f));
             }
 
         }
 
         if (!copyCourseList2.isEmpty()) {
             for (Course course : copyCourseList2) {
-                comparedCourseDtos.add(ComparedCourseDto.builder()
-                        .firstCourse(null)
-                        .secondCourse(modelMapper.map(course, CourseDto.class))
-                        .similarity(0f)
-                        .build());
+                comparedCourseElements.add(
+                        new ComparedCourseElement(null, course.getId(), 0f)
+                );
             }
         }
-        BaseResponse<List<ComparedCourseDto>> baseResponse = new BaseResponse<>();
-        baseResponse.setData(comparedCourseDtos);
+        BaseResponse<List<ComparedCourseElement>> baseResponse = new BaseResponse<>();
+        baseResponse.setData(comparedCourseElements);
         baseResponse.success();
         return baseResponse;
 
@@ -114,7 +113,7 @@ public class ProgramEducationCourseService {
 
 
     public Boolean deleteById(Long id) {
-        updateComparableProgramStatus(id);
+        deleteComparableProgram(id);
         programEducationCourseRepository.deleteById(id);
 
         return true;
@@ -126,7 +125,7 @@ public class ProgramEducationCourseService {
             ProgramEducation programEducation = programEducationRepository.findById(programEducationCourseDto.getProgramEducationId()).orElseThrow(() -> new Exception("Program education is not found"));
             programEducationCourse.setProgramEducation(programEducation);
         }
-      
+
         if (programEducationCourseDto.getCompulsory() != null) {
             programEducationCourse.setCompulsory(programEducationCourseDto.getCompulsory());
         }

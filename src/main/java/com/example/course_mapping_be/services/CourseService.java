@@ -3,7 +3,9 @@ package com.example.course_mapping_be.services;
 import com.example.course_mapping_be.dtos.*;
 import com.example.course_mapping_be.models.Course;
 import com.example.course_mapping_be.models.ProgramEducation;
+import com.example.course_mapping_be.models.ProgramEducationCourse;
 import com.example.course_mapping_be.models.University;
+import com.example.course_mapping_be.repositories.ComparableProgramEducationRepository;
 import com.example.course_mapping_be.repositories.CourseRepository;
 import com.example.course_mapping_be.repositories.ProgramEducationCourseRepository;
 import com.example.course_mapping_be.repositories.UniversityRepository;
@@ -34,6 +36,8 @@ public class CourseService {
 
     private final DocumentService documentService;
     private final ProgramEducationCourseRepository programEducationCourseRepository;
+    private final ComparableProgramEducationRepository comparableProgramEducationRepository;
+    private ReadFileService readFileService;
 
     public BaseResponse<CourseDto> create(CourseDto courseDto, HttpServletRequest request) throws Exception {
         Long userId = tokenProvider.getUserIdFromRequest(request);
@@ -43,13 +47,19 @@ public class CourseService {
         if (courseRepository.existsByCode(courseDto.getCode())) {
             throw new Exception("Code is already used");
         }
+        String outline = readFileService.readData(courseDto.getOutline());
+        String vectorOutline = documentService.convertDocumentToVector(outline).getData();
+        String vectorName = documentService.convertDocumentToVector(courseDto.getName()).getData();
         Course course = Course.builder()
                 .name(courseDto.getName())
                 .code(courseDto.getCode())
                 .language(courseDto.getLanguage())
                 .outline(courseDto.getOutline())
                 .sourceLinks(courseDto.getSourceLinks())
-                .university(university).build();
+                .university(university)
+                .vectorName(vectorName)
+                .vectorOutline(vectorOutline)
+                .build();
 
         courseRepository.save(course);
         baseResponse.setData(modelMapper.map(course, CourseDto.class));
@@ -67,6 +77,7 @@ public class CourseService {
         BaseResponse<CourseDto> baseResponse = new BaseResponse<>();
         if (courseDto.getName() != null) {
             course.setName(courseDto.getName());
+            course.setVectorName(documentService.convertDocumentToVector(courseDto.getName()).getData());
         }
         if (courseDto.getCode() != null) {
             if (courseRepository.existsByCode(courseDto.getCode())) {
@@ -79,10 +90,18 @@ public class CourseService {
         }
         if (courseDto.getOutline() != null) {
             course.setOutline(courseDto.getOutline());
+            String outline = readFileService.readData(courseDto.getOutline());
+            course.setVectorOutline(documentService.convertDocumentToVector(outline).getData());
 
         }
         if (courseDto.getSourceLinks() != null) {
             course.setSourceLinks(courseDto.getSourceLinks());
+        }
+        if (courseDto.getName() != null || courseDto.getOutline() != null) {
+            List<ProgramEducationCourse> programEducationCourses = programEducationCourseRepository.findAllByCourseId(course.getId());
+            programEducationCourses.forEach(programEducationCourse -> {
+                comparableProgramEducationRepository.deleteByProgramId(programEducationCourse.getProgramEducation().getId());
+            });
         }
         courseRepository.save(course);
         baseResponse.setData(modelMapper.map(course, CourseDto.class));
@@ -140,4 +159,17 @@ public class CourseService {
         baseResponse.updatePagination(params, programEducations.getTotalElements());
         return baseResponse;
     }
+
+    public BaseResponse<List<CourseDto>> getListByUniversity(HttpServletRequest request) throws Exception {
+        Long userId = tokenProvider.getUserIdFromRequest(request);
+        University university = universityRepository.findByUserId(userId).orElseThrow(() -> new Exception("University is not found"));
+
+        BaseResponse<List<CourseDto>> baseResponse = new BaseResponse<>();
+        List<Course> courses = courseRepository.findAllByUniversityId(university.getId());
+        List<CourseDto> courseDtos = courses.stream().map(course -> modelMapper.map(course, CourseDto.class)).toList();
+        baseResponse.setData(courseDtos);
+        baseResponse.success();
+        return baseResponse;
+    }
+
 }

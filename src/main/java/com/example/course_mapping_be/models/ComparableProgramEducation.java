@@ -22,15 +22,11 @@ public class ComparableProgramEducation {
     @Column(name = "firstProgramId", nullable = false)
     private Long firstProgramId;
 
-    
+
     @Column(name = "secondProgramId", nullable = false)
     private Long secondProgramId;
 
     @Column(name = "coursesMapping", columnDefinition = "LONGTEXT")
     private String coursesMapping;
 
-    @Column(name = "status", nullable = false)
-    @Enumerated(EnumType.STRING)
-    @Value("UPDATED")
-    private DataStatus status;
 }
