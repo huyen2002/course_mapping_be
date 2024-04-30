@@ -1,10 +1,7 @@
 package com.example.course_mapping_be.services;
 
 
-import com.example.course_mapping_be.dtos.AddressDto;
-import com.example.course_mapping_be.dtos.BaseResponse;
-import com.example.course_mapping_be.dtos.QueryParams;
-import com.example.course_mapping_be.dtos.UniversityDto;
+import com.example.course_mapping_be.dtos.*;
 import com.example.course_mapping_be.models.Address;
 import com.example.course_mapping_be.models.University;
 import com.example.course_mapping_be.models.User;
@@ -91,6 +88,16 @@ public class UniversityService {
 
     public BaseResponse<List<UniversityDto>> getAll(QueryParams params) {
         Page<University> universities = universityRepository.findAll(PageRequest.of(params.getPage(), params.getSize()));
+        List<UniversityDto> universityDtos = universities.stream().map(university -> modelMapper.map(university, UniversityDto.class)).toList();
+        BaseResponse<List<UniversityDto>> baseResponse = new BaseResponse<>();
+        baseResponse.setData(universityDtos);
+        baseResponse.updatePagination(params, universities.getTotalElements());
+        baseResponse.success();
+        return baseResponse;
+    }
+
+    public BaseResponse<List<UniversityDto>> search(FilterUniversityParams filterParams, QueryParams params) {
+        Page<University> universities = universityRepository.filterUniversities(filterParams, PageRequest.of(params.getPage(), params.getSize()));
         List<UniversityDto> universityDtos = universities.stream().map(university -> modelMapper.map(university, UniversityDto.class)).toList();
         BaseResponse<List<UniversityDto>> baseResponse = new BaseResponse<>();
         baseResponse.setData(universityDtos);

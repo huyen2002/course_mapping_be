@@ -1,6 +1,7 @@
 package com.example.course_mapping_be.controllers;
 
 import com.example.course_mapping_be.dtos.BaseResponse;
+import com.example.course_mapping_be.dtos.FilterUniversityParams;
 import com.example.course_mapping_be.dtos.QueryParams;
 import com.example.course_mapping_be.dtos.UniversityDto;
 import com.example.course_mapping_be.services.UniversityService;
@@ -27,6 +28,12 @@ public class UniversityController {
     @GetMapping(path = "universities/all")
     public ResponseEntity<BaseResponse<List<UniversityDto>>> getAll(QueryParams params) {
         BaseResponse<List<UniversityDto>> baseResponse = universityService.getAll(params);
+        return ResponseEntity.ok(baseResponse);
+    }
+
+    @GetMapping(path = "universities/search")
+    public ResponseEntity<BaseResponse<List<UniversityDto>>> search(FilterUniversityParams filterParams, QueryParams params) {
+        BaseResponse<List<UniversityDto>> baseResponse = universityService.search(filterParams, params);
         return ResponseEntity.ok(baseResponse);
     }
 
