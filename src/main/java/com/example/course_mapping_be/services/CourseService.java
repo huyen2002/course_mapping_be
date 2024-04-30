@@ -47,15 +47,18 @@ public class CourseService {
         if (courseRepository.existsByCode(courseDto.getCode())) {
             throw new Exception("Code is already used");
         }
-        String outline = readFileService.readData(courseDto.getOutline());
-        String vectorOutline = documentService.convertDocumentToVector(outline).getData();
+        String vectorOutline = null;
+        if (courseDto.getOutline() != null) {
+            String outline = readFileService.readData(courseDto.getOutline());
+            vectorOutline = documentService.convertDocumentToVector(outline).getData();
+        }
+
         String vectorName = documentService.convertDocumentToVector(courseDto.getName()).getData();
         Course course = Course.builder()
                 .name(courseDto.getName())
                 .code(courseDto.getCode())
                 .language(courseDto.getLanguage())
                 .outline(courseDto.getOutline())
-                .sourceLinks(courseDto.getSourceLinks())
                 .university(university)
                 .vectorName(vectorName)
                 .vectorOutline(vectorOutline)
@@ -94,9 +97,7 @@ public class CourseService {
             course.setVectorOutline(documentService.convertDocumentToVector(outline).getData());
 
         }
-        if (courseDto.getSourceLinks() != null) {
-            course.setSourceLinks(courseDto.getSourceLinks());
-        }
+
         if (courseDto.getName() != null || courseDto.getOutline() != null) {
             List<ProgramEducationCourse> programEducationCourses = programEducationCourseRepository.findAllByCourseId(course.getId());
             programEducationCourses.forEach(programEducationCourse -> {
@@ -168,6 +169,27 @@ public class CourseService {
         List<Course> courses = courseRepository.findAllByUniversityId(university.getId());
         List<CourseDto> courseDtos = courses.stream().map(course -> modelMapper.map(course, CourseDto.class)).toList();
         baseResponse.setData(courseDtos);
+        baseResponse.success();
+        return baseResponse;
+    }
+
+    public BaseResponse<Boolean> deleteById(Long id) {
+        List<ProgramEducationCourse> programEducationCourses = programEducationCourseRepository.findAllByCourseId(id);
+        programEducationCourses.forEach(programEducationCourse -> {
+            comparableProgramEducationRepository.deleteByProgramId(programEducationCourse.getProgramEducation().getId());
+        });
+        programEducationCourseRepository.deleteByCourseId(id);
+        courseRepository.deleteById(id);
+        BaseResponse<Boolean> baseResponse = new BaseResponse<>();
+        baseResponse.setData(true);
+        baseResponse.success();
+        return baseResponse;
+
+    }
+
+    public BaseResponse<Boolean> existedByCode(String code) {
+        BaseResponse<Boolean> baseResponse = new BaseResponse<>();
+        baseResponse.setData(courseRepository.existsByCode(code));
         baseResponse.success();
         return baseResponse;
     }

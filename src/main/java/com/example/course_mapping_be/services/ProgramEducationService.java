@@ -7,10 +7,7 @@ import com.example.course_mapping_be.models.Major;
 import com.example.course_mapping_be.models.ProgramEducation;
 import com.example.course_mapping_be.models.University;
 import com.example.course_mapping_be.models.User;
-import com.example.course_mapping_be.repositories.MajorRepository;
-import com.example.course_mapping_be.repositories.ProgramEducationRepository;
-import com.example.course_mapping_be.repositories.UniversityRepository;
-import com.example.course_mapping_be.repositories.UserRepository;
+import com.example.course_mapping_be.repositories.*;
 import com.example.course_mapping_be.security.JsonWebTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -41,6 +38,8 @@ public class ProgramEducationService {
     private UserRepository userRepository;
     private ReadFileService readFileService;
     private DocumentService documentService;
+    private final ProgramEducationCourseRepository programEducationCourseRepository;
+    private final ComparableProgramEducationRepository comparableProgramEducationRepository;
 
     public BaseResponse<ProgramEducationDto> create(ProgramEducationDto programEducationDto, HttpServletRequest request) throws Exception {
         Long userId = tokenProvider.getUserIdFromRequest(request);
@@ -55,6 +54,10 @@ public class ProgramEducationService {
             throw new Exception("You are not authorized to create program education");
 
         }
+
+//        if (programEducationRepository.existsByCode(programEducationDto.getCode())) {
+//            throw new Exception("Code is already used");
+//        }
 
         Major major = majorRepository.findById(programEducationDto.getMajorId()).orElseThrow(() -> new Exception("Major is not found"));
         String documentVector = null;
@@ -199,6 +202,8 @@ public class ProgramEducationService {
         if (!programEducation.getUniversity().getId().equals(university.getId())) {
             throw new Exception("You are not authorized to delete this program education");
         }
+        programEducationCourseRepository.deleteByProgramId(id);
+        comparableProgramEducationRepository.deleteByProgramId(id);
         programEducationRepository.deleteById(id);
         return true;
 
@@ -332,4 +337,11 @@ public class ProgramEducationService {
         baseResponse.updatePagination(new QueryParams(), (long) programEducations.size());
         return baseResponse;
     }
+
+//    public BaseResponse<Boolean> existedByCode(String code) {
+//        BaseResponse<Boolean> baseResponse = new BaseResponse<>();
+//        baseResponse.setData(programEducationRepository.existsByCode(code));
+//        baseResponse.success();
+//        return baseResponse;
+//    }
 }

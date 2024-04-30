@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.Date;
+
 
 @Data
 @Setter
@@ -44,8 +46,11 @@ public class ProgramEducationDto {
 
     private String sourceLinks;
 
+    private Date createdAt;
+    private Date updatedAt;
+
     private Long universityId;
-    
+
     private UniversityDto university;
 
     @NotNull(message = "Major is required")

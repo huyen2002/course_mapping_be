@@ -1,6 +1,7 @@
 package com.example.course_mapping_be.controllers;
 
 import com.example.course_mapping_be.dtos.*;
+import com.example.course_mapping_be.models.ComparedCourseElement;
 import com.example.course_mapping_be.repositories.ComparableProgramEducationRepository;
 import com.example.course_mapping_be.services.ProgramEducationCourseService;
 import lombok.AllArgsConstructor;
@@ -32,8 +33,8 @@ public class ProgramEducationCourseController {
     }
 
     @GetMapping(path = "compare_courses_of_program_educations/{id1}/and/{id2}")
-    public ResponseEntity<BaseResponse<List<ComparedCourseDto>>> compareCoursesOfProgramEducations(@PathVariable Long id1, @PathVariable Long id2) throws Exception {
-        BaseResponse<List<ComparedCourseDto>> baseResponse = programEducationCourseService.compareCoursesOfProgramEducations(id1, id2);
+    public ResponseEntity<BaseResponse<List<ComparedCourseElement>>> compareCoursesOfProgramEducations(@PathVariable Long id1, @PathVariable Long id2) throws Exception {
+        BaseResponse<List<ComparedCourseElement>> baseResponse = programEducationCourseService.compareCoursesOfProgramEducations(id1, id2);
         return ResponseEntity.ok(baseResponse);
     }
 

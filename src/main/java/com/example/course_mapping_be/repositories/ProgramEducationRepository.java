@@ -12,8 +12,11 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ProgramEducationRepository extends JpaRepository<ProgramEducation, Long>, CustomProgramEducationRepository {
+
+    @Query("SELECT p FROM ProgramEducation p WHERE p.university.id = :id order by p.updatedAt desc")
     Page<ProgramEducation> findAllByUniversityId(Long id, Pageable pageable);
 
+    @Query("SELECT p FROM ProgramEducation p WHERE p.major.id = :id order by p.updatedAt desc")
     Page<ProgramEducation> findAllByMajorId(Long id, Pageable pageable);
 
 
@@ -23,7 +26,8 @@ public interface ProgramEducationRepository extends JpaRepository<ProgramEducati
                     "(:#{#searchProgramDto.majorCode} IS NULL OR p.major.code = :#{#searchProgramDto.majorCode}) AND " +
                     "(:#{#searchProgramDto.levelOfEducation} is NULL OR p.levelOfEducation = :#{#searchProgramDto.levelOfEducation}) AND " +
                     "(:#{#searchProgramDto.universityId} is NULL OR p.university.id = :#{#searchProgramDto.universityId}) AND " +
-                    "(:#{#searchProgramDto.status} is NULL OR (p.endYear > YEAR(CURRENT_DATE ) OR  p.endYear is null  AND :#{#searchProgramDto.status} = 'ACTIVE') OR (p.endYear < YEAR(CURRENT_DATE) AND :#{#searchProgramDto.status} = 'INACTIVE'))"
+                    "(:#{#searchProgramDto.status} is NULL OR (p.endYear > YEAR(CURRENT_DATE ) OR  p.endYear is null  AND :#{#searchProgramDto.status} = 'ACTIVE') OR (p.endYear < YEAR(CURRENT_DATE) AND :#{#searchProgramDto.status} = 'INACTIVE')) " +
+                    "order by p.updatedAt desc"
             )
     Page<ProgramEducation> searchPrograms(SearchProgramDto searchProgramDto, Pageable pageable);
 
@@ -31,4 +35,5 @@ public interface ProgramEducationRepository extends JpaRepository<ProgramEducati
     ProgramEducation findByUniversityCodeAndProgramEducationCode(String universityCode, String programEducationCode);
 
 
+//    boolean existsByCode(String code);
 }

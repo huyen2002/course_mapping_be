@@ -41,4 +41,22 @@ public class CourseController {
         BaseResponse<List<CourseDto>> baseResponse = courseService.search(searchCourseDto, params);
         return ResponseEntity.ok(baseResponse);
     }
+
+    @GetMapping(path = "courses/list")
+    public ResponseEntity<BaseResponse<List<CourseDto>>> getListByUniversity(HttpServletRequest request) throws Exception {
+        BaseResponse<List<CourseDto>> baseResponse = courseService.getListByUniversity(request);
+        return ResponseEntity.ok(baseResponse);
+    }
+
+    @DeleteMapping(path = "course/{id}/delete")
+    public ResponseEntity<BaseResponse<Boolean>> deleteById(@PathVariable Long id) {
+        BaseResponse<Boolean> baseResponse = courseService.deleteById(id);
+        return ResponseEntity.ok(baseResponse);
+    }
+
+    @GetMapping(path = "course/check_existed_by_code")
+    public ResponseEntity<BaseResponse<Boolean>> existedByCode(@RequestParam String code) {
+        BaseResponse<Boolean> baseResponse = courseService.existedByCode(code);
+        return ResponseEntity.ok(baseResponse);
+    }
 }

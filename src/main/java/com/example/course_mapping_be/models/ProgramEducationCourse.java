@@ -32,11 +32,19 @@ public class ProgramEducationCourse {
     @JoinColumn(name = "courseId", nullable = false)
     private Course course;
 
+    @CreationTimestamp
+    @Column(name = "createdAt")
+    private Date createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updatedAt")
+    private Date updatedAt;
+
     @Column(name = "compulsory")
     private Boolean compulsory = false;
 
     @Column(name = "numCredits", nullable = false)
     private Integer numCredits;
-    
+
 
 }

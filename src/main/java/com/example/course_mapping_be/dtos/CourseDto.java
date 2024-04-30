@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.Date;
+
 @Data
 @Setter
 @Getter
@@ -25,8 +27,9 @@ public class CourseDto {
     private String language;
 
     private String outline;
-
-    private String sourceLinks;
+    
+    private Date createdAt;
+    private Date updatedAt;
 
 
 }

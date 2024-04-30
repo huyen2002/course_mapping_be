@@ -35,15 +35,26 @@ public class Course {
     @Column(name = "language", nullable = false)
     private String language;
 
-    @Column(name = "outline")
+    @Column(name = "outline", columnDefinition = "TEXT")
     private String outline;
 
-    @Column(name = "sourceLinks", columnDefinition = "TEXT")
-    private String sourceLinks;
+    @Column(name = "vectorOutline", columnDefinition = "LONGTEXT")
+    private String vectorOutline;
 
+    @Column(name = "vectorName", columnDefinition = "LONGTEXT")
+    private String vectorName;
+    
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn(name = "university_id", nullable = false)
     private University university;
+
+    @CreationTimestamp
+    @Column(name = "createdAt")
+    private Date createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updatedAt")
+    private Date updatedAt;
 
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

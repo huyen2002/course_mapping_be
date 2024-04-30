@@ -43,6 +43,7 @@ public class MajorController {
         return ResponseEntity.ok(baseResponse);
     }
 
+
     @PutMapping(path = "major/update/{id}")
     public ResponseEntity<BaseResponse<MajorDto>> update(@PathVariable Long id, @RequestBody MajorDto majorDto) throws Exception {
         BaseResponse<MajorDto> baseResponse = majorService.update(id, majorDto);

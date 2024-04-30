@@ -3,9 +3,12 @@ package com.example.course_mapping_be.models;
 import com.example.course_mapping_be.constraints.LevelEducationType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -48,6 +51,12 @@ public class ProgramEducation {
     @Column(name = "outline")
     private String outline;
 
+    @Column(name = "vectorOutline", columnDefinition = "LONGTEXT")
+    private String vectorOutline;
+
+    @Column(name = "vectorName", columnDefinition = "LONGTEXT")
+    private String vectorName;
+
     @Column(name = "startYear")
     private Integer startYear;
 
@@ -57,8 +66,6 @@ public class ProgramEducation {
     @Column(name = "sourceLinks", columnDefinition = "TEXT")
     private String sourceLinks;
 
-    @Column(name = "vectorDocument", columnDefinition = "TEXT")
-    private String vectorDocument;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn(name = "universityId", nullable = false)
@@ -67,6 +74,14 @@ public class ProgramEducation {
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinColumn(name = "majorId", nullable = false)
     private Major major;
+
+    @CreationTimestamp
+    @Column(name = "created_at")
+    private Date createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private Date updatedAt;
 
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "programEducation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

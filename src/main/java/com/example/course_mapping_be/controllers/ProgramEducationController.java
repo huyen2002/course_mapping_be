@@ -87,4 +87,10 @@ public class ProgramEducationController {
         return ResponseEntity.ok(baseResponse);
     }
 
+//    @GetMapping(path = "program_education/check_existed_by_code")
+//    public ResponseEntity<BaseResponse<Boolean>> existedByCode(@RequestParam String code) {
+//        BaseResponse<Boolean> baseResponse = programEducationService.existedByCode(code);
+//        return ResponseEntity.ok(baseResponse);
+//    }
+
 }

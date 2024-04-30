@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,6 +24,9 @@ public class ProgramEducationCourseDto {
     CourseDto course;
 
     Boolean compulsory;
+
+    Date createdAt;
+    Date updatedAt;
 
     @NotNull(message = "Number of credits is required")
     Integer numCredits;
