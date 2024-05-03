@@ -18,12 +18,8 @@ public class UniversityDto {
 
     UserDto user;
 
-    @NotNull(message = "Name is required")
-    @NotBlank(message = "Name is required")
     String name;
 
-    @NotNull(message = "Code is required")
-    @NotBlank(message = "Code is required")
     String code;
 
     String feature;

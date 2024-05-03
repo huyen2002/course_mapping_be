@@ -23,10 +23,12 @@ public class UserCreateDto {
     @NotNull(message = "Password is required")
     String password;
 
-    @NotBlank(message = "Name is required")
-    @NotNull(message = "Name is required")
-    String name;
+    @NotBlank(message = "Username is required")
+    @NotNull(message = "Username is required")
+    String username;
 
     @NotNull(message = "Role is required")
     RoleType role;
+
+    UniversityDto university;
 }

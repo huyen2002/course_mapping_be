@@ -31,7 +31,10 @@ public class UserService {
         if (userRepository.findByEmail(userCreateDto.getEmail()).isPresent()) {
             throw new Error("Email is existed");
         }
-        User user = new User(userCreateDto.getEmail(), passwordEncoder.encode(userCreateDto.getPassword()), userCreateDto.getName(), userCreateDto.getRole());
+        if (userRepository.findByUsername(userCreateDto.getUsername()).isPresent()) {
+            throw new Error("Username is existed");
+        }
+        User user = new User(userCreateDto.getEmail(), passwordEncoder.encode(userCreateDto.getPassword()), userCreateDto.getUsername(), userCreateDto.getRole());
         return userRepository.saveAndFlush(user);
     }
 

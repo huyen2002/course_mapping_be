@@ -2,10 +2,8 @@ package com.example.course_mapping_be.services;
 
 
 import com.example.course_mapping_be.dtos.*;
-import com.example.course_mapping_be.models.Address;
-import com.example.course_mapping_be.models.University;
-import com.example.course_mapping_be.models.User;
-import com.example.course_mapping_be.repositories.UniversityRepository;
+import com.example.course_mapping_be.models.*;
+import com.example.course_mapping_be.repositories.*;
 import com.example.course_mapping_be.security.JsonWebTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -25,6 +23,12 @@ public class UniversityService {
 
     private JsonWebTokenProvider tokenProvider;
 
+    private AddressService addressService;
+    private final AddressRepository addressRepository;
+    private final ProgramEducationRepository programEducationRepository;
+    private final CourseRepository courseRepository;
+    private final ProgramEducationCourseRepository programEducationCourseRepository;
+
     public University createEmptyUniversity(User user) {
         University university = new University();
         university.setUser(user);
@@ -37,9 +41,19 @@ public class UniversityService {
     }
 
     public BaseResponse<UniversityDto> create(UniversityDto universityDto) {
+        Address address = null;
+        if (universityDto.getAddress() != null) {
+            AddressDto addressDto = universityDto.getAddress();
+            address = Address.builder().country(addressDto.getCountry())
+                    .city(addressDto.getCity()).district(addressDto.getDistrict())
+                    .detail(addressDto.getDetail())
+                    .build();
+
+        }
+
         University university = University.builder()
                 .name(universityDto.getName()).code(universityDto.getCode()).user(null).
-                introduction(universityDto.getIntroduction()).address(null)
+                introduction(universityDto.getIntroduction()).address(address)
                 .feature(universityDto.getFeature()).build();
 
         BaseResponse<UniversityDto> baseResponse = new BaseResponse<>();
@@ -48,10 +62,16 @@ public class UniversityService {
         return baseResponse;
     }
 
-    public BaseResponse<UniversityDto> update(UniversityDto universityDto, HttpServletRequest request) throws Exception {
+    public BaseResponse<UniversityDto> updateByUniversityId(Long universityId, UniversityDto universityDto) throws Exception {
         BaseResponse<UniversityDto> baseResponse = new BaseResponse<>();
-        Long userId = tokenProvider.getUserIdFromRequest(request);
-        University university = universityRepository.findByUserId(userId).orElseThrow(() -> new Exception("University is not found"));
+        University university = universityRepository.findById(universityId).orElseThrow(() -> new Exception("University is not found"));
+
+        if (universityDto.getName() != null) {
+            if (universityRepository.findByName(universityDto.getName()).isPresent()) {
+                throw new Exception("University with name is existed");
+            }
+            university.setName(universityDto.getName());
+        }
         if (universityDto.getCode() != null) {
             if (universityRepository.findByCode(universityDto.getCode()).isPresent()) {
                 throw new Exception("University with code is existed");
@@ -75,14 +95,19 @@ public class UniversityService {
 
             university.setAddress(address);
         } else if (addressDto != null) {
-            address.setCountry(addressDto.getCountry());
-            address.setCity(addressDto.getCity());
-            address.setDistrict(addressDto.getDistrict());
-            address.setDetail(addressDto.getDetail());
+            addressService.update(address.getId(), addressDto);
         }
         university = universityRepository.save(university);
         baseResponse.setData(modelMapper.map(university, UniversityDto.class));
         baseResponse.success();
+        return baseResponse;
+    }
+
+    public BaseResponse<UniversityDto> update(UniversityDto universityDto, HttpServletRequest request) throws Exception {
+        Long userId = tokenProvider.getUserIdFromRequest(request);
+
+        University university = universityRepository.findByUserId(userId).orElseThrow(() -> new Exception("University is not found"));
+        BaseResponse<UniversityDto> baseResponse = this.updateByUniversityId(university.getId(), universityDto);
         return baseResponse;
     }
 
@@ -129,6 +154,30 @@ public class UniversityService {
         BaseResponse<UniversityDto> baseResponse = new BaseResponse<>();
         baseResponse.setData(modelMapper.map(university, UniversityDto.class));
         baseResponse.success();
+        return baseResponse;
+    }
+
+    public BaseResponse<Boolean> deleteById(Long id) throws Exception {
+        BaseResponse<Boolean> baseResponse = new BaseResponse<>();
+        University university = universityRepository.findById(id).orElseThrow(() -> new Exception("University is not found"));
+        List<ProgramEducation> programEducations = programEducationRepository.findByUniversityId(id);
+        List<Course> courses = courseRepository.findAllByUniversityId(id);
+        programEducations.forEach((program) -> {
+            programEducationCourseRepository.deleteByProgramId(program.getId());
+
+        });
+        courses.forEach((course) -> {
+            courseRepository.deleteById(course.getId());
+        });
+        programEducationRepository.deleteByUniversityId(id);
+        courseRepository.deleteByUniversityId(id);
+        if (university.getAddress() != null) {
+            addressRepository.deleteById(university.getAddress().getId());
+
+        }
+        universityRepository.deleteById(id);
+        baseResponse.success();
+        baseResponse.setData(true);
         return baseResponse;
     }
 }

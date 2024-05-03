@@ -39,12 +39,12 @@ public class User {
     private String username;
 
     @CreatedDate
-    @Column(name = "create_at", nullable = false)
-    private Date create_at;
+    @Column(name = "createAt", nullable = false)
+    private Date createAt;
 
     @LastModifiedDate
-    @Column(name = "update_at", nullable = false)
-    private Date update_at;
+    @Column(name = "updateAt", nullable = false)
+    private Date updateAt;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)

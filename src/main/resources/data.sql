@@ -1,7 +1,7 @@
 USE course_mapping;
 SET names 'utf8';
 
-INSERT INTO users (id, email, password, username, role, enabled, create_at, update_at) VALUES
+INSERT INTO users (id, email, password, username, role, enabled, createAt, updateAt) VALUES
 (1, 'thanhhuyennt02@gmail.com', '$2a$10$JS5wbPFgs/n4pmsHjkIOBONvlvaGaTj0bIubHO6bVNSN3mxj4vqpK', 'Admin', 'ADMIN', true, '2024-02-18', '2024-02-18'),
 (2, '20020420@vnu.edu.vn', '$2a$10$JS5wbPFgs/n4pmsHjkIOBONvlvaGaTj0bIubHO6bVNSN3mxj4vqpK', 'qhi_admin', 'UNIVERSITY', true, '2024-02-18', '2024-02-18'),
 (3, '20020421@neu.edu.vn', '$2a$10$JS5wbPFgs/n4pmsHjkIOBONvlvaGaTj0bIubHO6bVNSN3mxj4vqpK', 'bka_admin', 'UNIVERSITY', true, '2024-02-18', '2024-02-18'),

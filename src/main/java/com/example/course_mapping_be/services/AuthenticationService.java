@@ -11,7 +11,6 @@ import com.example.course_mapping_be.security.JsonWebTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -33,12 +32,13 @@ public class AuthenticationService {
     private AuthenticationManager authenticationManager;
     private JsonWebTokenProvider tokenProvider;
 
-    public BaseResponse<UserDto> register(UserCreateDto userCreateDto) {
+    public BaseResponse<UserDto> register(UserCreateDto userCreateDto) throws Exception {
         BaseResponse<UserDto> baseResponse = new BaseResponse<>();
         User user = userService.createUser(userCreateDto);
 
         if (user.getRole() == RoleType.UNIVERSITY) {
             universityService.createEmptyUniversity(user);
+            universityService.updateByUniversityId(user.getId(), userCreateDto.getUniversity());
         }
 
         baseResponse.setData(modelMapper.map(user, UserDto.class));

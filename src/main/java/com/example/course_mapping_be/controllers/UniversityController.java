@@ -25,6 +25,12 @@ public class UniversityController {
         return ResponseEntity.ok(baseResponse);
     }
 
+    @PutMapping(path = "university/{id}/update")
+    public ResponseEntity<BaseResponse<UniversityDto>> updateById(@PathVariable Long id, @RequestBody UniversityDto universityDto) throws Exception {
+        BaseResponse<UniversityDto> baseResponse = universityService.updateByUniversityId(id, universityDto);
+        return ResponseEntity.ok(baseResponse);
+    }
+
     @GetMapping(path = "universities/all")
     public ResponseEntity<BaseResponse<List<UniversityDto>>> getAll(QueryParams params) {
         BaseResponse<List<UniversityDto>> baseResponse = universityService.getAll(params);
@@ -58,6 +64,12 @@ public class UniversityController {
     @GetMapping(path = "university/me")
     public ResponseEntity<BaseResponse<UniversityDto>> getByUser(HttpServletRequest request) throws Exception {
         BaseResponse<UniversityDto> baseResponse = universityService.getByUser(request);
+        return ResponseEntity.ok(baseResponse);
+    }
+
+    @DeleteMapping(path = "university/{id}/delete")
+    public ResponseEntity<BaseResponse<Boolean>> delete(@PathVariable Long id) throws Exception {
+        BaseResponse<Boolean> baseResponse = universityService.deleteById(id);
         return ResponseEntity.ok(baseResponse);
     }
 }

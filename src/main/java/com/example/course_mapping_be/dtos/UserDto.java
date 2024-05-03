@@ -16,8 +16,8 @@ public class UserDto {
     Long id;
     String email;
     String username;
-    Date create_at;
-    Date update_at;
+    Date createAt;
+    Date updateAt;
     String role;
     boolean enabled;
 }

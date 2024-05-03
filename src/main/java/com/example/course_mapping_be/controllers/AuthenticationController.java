@@ -28,7 +28,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<BaseResponse<UserDto>> register(@RequestBody UserCreateDto userCreateDto) {
+    public ResponseEntity<BaseResponse<UserDto>> register(@RequestBody UserCreateDto userCreateDto) throws Exception {
         BaseResponse<UserDto> baseResponse = authenticationService.register(userCreateDto);
         return ResponseEntity.ok(baseResponse);
     }

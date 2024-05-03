@@ -26,17 +26,17 @@ public class University {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "name")
     @NotBlank(message = "Name is required")
     @NotNull(message = "Name is required")
     private String name;
 
     @NotBlank(message = "Code is required")
     @NotNull(message = "Code is required")
-    @Column(name = "code", unique = true)
+    @Column(name = "code")
     private String code;
 
-    @Column(name = "introduction")
+    @Column(name = "introduction", columnDefinition = "LONGTEXT")
     private String introduction;
 
     @Column(name = "feature")
