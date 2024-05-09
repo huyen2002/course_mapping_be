@@ -29,7 +29,7 @@ public class CourseController {
         BaseResponse<CourseDto> baseResponse = courseService.update(id, courseDto, request);
         return ResponseEntity.ok(baseResponse);
     }
-    
+
 
     @GetMapping(path = "courses/search")
     public ResponseEntity<BaseResponse<List<CourseDto>>> search(SearchCourseDto searchCourseDto, QueryParams params) throws Exception {
@@ -37,9 +37,9 @@ public class CourseController {
         return ResponseEntity.ok(baseResponse);
     }
 
-    @GetMapping(path = "courses/list")
-    public ResponseEntity<BaseResponse<List<CourseDto>>> getListByUniversity(HttpServletRequest request) throws Exception {
-        BaseResponse<List<CourseDto>> baseResponse = courseService.getListByUniversity(request);
+    @GetMapping(path = "/university/{id}/courses/list")
+    public ResponseEntity<BaseResponse<List<CourseDto>>> getListByUniversity(@PathVariable Long id) throws Exception {
+        BaseResponse<List<CourseDto>> baseResponse = courseService.getListByUniversity(id);
         return ResponseEntity.ok(baseResponse);
     }
 

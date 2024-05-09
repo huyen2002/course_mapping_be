@@ -137,7 +137,7 @@ public class CourseService {
         }
         return result;
     }
-    
+
 
     public BaseResponse<List<CourseDto>> search(SearchCourseDto searchCourseDto, QueryParams params) {
         BaseResponse<List<CourseDto>> baseResponse = new BaseResponse<>();
@@ -150,12 +150,9 @@ public class CourseService {
         return baseResponse;
     }
 
-    public BaseResponse<List<CourseDto>> getListByUniversity(HttpServletRequest request) throws Exception {
-        Long userId = tokenProvider.getUserIdFromRequest(request);
-        University university = universityRepository.findByUserId(userId).orElseThrow(() -> new Exception("University is not found"));
-
+    public BaseResponse<List<CourseDto>> getListByUniversity(Long id) throws Exception {
         BaseResponse<List<CourseDto>> baseResponse = new BaseResponse<>();
-        List<Course> courses = courseRepository.findAllByUniversityId(university.getId());
+        List<Course> courses = courseRepository.findAllByUniversityId(id);
         List<CourseDto> courseDtos = courses.stream().map(course -> modelMapper.map(course, CourseDto.class)).toList();
         baseResponse.setData(courseDtos);
         baseResponse.success();

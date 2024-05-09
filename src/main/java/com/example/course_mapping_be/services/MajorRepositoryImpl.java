@@ -41,7 +41,11 @@ public class MajorRepositoryImpl implements CustomMajorRepository {
         }
         criteriaQuery.where(predicates.toArray(new Predicate[0]));
         Long total = getTotalSearchMajors(searchMajorDto, pageable);
-        return new PageImpl<>(entityManager.createQuery(criteriaQuery).getResultList(), pageable, total);
+        List<Major> majors = entityManager.createQuery(criteriaQuery)
+                .setFirstResult((int) pageable.getOffset())
+                .setMaxResults(pageable.getPageSize())
+                .getResultList();
+        return new PageImpl<>(majors, pageable, total);
     }
 
     private Long getTotalSearchMajors(SearchMajorDto searchMajorDto, Pageable pageable) {

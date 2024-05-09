@@ -112,7 +112,12 @@ public class ProgramEducationRepositoryImpl implements CustomProgramEducationRep
 
         Long total = getCountSearchPrograms(searchProgramDto);
 
-        return new PageImpl<>(entityManager.createQuery(criteriaQuery).getResultList(), pageable, total);
+        List<ProgramEducation> programEducations = entityManager.createQuery(criteriaQuery)
+                .setFirstResult((int) pageable.getOffset())
+                .setMaxResults(pageable.getPageSize())
+                .getResultList();
+
+        return new PageImpl<>(programEducations, pageable, total);
     }
 
 

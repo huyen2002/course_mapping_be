@@ -51,11 +51,10 @@ public class UniversityRepositoryImpl implements CustomUniversityRepository {
 
         criteriaQuery.where(predicate);
 
-        TypedQuery<University> query = entityManager.createQuery(criteriaQuery);
-        query.setFirstResult((int) pageable.getOffset());
-        query.setMaxResults(pageable.getPageSize());
-
-        List<University> universities = query.getResultList();
+        List<University> universities = entityManager.createQuery(criteriaQuery)
+                .setFirstResult((int) pageable.getOffset())
+                .setMaxResults(pageable.getPageSize())
+                .getResultList();
 
         Long total = getCountFilterUniversities(filterParams);
 
