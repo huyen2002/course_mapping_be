@@ -338,6 +338,21 @@ public class ProgramEducationService {
         return baseResponse;
     }
 
+    public BaseResponse<ProgramEducationDto> updateEnabled(Long id, ProgramEducationDto programEducationDto) throws Exception {
+        ProgramEducation programEducation = programEducationRepository.findById(id).orElseThrow(() -> new Exception("Program education is not found"));
+        Boolean enabled = programEducationDto.getEnabled();
+        if (enabled == null) {
+            throw new Exception("Enabled is required");
+        } else {
+            programEducation.setEnabled(enabled);
+        }
+        programEducationRepository.save(programEducation);
+        BaseResponse<ProgramEducationDto> baseResponse = new BaseResponse<>();
+        baseResponse.setData(modelMapper.map(programEducation, ProgramEducationDto.class));
+        baseResponse.success();
+        return baseResponse;
+    }
+
 //    public BaseResponse<Boolean> existedByCode(String code) {
 //        BaseResponse<Boolean> baseResponse = new BaseResponse<>();
 //        baseResponse.setData(programEducationRepository.existsByCode(code));

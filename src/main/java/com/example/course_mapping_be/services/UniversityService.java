@@ -180,4 +180,18 @@ public class UniversityService {
         baseResponse.setData(true);
         return baseResponse;
     }
+
+
+    public BaseResponse<UniversityDto> updateEnable(Long id, UniversityDto universityDto) throws Exception {
+        University university = universityRepository.findById(id).orElseThrow(() -> new Exception("University is not found"));
+        Boolean enabled = universityDto.getEnabled();
+        programEducationRepository.updateEnabledByUniversityId(id, enabled);
+
+        university.setEnabled(enabled);
+        university = universityRepository.save(university);
+        BaseResponse<UniversityDto> baseResponse = new BaseResponse<>();
+        baseResponse.setData(modelMapper.map(university, UniversityDto.class));
+        baseResponse.success();
+        return baseResponse;
+    }
 }

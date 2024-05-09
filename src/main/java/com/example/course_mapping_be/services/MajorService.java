@@ -1,12 +1,11 @@
 package com.example.course_mapping_be.services;
 
 
-import com.example.course_mapping_be.dtos.BaseResponse;
-import com.example.course_mapping_be.dtos.MajorDto;
-import com.example.course_mapping_be.dtos.QueryParams;
-import com.example.course_mapping_be.dtos.SearchMajorDto;
+import com.example.course_mapping_be.dtos.*;
 import com.example.course_mapping_be.models.Major;
+import com.example.course_mapping_be.models.University;
 import com.example.course_mapping_be.repositories.MajorRepository;
+import com.example.course_mapping_be.repositories.ProgramEducationRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -24,6 +23,8 @@ public class MajorService {
     private MajorRepository majorRepository;
 
     private ModelMapper modelMapper;
+
+    private ProgramEducationRepository programEducationRepository;
 
     public MajorDto convertToDto(Major major) {
         MajorDto majorDto = modelMapper.map(major, MajorDto.class);
@@ -103,4 +104,16 @@ public class MajorService {
     }
 
 
+    public BaseResponse<MajorDto> updateEnabled(Long id, MajorDto majorDto) throws Exception {
+        Major major = majorRepository.findById(id).orElseThrow(() -> new Exception("Major is not found"));
+        Boolean enabled = majorDto.getEnabled();
+        programEducationRepository.updateEnabledByMajorId(id, enabled);
+
+        major.setEnabled(enabled);
+        major = majorRepository.save(major);
+        BaseResponse<MajorDto> baseResponse = new BaseResponse<>();
+        baseResponse.setData(modelMapper.map(major, MajorDto.class));
+        baseResponse.success();
+        return baseResponse;
+    }
 }

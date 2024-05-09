@@ -41,6 +41,9 @@ public class University {
 
     @Column(name = "feature")
     private String feature;
+    
+    @Column(name = "enabled", nullable = false)
+    private boolean enabled = true;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id")

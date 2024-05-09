@@ -24,4 +24,6 @@ public class MajorDto {
     String name;
 
     Integer numberOfProgramEducations;
+
+    Boolean enabled;
 }

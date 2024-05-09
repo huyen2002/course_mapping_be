@@ -93,4 +93,10 @@ public class ProgramEducationController {
 //        return ResponseEntity.ok(baseResponse);
 //    }
 
+    @PutMapping(path = "program_education/update_enabled/{id}")
+    public ResponseEntity<BaseResponse<ProgramEducationDto>> updateEnabled(@PathVariable Long id, @RequestBody ProgramEducationDto programEducationDto) throws Exception {
+        BaseResponse<ProgramEducationDto> baseResponse = programEducationService.updateEnabled(id, programEducationDto);
+        return ResponseEntity.ok(baseResponse);
+    }
+
 }

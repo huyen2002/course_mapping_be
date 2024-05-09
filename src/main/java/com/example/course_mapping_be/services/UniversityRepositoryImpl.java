@@ -43,6 +43,11 @@ public class UniversityRepositoryImpl implements CustomUniversityRepository {
                 predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("address").get("country"), country));
             }
         }
+        if (filterParams.getEnabled() != null) {
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("enabled"), filterParams.getEnabled()));
+        } else {
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("enabled"), true));
+        }
 
         criteriaQuery.where(predicate);
 
@@ -51,7 +56,7 @@ public class UniversityRepositoryImpl implements CustomUniversityRepository {
         query.setMaxResults(pageable.getPageSize());
 
         List<University> universities = query.getResultList();
-        
+
         Long total = getCountFilterUniversities(filterParams);
 
         return new PageImpl<>(universities, pageable, total);

@@ -23,24 +23,18 @@ public interface ProgramEducationRepository extends JpaRepository<ProgramEducati
     @Query("SELECT p FROM ProgramEducation p WHERE p.major.id = :id order by p.updatedAt desc")
     Page<ProgramEducation> findAllByMajorId(Long id, Pageable pageable);
 
-
-    @Query
-            ("SELECT p FROM ProgramEducation p WHERE " +
-                    "(:#{#searchProgramDto.name} IS NULL OR p.name LIKE %:#{#searchProgramDto.name}%) AND " +
-                    "(:#{#searchProgramDto.majorCode} IS NULL OR p.major.code = :#{#searchProgramDto.majorCode}) AND " +
-                    "(:#{#searchProgramDto.levelOfEducation} is NULL OR p.levelOfEducation = :#{#searchProgramDto.levelOfEducation}) AND " +
-                    "(:#{#searchProgramDto.universityId} is NULL OR p.university.id = :#{#searchProgramDto.universityId}) AND " +
-                    "(:#{#searchProgramDto.status} is NULL OR (p.endYear > YEAR(CURRENT_DATE ) OR  p.endYear is null  AND :#{#searchProgramDto.status} = 'ACTIVE') OR (p.endYear < YEAR(CURRENT_DATE) AND :#{#searchProgramDto.status} = 'INACTIVE')) " +
-                    "order by p.updatedAt desc"
-            )
-    Page<ProgramEducation> searchPrograms(SearchProgramDto searchProgramDto, Pageable pageable);
-
-    @Query("SELECT p FROM ProgramEducation p WHERE p.university.code = :universityCode AND p.code = :programEducationCode")
-    ProgramEducation findByUniversityCodeAndProgramEducationCode(String universityCode, String programEducationCode);
-
     @Modifying
     @Query("Delete  from ProgramEducation p where p.university.id = ?1")
     void deleteByUniversityId(Long id);
+
+    @Modifying
+    @Query("Update ProgramEducation p set p.enabled = ?2 where p.university.id = ?1")
+    void updateEnabledByUniversityId(Long id, Boolean enabled);
+
+
+    @Modifying
+    @Query("Update ProgramEducation p set p.enabled = ?2 where p.major.id = ?1")
+    void updateEnabledByMajorId(Long id, Boolean enabled);
 
 
 //    boolean existsByCode(String code);

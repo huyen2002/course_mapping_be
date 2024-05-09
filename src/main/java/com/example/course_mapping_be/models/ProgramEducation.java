@@ -66,6 +66,9 @@ public class ProgramEducation {
     @Column(name = "sourceLinks", columnDefinition = "TEXT")
     private String sourceLinks;
 
+    @Column(name = "enabled", nullable = false)
+    private boolean enabled = true;
+
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn(name = "universityId", nullable = false)

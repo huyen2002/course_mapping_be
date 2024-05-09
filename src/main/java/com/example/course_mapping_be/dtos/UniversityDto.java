@@ -26,4 +26,6 @@ public class UniversityDto {
     String introduction;
 
     AddressDto address;
+
+    Boolean enabled;
 }

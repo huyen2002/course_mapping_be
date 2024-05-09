@@ -28,6 +28,9 @@ public class Major {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "enabled", nullable = false)
+    private boolean enabled = true;
+
     @EqualsAndHashCode.Exclude
     @OnDelete(action = OnDeleteAction.CASCADE)
     @OneToMany(mappedBy = "major", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

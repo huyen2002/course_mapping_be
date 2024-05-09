@@ -14,5 +14,6 @@ public class SearchProgramDto {
     public LevelEducationType levelOfEducation;
     public String status;
     public Long universityId;
+    public Boolean enabled;
 
 }

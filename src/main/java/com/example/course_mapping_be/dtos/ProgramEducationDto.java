@@ -46,6 +46,8 @@ public class ProgramEducationDto {
 
     private String sourceLinks;
 
+    private Boolean enabled;
+
     private Date createdAt;
     private Date updatedAt;
 

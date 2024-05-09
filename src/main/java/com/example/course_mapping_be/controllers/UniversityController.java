@@ -67,6 +67,12 @@ public class UniversityController {
         return ResponseEntity.ok(baseResponse);
     }
 
+    @PutMapping(path = "university/update_enable/{id}")
+    public ResponseEntity<BaseResponse<UniversityDto>> updateEnable(@PathVariable Long id, @RequestBody UniversityDto universityDto) throws Exception {
+        BaseResponse<UniversityDto> baseResponse = universityService.updateEnable(id, universityDto);
+        return ResponseEntity.ok(baseResponse);
+    }
+
     @DeleteMapping(path = "university/{id}/delete")
     public ResponseEntity<BaseResponse<Boolean>> delete(@PathVariable Long id) throws Exception {
         BaseResponse<Boolean> baseResponse = universityService.deleteById(id);

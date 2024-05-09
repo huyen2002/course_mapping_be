@@ -55,4 +55,10 @@ public class MajorController {
 
         return ResponseEntity.ok(Map.of("success", majorService.deleteById(id)));
     }
+
+    @PutMapping(path = "major/update_enabled/{id}")
+    public ResponseEntity<BaseResponse<MajorDto>> updateEnabled(@PathVariable Long id, @RequestBody MajorDto majorDto) throws Exception {
+        BaseResponse<MajorDto> baseResponse = majorService.updateEnabled(id, majorDto);
+        return ResponseEntity.ok(baseResponse);
+    }
 }
