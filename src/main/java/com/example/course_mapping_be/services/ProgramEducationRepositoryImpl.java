@@ -57,6 +57,12 @@ public class ProgramEducationRepositoryImpl implements CustomProgramEducationRep
                 predicates.add(criteriaBuilder.equal(root.get("major"), major));
             }
         }
+        if (filterProgramParams.getEnabled() == null || filterProgramParams.getEnabled()) {
+            predicates.add(criteriaBuilder.equal(root.get("enabled"), true));
+        } else {
+            predicates.add(criteriaBuilder.equal(root.get("enabled"), false));
+        }
+
 
         criteriaQuery.where(predicates.toArray(new Predicate[0]));
         return entityManager.createQuery(criteriaQuery).getResultList();

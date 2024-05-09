@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class SearchMajorDto {
     public String name;
     public String code;
+    public Boolean enabled;
 }

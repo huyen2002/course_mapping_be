@@ -12,4 +12,5 @@ public class FilterProgramParams {
     private String country;
     private String language;
     private String major;
+    private Boolean enabled;
 }

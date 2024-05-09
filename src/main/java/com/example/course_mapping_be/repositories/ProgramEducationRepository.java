@@ -23,6 +23,10 @@ public interface ProgramEducationRepository extends JpaRepository<ProgramEducati
     @Query("SELECT p FROM ProgramEducation p WHERE p.major.id = :id order by p.updatedAt desc")
     Page<ProgramEducation> findAllByMajorId(Long id, Pageable pageable);
 
+
+    @Query("SELECT p FROM ProgramEducation p WHERE p.university.code = :universityCode AND p.code = :programEducationCode")
+    ProgramEducation findByUniversityCodeAndProgramEducationCode(String universityCode, String programEducationCode);
+
     @Modifying
     @Query("Delete  from ProgramEducation p where p.university.id = ?1")
     void deleteByUniversityId(Long id);

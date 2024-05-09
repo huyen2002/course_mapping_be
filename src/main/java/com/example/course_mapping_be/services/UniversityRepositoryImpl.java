@@ -83,6 +83,11 @@ public class UniversityRepositoryImpl implements CustomUniversityRepository {
             }
         }
 
+        if (filterParams.getEnabled() != null) {
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("enabled"), filterParams.getEnabled()));
+        } else {
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("enabled"), true));
+        }
         countQuery.select(criteriaBuilder.count(root));
         countQuery.where(predicate);
 
