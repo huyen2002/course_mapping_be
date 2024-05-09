@@ -137,18 +137,7 @@ public class CourseService {
         }
         return result;
     }
-
-    public BaseResponse<List<CourseDto>> getAllByUniversity(Long id, QueryParams params) {
-        University university = universityRepository.findById(id).orElseThrow(() -> new RuntimeException("University is not found"));
-        Page<Course> courses = courseRepository.findByUniversityId(id, PageRequest.of(params.getPage(), params.getSize()));
-        List<CourseDto> courseDtos = courses.stream().map(course -> modelMapper.map(course, CourseDto.class)).toList();
-        BaseResponse<List<CourseDto>> baseResponse = new BaseResponse<>();
-        baseResponse.setData(courseDtos);
-        baseResponse.updatePagination(params, courses.getTotalElements());
-        baseResponse.success();
-        return baseResponse;
-
-    }
+    
 
     public BaseResponse<List<CourseDto>> search(SearchCourseDto searchCourseDto, QueryParams params) {
         BaseResponse<List<CourseDto>> baseResponse = new BaseResponse<>();

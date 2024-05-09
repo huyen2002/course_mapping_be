@@ -30,13 +30,7 @@ public class UniversityController {
         BaseResponse<UniversityDto> baseResponse = universityService.updateByUniversityId(id, universityDto);
         return ResponseEntity.ok(baseResponse);
     }
-
-    @GetMapping(path = "universities/all")
-    public ResponseEntity<BaseResponse<List<UniversityDto>>> getAll(QueryParams params) {
-        BaseResponse<List<UniversityDto>> baseResponse = universityService.getAll(params);
-        return ResponseEntity.ok(baseResponse);
-    }
-
+    
     @GetMapping(path = "universities/search")
     public ResponseEntity<BaseResponse<List<UniversityDto>>> search(FilterUniversityParams filterParams, QueryParams params) {
         BaseResponse<List<UniversityDto>> baseResponse = universityService.search(filterParams, params);

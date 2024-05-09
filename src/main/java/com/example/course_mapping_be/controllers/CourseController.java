@@ -29,12 +29,7 @@ public class CourseController {
         BaseResponse<CourseDto> baseResponse = courseService.update(id, courseDto, request);
         return ResponseEntity.ok(baseResponse);
     }
-
-    @GetMapping(path = "university/{id}/courses")
-    public ResponseEntity<BaseResponse<List<CourseDto>>> getAllByUniversity(@PathVariable Long id, QueryParams params) throws Exception {
-        BaseResponse<List<CourseDto>> baseResponse = courseService.getAllByUniversity(id, params);
-        return ResponseEntity.ok(baseResponse);
-    }
+    
 
     @GetMapping(path = "courses/search")
     public ResponseEntity<BaseResponse<List<CourseDto>>> search(SearchCourseDto searchCourseDto, QueryParams params) throws Exception {

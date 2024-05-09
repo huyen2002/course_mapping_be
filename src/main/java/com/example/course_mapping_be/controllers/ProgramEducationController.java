@@ -27,18 +27,7 @@ public class ProgramEducationController {
         BaseResponse<List<Pair<ProgramEducationDto, Float>>> baseResponse = programEducationService.getTopSimilar(id, sortParam, filterProgramParams);
         return ResponseEntity.ok(baseResponse);
     }
-
-    @GetMapping(path = "university/{id}/program_educations/all")
-    public ResponseEntity<BaseResponse<List<ProgramEducationDto>>> getAllByUniversityId(@PathVariable Long id, QueryParams params) throws Exception {
-        BaseResponse<List<ProgramEducationDto>> baseResponse = programEducationService.getAllByUniversityId(id, params);
-        return ResponseEntity.ok(baseResponse);
-    }
-
-    @GetMapping(path = "major/{id}/program_educations/all")
-    public ResponseEntity<BaseResponse<List<ProgramEducationDto>>> getAllByMajorId(@PathVariable Long id, QueryParams params) throws Exception {
-        BaseResponse<List<ProgramEducationDto>> baseResponse = programEducationService.getAllByMajorId(id, params);
-        return ResponseEntity.ok(baseResponse);
-    }
+    
 
     @PutMapping(path = "program_education/update/{id}")
     public ResponseEntity<BaseResponse<ProgramEducationDto>> update(@PathVariable Long id, @RequestBody ProgramEducationDto programEducationDto, HttpServletRequest request) throws Exception {
@@ -57,11 +46,6 @@ public class ProgramEducationController {
         return ResponseEntity.ok(programEducationService.deleteById(id, request));
     }
 
-    @GetMapping(path = "program_educations/all")
-    public ResponseEntity<BaseResponse<List<ProgramEducationDto>>> getAll(QueryParams params) {
-        BaseResponse<List<ProgramEducationDto>> baseResponse = programEducationService.getAll(params);
-        return ResponseEntity.ok(baseResponse);
-    }
 
     @GetMapping(path = "program_educations/search")
     public ResponseEntity<BaseResponse<List<ProgramEducationDto>>> search(SearchProgramDto searchProgramDto, QueryParams params) {

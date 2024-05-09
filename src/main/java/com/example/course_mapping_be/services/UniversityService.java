@@ -111,15 +111,6 @@ public class UniversityService {
         return baseResponse;
     }
 
-    public BaseResponse<List<UniversityDto>> getAll(QueryParams params) {
-        Page<University> universities = universityRepository.findAll(PageRequest.of(params.getPage(), params.getSize()));
-        List<UniversityDto> universityDtos = universities.stream().map(university -> modelMapper.map(university, UniversityDto.class)).toList();
-        BaseResponse<List<UniversityDto>> baseResponse = new BaseResponse<>();
-        baseResponse.setData(universityDtos);
-        baseResponse.updatePagination(params, universities.getTotalElements());
-        baseResponse.success();
-        return baseResponse;
-    }
 
     public BaseResponse<List<UniversityDto>> search(FilterUniversityParams filterParams, QueryParams params) {
         Page<University> universities = universityRepository.filterUniversities(filterParams, PageRequest.of(params.getPage(), params.getSize()));

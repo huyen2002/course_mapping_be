@@ -106,18 +106,6 @@ public class ProgramEducationService {
         return baseResponse;
     }
 
-    public BaseResponse<List<ProgramEducationDto>> getAllByMajorId(Long id, QueryParams params) throws Exception {
-        BaseResponse<List<ProgramEducationDto>> baseResponse = new BaseResponse<>();
-        if (majorRepository.findById(id).isEmpty()) {
-            throw new Exception("Major with id is not found");
-        }
-        Page<ProgramEducation> programEducations = programEducationRepository.findAllByMajorId(id, PageRequest.of(params.getPage(), params.getSize()));
-        List<ProgramEducationDto> programEducationDtos = programEducations.map(programEducation -> modelMapper.map(programEducation, ProgramEducationDto.class)).getContent();
-        baseResponse.setData(programEducationDtos);
-        baseResponse.success();
-        baseResponse.updatePagination(params, programEducations.getTotalElements());
-        return baseResponse;
-    }
 
     public BaseResponse<ProgramEducationDto> update(Long id, ProgramEducationDto programEducationDto, HttpServletRequest request) throws Exception {
         ProgramEducation programEducation = programEducationRepository.findById(id).orElseThrow(() -> new Exception("Program education is not found"));
@@ -209,16 +197,6 @@ public class ProgramEducationService {
 
     }
 
-    public BaseResponse<List<ProgramEducationDto>> getAll(QueryParams params) {
-        BaseResponse<List<ProgramEducationDto>> baseResponse = new BaseResponse<>();
-
-        Page<ProgramEducation> programEducations = programEducationRepository.findAll(PageRequest.of(params.getPage(), params.getSize()));
-        List<ProgramEducationDto> programEducationDtos = programEducations.map(programEducation -> modelMapper.map(programEducation, ProgramEducationDto.class)).getContent();
-        baseResponse.setData(programEducationDtos);
-        baseResponse.success();
-        baseResponse.updatePagination(params, programEducations.getTotalElements());
-        return baseResponse;
-    }
 
     public BaseResponse<List<ProgramEducationDto>> search(SearchProgramDto searchProgramDto, QueryParams params) {
         BaseResponse<List<ProgramEducationDto>> baseResponse = new BaseResponse<>();

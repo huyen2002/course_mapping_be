@@ -45,18 +45,6 @@ public class MajorService {
         return baseResponse;
     }
 
-    public BaseResponse<List<MajorDto>> getPage(QueryParams params) {
-        BaseResponse<List<MajorDto>> baseResponse = new BaseResponse<>();
-        Page<Major> majors = majorRepository.findAll(PageRequest.of(params.getPage(), params.getSize()));
-
-        List<MajorDto> majorDtos = majors.map(this::convertToDto).getContent();
-
-        baseResponse.setData(majorDtos);
-        baseResponse.updatePagination(params, majors.getTotalElements());
-        baseResponse.success();
-        return baseResponse;
-    }
-
     public BaseResponse<List<MajorDto>> getAll() {
         BaseResponse<List<MajorDto>> baseResponse = new BaseResponse<>();
         List<Major> majors = majorRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));

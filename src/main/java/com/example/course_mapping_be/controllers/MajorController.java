@@ -24,13 +24,7 @@ public class MajorController {
         BaseResponse<MajorDto> baseResponse = majorService.create(majorDto);
         return ResponseEntity.ok(baseResponse);
     }
-
-    @GetMapping(path = "majors/all")
-    public ResponseEntity<BaseResponse<List<MajorDto>>> getPage(QueryParams params) {
-        BaseResponse<List<MajorDto>> baseResponse = majorService.getPage(params);
-        return ResponseEntity.ok(baseResponse);
-    }
-
+    
     @GetMapping(path = "majors/list")
     public ResponseEntity<BaseResponse<List<MajorDto>>> getAll() {
         BaseResponse<List<MajorDto>> baseResponse = majorService.getAll();
