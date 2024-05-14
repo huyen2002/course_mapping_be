@@ -1,14 +1,9 @@
 package com.example.course_mapping_be.services;
 
+import com.example.course_mapping_be.constraints.RoleType;
 import com.example.course_mapping_be.dtos.*;
-import com.example.course_mapping_be.models.Course;
-import com.example.course_mapping_be.models.ProgramEducation;
-import com.example.course_mapping_be.models.ProgramEducationCourse;
-import com.example.course_mapping_be.models.University;
-import com.example.course_mapping_be.repositories.ComparableProgramEducationRepository;
-import com.example.course_mapping_be.repositories.CourseRepository;
-import com.example.course_mapping_be.repositories.ProgramEducationCourseRepository;
-import com.example.course_mapping_be.repositories.UniversityRepository;
+import com.example.course_mapping_be.models.*;
+import com.example.course_mapping_be.repositories.*;
 import com.example.course_mapping_be.security.JsonWebTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -38,10 +33,18 @@ public class CourseService {
     private final ProgramEducationCourseRepository programEducationCourseRepository;
     private final ComparableProgramEducationRepository comparableProgramEducationRepository;
     private ReadFileService readFileService;
+    private UserRepository userRepository;
 
     public BaseResponse<CourseDto> create(CourseDto courseDto, HttpServletRequest request) throws Exception {
         Long userId = tokenProvider.getUserIdFromRequest(request);
-        University university = universityRepository.findByUserId(userId).orElseThrow(() -> new Exception("University is not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new Exception("User is not found"));
+        University university = null;
+
+        if (user.getRole() == RoleType.ADMIN) {
+            university = universityRepository.findById(courseDto.getUniversityId()).orElseThrow(() -> new Exception("University is not found"));
+        } else if (user.getRole() == RoleType.UNIVERSITY) {
+            university = universityRepository.findByUserId(userId).orElseThrow(() -> new Exception("University is not found"));
+        }
 
         BaseResponse<CourseDto> baseResponse = new BaseResponse<>();
         if (courseRepository.existsByCode(courseDto.getCode())) {
@@ -72,11 +75,9 @@ public class CourseService {
 
     public BaseResponse<CourseDto> update(Long id, CourseDto courseDto, HttpServletRequest request) throws Exception {
         Long userId = tokenProvider.getUserIdFromRequest(request);
-        University university = universityRepository.findByUserId(userId).orElseThrow(() -> new Exception("University is not found"));
+        
         Course course = courseRepository.findById(id).orElseThrow(() -> new Exception("Course is not found"));
-        if (!Objects.equals(course.getUniversity().getId(), university.getId())) {
-            throw new Exception("You are not allowed to update this course");
-        }
+
         BaseResponse<CourseDto> baseResponse = new BaseResponse<>();
         if (courseDto.getName() != null) {
             course.setName(courseDto.getName());

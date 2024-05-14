@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "majors")
+@Table(name = "major")
 @Getter
 @Setter
 @NoArgsConstructor

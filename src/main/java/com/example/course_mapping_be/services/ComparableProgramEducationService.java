@@ -35,13 +35,37 @@ public class ComparableProgramEducationService {
         //convert list of comparedCourseElements to list of comparedCourseDtos
         List<ComparedCourseDto> comparedCourseDtos = new ArrayList<>();
         comparedCourseElements.forEach(element -> {
-            Course firstCourse = courseRepository.findById(element.getFirstCourseId()).orElse(null);
-            Course secondCourse = courseRepository.findById(element.getSecondCourseId()).orElse(null);
-            ComparedCourseDto comparedCourseDto = new ComparedCourseDto(
-                    modelMapper.map(firstCourse, CourseDto.class),
-                    modelMapper.map(secondCourse, CourseDto.class),
-                    element.getSimilarity()
-            );
+            Course firstCourse = null;
+            Course secondCourse = null;
+            if (element.getFirstCourseId() != null) {
+                firstCourse = courseRepository.findById(element.getFirstCourseId()).orElse(null);
+
+            }
+            if (element.getSecondCourseId() != null) {
+                secondCourse = courseRepository.findById(element.getSecondCourseId()).orElse(null);
+            }
+            ComparedCourseDto comparedCourseDto = null;
+            if (firstCourse != null && secondCourse != null) {
+                comparedCourseDto = new ComparedCourseDto(
+                        modelMapper.map(firstCourse, CourseDto.class),
+                        modelMapper.map(secondCourse, CourseDto.class),
+                        element.getSimilarity()
+                );
+            } else if (firstCourse == null) {
+                comparedCourseDto = new ComparedCourseDto(
+                        null,
+                        modelMapper.map(secondCourse, CourseDto.class),
+                        element.getSimilarity()
+                );
+            } else {
+                comparedCourseDto = new ComparedCourseDto(
+                        modelMapper.map(firstCourse, CourseDto.class),
+                        null,
+                        element.getSimilarity()
+                );
+
+            }
+
             comparedCourseDtos.add(comparedCourseDto);
         });
         // convert comparedCourseDtos to string

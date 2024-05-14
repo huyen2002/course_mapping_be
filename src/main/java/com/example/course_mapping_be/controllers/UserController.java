@@ -3,6 +3,7 @@ package com.example.course_mapping_be.controllers;
 
 import com.example.course_mapping_be.dtos.BaseResponse;
 import com.example.course_mapping_be.dtos.QueryParams;
+import com.example.course_mapping_be.dtos.SearchUserParams;
 import com.example.course_mapping_be.dtos.UserDto;
 import com.example.course_mapping_be.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,12 @@ public class UserController {
     @PutMapping(path = "user/update/{id}")
     public ResponseEntity<BaseResponse<UserDto>> update(@PathVariable Long id, @RequestBody UserDto userDto) throws Exception {
         BaseResponse<UserDto> baseResponse = userService.update(id, userDto);
+        return ResponseEntity.ok(baseResponse);
+    }
+
+    @GetMapping(path = "users/search")
+    public ResponseEntity<BaseResponse<List<UserDto>>> search(SearchUserParams searchUserParams, QueryParams params) {
+        BaseResponse<List<UserDto>> baseResponse = userService.search(searchUserParams, params);
         return ResponseEntity.ok(baseResponse);
     }
 

@@ -27,9 +27,12 @@ public class CourseDto {
     private String language;
 
     private String outline;
-    
+
     private Date createdAt;
     private Date updatedAt;
+
+    private UniversityDto university;
+    private Long universityId;
 
 
 }

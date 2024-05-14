@@ -1,9 +1,6 @@
 package com.example.course_mapping_be.services;
 
-import com.example.course_mapping_be.dtos.BaseResponse;
-import com.example.course_mapping_be.dtos.QueryParams;
-import com.example.course_mapping_be.dtos.UserCreateDto;
-import com.example.course_mapping_be.dtos.UserDto;
+import com.example.course_mapping_be.dtos.*;
 import com.example.course_mapping_be.models.User;
 import com.example.course_mapping_be.repositories.UserRepository;
 import lombok.AllArgsConstructor;
@@ -75,6 +72,16 @@ public class UserService {
         userRepository.save(user);
         BaseResponse<UserDto> baseResponse = new BaseResponse<>();
         baseResponse.setData(modelMapper.map(user, UserDto.class));
+        baseResponse.success();
+        return baseResponse;
+    }
+
+    public BaseResponse<List<UserDto>> search(SearchUserParams searchUserParams, QueryParams params) {
+        BaseResponse<List<UserDto>> baseResponse = new BaseResponse<>();
+        Page<User> users = userRepository.searchUsers(searchUserParams.getRole(), searchUserParams.getCreateYear(), searchUserParams.getCreateMonth(), PageRequest.of(params.getPage(), params.getSize()));
+        List<UserDto> userDtoList = users.stream().map(user -> modelMapper.map(user, UserDto.class)).toList();
+        baseResponse.setData(userDtoList);
+        baseResponse.updatePagination(params, users.getTotalElements());
         baseResponse.success();
         return baseResponse;
     }

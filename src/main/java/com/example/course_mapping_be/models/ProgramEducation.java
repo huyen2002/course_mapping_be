@@ -18,7 +18,7 @@ import java.util.List;
 @Getter
 @Entity
 @Builder
-@Table(name = "program_educations")
+@Table(name = "program_education")
 public class ProgramEducation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,7 +48,7 @@ public class ProgramEducation {
     @Column(name = "numCredits", nullable = false)
     private Integer numCredits;
 
-    @Column(name = "outline")
+    @Column(name = "outline", columnDefinition = "TEXT")
     private String outline;
 
     @Column(name = "vectorOutline", columnDefinition = "LONGTEXT")
@@ -79,11 +79,11 @@ public class ProgramEducation {
     private Major major;
 
     @CreationTimestamp
-    @Column(name = "created_at")
+    @Column(name = "createdAt")
     private Date createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at")
+    @Column(name = "updatedAt")
     private Date updatedAt;
 
     @EqualsAndHashCode.Exclude
