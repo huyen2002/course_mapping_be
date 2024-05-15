@@ -52,9 +52,9 @@ public class ProgramEducationRepositoryImpl implements CustomProgramEducationRep
         String major = filterProgramParams.getMajor();
         if (Objects.nonNull(major) && !major.equals(FILTER_ALL)) {
             if (major.startsWith("!")) {
-                predicates.add(criteriaBuilder.notEqual(root.get("major"), major.substring(1)));
+                predicates.add(criteriaBuilder.notEqual(root.get("major").get("code"), major.substring(1)));
             } else {
-                predicates.add(criteriaBuilder.equal(root.get("major"), major));
+                predicates.add(criteriaBuilder.equal(root.get("major").get("code"), major));
             }
         }
         if (filterProgramParams.getEnabled() == null || filterProgramParams.getEnabled()) {

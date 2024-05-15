@@ -16,6 +16,13 @@ public class ComparableProgramEducationDto {
     @NotNull(message = "Second program id is required")
     private Long secondProgramId;
 
+
+    private Float nameSimilarity;
+
+    private Float introductionSimilarity;
+
+    private Float outlineSimilarity;
+
     private String coursesMapping;
 
 

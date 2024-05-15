@@ -209,30 +209,22 @@ public class ProgramEducationService {
         return baseResponse;
     }
 
-    public Float compareTwoVectorsFromString(String firstVector, String secondVector) {
-        JSONObject jsonObject1 = new JSONObject(firstVector);
-        JSONObject jsonObject2 = new JSONObject(secondVector);
-        List<Object> vector1 = jsonObject1.getJSONArray("vector").toList();
-        List<Object> vector2 = jsonObject2.getJSONArray("vector").toList();
-        String uri = "http://localhost:5000/api/cossim_between_two_vectors";
-        RestTemplate restTemplate = new RestTemplate();
-        CompareTwoVectorsDto compareTwoVectorsDto = new CompareTwoVectorsDto(vector1, vector2);
-        Float result = restTemplate.postForObject(uri, compareTwoVectorsDto, Float.class);
-        return result;
-    }
 
     public BaseResponse<Float> compareTwoPrograms(Long id1, Long id2) throws Exception {
         BaseResponse<Float> baseResponse = new BaseResponse<>();
 
         ProgramEducation programEducation1 = programEducationRepository.findById(id1).orElseThrow(() -> new Exception("Program education is not found"));
         ProgramEducation programEducation2 = programEducationRepository.findById(id2).orElseThrow(() -> new Exception("Program education is not found"));
+
+        Float nameSimilarity = documentService.compareTwoVectorsFromString(programEducation1.getVectorName(), programEducation2.getVectorName());
+
         if (programEducation1.getVectorOutline() == null || programEducation2.getVectorOutline() == null) {
-            Float similarity = compareTwoVectorsFromString(programEducation1.getVectorName(), programEducation2.getVectorName());
-            baseResponse.setData(similarity);
+            baseResponse.setData(Math.round(nameSimilarity * 100.0f * 100.0f) / 100.0f);
             baseResponse.success();
             return baseResponse;
         }
-        Float similarity = compareTwoVectorsFromString(programEducation1.getVectorOutline(), programEducation2.getVectorOutline());
+        Float outlineSimilarity = documentService.compareTwoVectorsFromString(programEducation1.getVectorOutline(), programEducation2.getVectorOutline());
+        Float similarity = Math.round((nameSimilarity * 0.8f + outlineSimilarity * 0.2f) * 100.0f * 100.0f) / 100.0f;
         baseResponse.setData(similarity);
         baseResponse.success();
         return baseResponse;

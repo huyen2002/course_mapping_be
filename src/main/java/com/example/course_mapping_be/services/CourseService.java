@@ -56,7 +56,7 @@ public class CourseService {
             vectorOutline = documentService.convertDocumentToVector(outline).getData();
         }
 
-        String vectorName = documentService.convertDocumentToVector(courseDto.getName()).getData();
+        String vectorName = documentService.convertDocumentToVectorDbow(courseDto.getName()).getData();
         Course course = Course.builder()
                 .name(courseDto.getName())
                 .code(courseDto.getCode())
@@ -75,13 +75,13 @@ public class CourseService {
 
     public BaseResponse<CourseDto> update(Long id, CourseDto courseDto, HttpServletRequest request) throws Exception {
         Long userId = tokenProvider.getUserIdFromRequest(request);
-        
+
         Course course = courseRepository.findById(id).orElseThrow(() -> new Exception("Course is not found"));
 
         BaseResponse<CourseDto> baseResponse = new BaseResponse<>();
         if (courseDto.getName() != null) {
             course.setName(courseDto.getName());
-            course.setVectorName(documentService.convertDocumentToVector(courseDto.getName()).getData());
+            course.setVectorName(documentService.convertDocumentToVectorDbow(courseDto.getName()).getData());
         }
         if (courseDto.getCode() != null) {
             if (courseRepository.existsByCode(courseDto.getCode())) {
@@ -114,7 +114,16 @@ public class CourseService {
     public Float compareTwoCourse(Long id1, Long id2) {
         Course course1 = courseRepository.findById(id1).orElseThrow(() -> new RuntimeException("Course is not found"));
         Course course2 = courseRepository.findById(id2).orElseThrow(() -> new RuntimeException("Course is not found"));
-        BaseResponse<Float> baseResponse = documentService.compareTwoDocuments(course1.getName(), course2.getName());
+        BaseResponse<Float> baseResponse = new BaseResponse<>();
+        Float nameSimilarity = documentService.compareTwoVectorsFromString(course1.getVectorName(), course2.getVectorName());
+        if (course1.getVectorOutline() == null || course2.getVectorOutline() == null) {
+
+            return nameSimilarity * 100.0f;
+
+        }
+        Float outlineSimilarity = documentService.compareTwoVectorsFromString(course1.getVectorOutline(), course2.getVectorOutline());
+        Float similarity = (nameSimilarity * 0.6f + outlineSimilarity * 0.4f) * 100.0f;
+        baseResponse.setData(similarity);
         return baseResponse.getData();
     }
 
@@ -133,7 +142,9 @@ public class CourseService {
                 return Pair.of(c, 100.0f);
             }
         }
-        if (mostSimilarCourse != null && maxSimilarity > 70.0f) {
+        if (mostSimilarCourse != null && maxSimilarity > 50.0f) {
+            // round similarity to 2 decimal places
+            maxSimilarity = Math.round(maxSimilarity * 100.0f) / 100.0f;
             result = Pair.of(mostSimilarCourse, maxSimilarity);
         }
         return result;

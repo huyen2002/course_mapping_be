@@ -18,13 +18,21 @@ public class ComparableProgramEducation {
     @Column(name = "id", nullable = false)
     private Long id;
 
-
     @Column(name = "firstProgramId", nullable = false)
     private Long firstProgramId;
 
 
     @Column(name = "secondProgramId", nullable = false)
     private Long secondProgramId;
+
+    @Column(name = "nameSimilarity")
+    private Float nameSimilarity;
+
+    @Column(name = "introductionSimilarity")
+    private Float introductionSimilarity;
+
+    @Column(name = "outlineSimilarity")
+    private Float outlineSimilarity;
 
     @Column(name = "coursesMapping", columnDefinition = "LONGTEXT")
     private String coursesMapping;

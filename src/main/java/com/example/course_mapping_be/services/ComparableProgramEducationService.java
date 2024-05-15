@@ -8,8 +8,10 @@ import com.example.course_mapping_be.dtos.CourseDto;
 import com.example.course_mapping_be.models.ComparableProgramEducation;
 import com.example.course_mapping_be.models.ComparedCourseElement;
 import com.example.course_mapping_be.models.Course;
+import com.example.course_mapping_be.models.ProgramEducation;
 import com.example.course_mapping_be.repositories.ComparableProgramEducationRepository;
 import com.example.course_mapping_be.repositories.CourseRepository;
+import com.example.course_mapping_be.repositories.ProgramEducationRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -26,7 +28,8 @@ public class ComparableProgramEducationService {
     private final ComparableProgramEducationRepository comparableProgramEducationRepository;
     private ModelMapper modelMapper;
     private final CourseRepository courseRepository;
-
+    private DocumentService documentService;
+    private ProgramEducationRepository programEducationRepository;
 
     public String convertCompareElementToDto(String comparedElements) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -73,16 +76,39 @@ public class ComparableProgramEducationService {
         return coursesMapping;
     }
 
-    public BaseResponse<ComparableProgramEducationDto> create(ComparableProgramEducationDto comparableProgramEducationDto) throws JsonProcessingException {
+    public BaseResponse<ComparableProgramEducationDto> create(ComparableProgramEducationDto comparableProgramEducationDto) throws JsonProcessingException, Exception {
         BaseResponse<ComparableProgramEducationDto> baseResponse = new BaseResponse<>();
-        List<ComparedCourseElement> comparedCourseDtos = programEducationCourseService.compareCoursesOfProgramEducations(comparableProgramEducationDto.getFirstProgramId(), comparableProgramEducationDto.getSecondProgramId()).getData();
+        ProgramEducation firstProgram = programEducationRepository.findById(comparableProgramEducationDto.getFirstProgramId()).orElse(null);
+        ProgramEducation secondProgram = programEducationRepository.findById(comparableProgramEducationDto.getSecondProgramId()).orElse(null);
+        if (firstProgram == null || secondProgram == null) {
+            throw new Exception("Program education is not found");
+        }
+        List<ComparedCourseElement> comparedCourseDtos = programEducationCourseService.compareCoursesOfProgramEducations(firstProgram.getId(), secondProgram.getId()).getData();
         // convert list of comparedCourseDtos to json string
         ObjectMapper objectMapper = new ObjectMapper();
         String coursesMapping = objectMapper.writeValueAsString(comparedCourseDtos);
 
+        Float nameSimilarity = documentService.compareTwoVectorsFromString(firstProgram.getVectorName(), secondProgram.getVectorName());
+        Float outlineSimilarity = 0.0f;
+        if (firstProgram.getVectorOutline() != null && secondProgram.getVectorOutline() != null) {
+            outlineSimilarity = documentService.compareTwoVectorsFromString(firstProgram.getVectorOutline(), secondProgram.getVectorOutline());
+
+        }
+
+        Float introductionSimilarity = 0.0f;
+        if (firstProgram.getIntroduction() != null && secondProgram.getIntroduction() != null) {
+            introductionSimilarity = documentService.compareTwoDocuments(firstProgram.getIntroduction(), secondProgram.getIntroduction()).getData();
+
+        }
+        nameSimilarity = Math.round(nameSimilarity * 100 * 100.0) / 100.0f;
+        outlineSimilarity = Math.round(outlineSimilarity * 100 * 100.0) / 100.0f;
+
         ComparableProgramEducation comparableProgramEducation = ComparableProgramEducation.builder()
                 .firstProgramId(comparableProgramEducationDto.getFirstProgramId())
                 .secondProgramId(comparableProgramEducationDto.getSecondProgramId())
+                .nameSimilarity(nameSimilarity)
+                .introductionSimilarity(introductionSimilarity)
+                .outlineSimilarity(outlineSimilarity)
                 .coursesMapping(coursesMapping).
                 build();
 
