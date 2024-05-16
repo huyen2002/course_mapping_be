@@ -1,11 +1,9 @@
 package com.example.course_mapping_be.controllers;
 
 
-import com.example.course_mapping_be.dtos.BaseResponse;
-import com.example.course_mapping_be.dtos.QueryParams;
-import com.example.course_mapping_be.dtos.SearchUserParams;
-import com.example.course_mapping_be.dtos.UserDto;
+import com.example.course_mapping_be.dtos.*;
 import com.example.course_mapping_be.services.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,7 +32,7 @@ public class UserController {
         return ResponseEntity.ok(baseResponse);
     }
 
-    @PutMapping(path = "user/update/{id}")
+    @PutMapping(path = "user/{id}/update")
     public ResponseEntity<BaseResponse<UserDto>> update(@PathVariable Long id, @RequestBody UserDto userDto) throws Exception {
         BaseResponse<UserDto> baseResponse = userService.update(id, userDto);
         return ResponseEntity.ok(baseResponse);
@@ -43,6 +41,12 @@ public class UserController {
     @GetMapping(path = "users/search")
     public ResponseEntity<BaseResponse<List<UserDto>>> search(SearchUserParams searchUserParams, QueryParams params) {
         BaseResponse<List<UserDto>> baseResponse = userService.search(searchUserParams, params);
+        return ResponseEntity.ok(baseResponse);
+    }
+
+    @PutMapping(path = "user/{id}/change_password")
+    public ResponseEntity<BaseResponse<Boolean>> changePassword(@PathVariable Long id, @RequestBody ChangePasswordDto changePasswordDto) throws Exception {
+        BaseResponse<Boolean> baseResponse = userService.changePassword(id, changePasswordDto);
         return ResponseEntity.ok(baseResponse);
     }
 

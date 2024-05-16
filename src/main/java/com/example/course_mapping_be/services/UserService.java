@@ -3,6 +3,8 @@ package com.example.course_mapping_be.services;
 import com.example.course_mapping_be.dtos.*;
 import com.example.course_mapping_be.models.User;
 import com.example.course_mapping_be.repositories.UserRepository;
+import com.example.course_mapping_be.security.JsonWebTokenProvider;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -23,7 +25,7 @@ public class UserService {
     private final ModelMapper modelMapper;
 
     private final PasswordEncoder passwordEncoder;
-
+    
     public User createUser(UserCreateDto userCreateDto) {
         if (userRepository.findByEmail(userCreateDto.getEmail()).isPresent()) {
             throw new Error("Email is existed");
@@ -63,8 +65,18 @@ public class UserService {
 
     public BaseResponse<UserDto> update(Long id, UserDto userDto) throws Exception {
         User user = userRepository.findById(id).orElseThrow(() -> new Exception("User with id is not found"));
+
         if (userDto.getUsername() != null) {
+            if (userRepository.findByUsername(userDto.getUsername()).isPresent()) {
+                throw new Exception("Username is existed");
+            }
             user.setUsername(userDto.getUsername());
+        }
+        if (userDto.getEmail() != null) {
+            if (userRepository.findByEmail(userDto.getEmail()).isPresent()) {
+                throw new Exception("Email is existed");
+            }
+            user.setEmail(userDto.getEmail());
         }
         if (userDto.isEnabled() != user.isEnabled()) {
             user.setEnabled(userDto.isEnabled());
@@ -84,5 +96,22 @@ public class UserService {
         baseResponse.updatePagination(params, users.getTotalElements());
         baseResponse.success();
         return baseResponse;
+    }
+
+    public BaseResponse<Boolean> changePassword(Long userId, ChangePasswordDto changePasswordDto) throws Exception {
+        BaseResponse<Boolean> baseResponse = new BaseResponse<>();
+        User user = userRepository.findById(userId).orElseThrow(() -> new Exception("User is not found"));
+        if (!passwordEncoder.matches(changePasswordDto.getOldPassword(), user.getPassword())) {
+            baseResponse.setData(false);
+            baseResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+            baseResponse.setMessage("Old password is incorrect");
+            return baseResponse;
+        }
+        user.setPassword(passwordEncoder.encode(changePasswordDto.getNewPassword()));
+        userRepository.save(user);
+        baseResponse.setData(true);
+        baseResponse.success();
+        return baseResponse;
+
     }
 }
