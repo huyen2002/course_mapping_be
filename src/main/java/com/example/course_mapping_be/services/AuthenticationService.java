@@ -5,6 +5,7 @@ import com.example.course_mapping_be.dtos.BaseResponse;
 import com.example.course_mapping_be.dtos.LoginRequestDto;
 import com.example.course_mapping_be.dtos.UserCreateDto;
 import com.example.course_mapping_be.dtos.UserDto;
+import com.example.course_mapping_be.models.University;
 import com.example.course_mapping_be.models.User;
 import com.example.course_mapping_be.security.CustomUserDetails;
 import com.example.course_mapping_be.security.JsonWebTokenProvider;
@@ -37,8 +38,8 @@ public class AuthenticationService {
         User user = userService.createUser(userCreateDto);
 
         if (user.getRole() == RoleType.UNIVERSITY) {
-            universityService.createEmptyUniversity(user);
-            universityService.updateByUniversityId(user.getId(), userCreateDto.getUniversity());
+            University university = universityService.createEmptyUniversity(user);
+            universityService.updateByUniversityId(university.getId(), userCreateDto.getUniversity());
         }
 
         baseResponse.setData(modelMapper.map(user, UserDto.class));

@@ -17,12 +17,8 @@ public class AddressDto {
     @NotBlank(message = "Detail is required")
     String detail;
 
-    @NotNull(message = "District is required")
-    @NotBlank(message = "District is required")
     String district;
 
-    @NotNull(message = "City is required")
-    @NotBlank(message = "City is required")
     String city;
 
     @NotNull(message = "Country is required")
