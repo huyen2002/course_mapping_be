@@ -25,7 +25,7 @@ public class UserService {
     private final ModelMapper modelMapper;
 
     private final PasswordEncoder passwordEncoder;
-    
+
     public User createUser(UserCreateDto userCreateDto) {
         if (userRepository.findByEmail(userCreateDto.getEmail()).isPresent()) {
             throw new Error("Email is existed");
@@ -90,7 +90,7 @@ public class UserService {
 
     public BaseResponse<List<UserDto>> search(SearchUserParams searchUserParams, QueryParams params) {
         BaseResponse<List<UserDto>> baseResponse = new BaseResponse<>();
-        Page<User> users = userRepository.searchUsers(searchUserParams.getRole(), searchUserParams.getCreateYear(), searchUserParams.getCreateMonth(), PageRequest.of(params.getPage(), params.getSize()));
+        Page<User> users = userRepository.searchUsers(searchUserParams.getRole(), searchUserParams.getCreateYear(), searchUserParams.getCreateMonth(), searchUserParams.getUsername(), PageRequest.of(params.getPage(), params.getSize()));
         List<UserDto> userDtoList = users.stream().map(user -> modelMapper.map(user, UserDto.class)).toList();
         baseResponse.setData(userDtoList);
         baseResponse.updatePagination(params, users.getTotalElements());

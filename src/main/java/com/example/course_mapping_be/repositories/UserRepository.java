@@ -17,6 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String name);
 
 
-    @Query("SELECT u FROM User u WHERE (:role IS NULL OR u.role = :role) AND (:createYear IS NULL OR YEAR(u.createAt) = :createYear) AND (:createMonth IS NULL OR MONTH(u.createAt) = :createMonth)")
-    Page<User> searchUsers(RoleType role, Integer createYear, Integer createMonth, Pageable pageable);
+    @Query("SELECT u FROM User u WHERE (:role IS NULL OR u.role = :role) AND (:createYear IS NULL OR YEAR(u.createAt) = :createYear) AND (:createMonth IS NULL OR MONTH(u.createAt) = :createMonth) AND (:username IS NULL OR u.username LIKE %:username%)")
+    Page<User> searchUsers(RoleType role, Integer createYear, Integer createMonth, String username, Pageable pageable);
 }

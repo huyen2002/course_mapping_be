@@ -12,4 +12,6 @@ public class SearchUserParams {
     public RoleType role;
     public Integer createMonth;
     public Integer createYear;
+    public String username;
+
 }

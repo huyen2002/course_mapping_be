@@ -3,9 +3,11 @@ package com.example.course_mapping_be.services;
 
 import com.example.course_mapping_be.dtos.*;
 import com.example.course_mapping_be.models.Major;
+import com.example.course_mapping_be.models.ProgramEducation;
 import com.example.course_mapping_be.models.University;
 import com.example.course_mapping_be.repositories.MajorRepository;
 import com.example.course_mapping_be.repositories.ProgramEducationRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -25,6 +27,7 @@ public class MajorService {
     private ModelMapper modelMapper;
 
     private ProgramEducationRepository programEducationRepository;
+    private ProgramEducationService programEducationService;
 
     public MajorDto convertToDto(Major major) {
         MajorDto majorDto = modelMapper.map(major, MajorDto.class);
@@ -47,7 +50,7 @@ public class MajorService {
 
     public BaseResponse<List<MajorDto>> getAll() {
         BaseResponse<List<MajorDto>> baseResponse = new BaseResponse<>();
-        List<Major> majors = majorRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
+        List<Major> majors = majorRepository.findAllEnabledMajors();
         List<MajorDto> majorDtos = majors.stream().map(this::convertToDto).toList();
         baseResponse.setData(majorDtos);
         baseResponse.success();
@@ -72,13 +75,22 @@ public class MajorService {
         return baseResponse;
     }
 
-    public void delete(Long id) {
-    }
 
-    public Boolean deleteById(Long id) throws Exception {
+    public BaseResponse<Boolean> deleteById(Long id, HttpServletRequest request) throws Exception {
         majorRepository.findById(id).orElseThrow(() -> new Exception("Major with id is not found"));
+        List<ProgramEducation> programEducations = programEducationRepository.getAllByMajorId(id);
+        programEducations.forEach(programEducation -> {
+            try {
+                programEducationService.deleteById(programEducation.getId(), request);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
         majorRepository.deleteById(id);
-        return true;
+        BaseResponse<Boolean> baseResponse = new BaseResponse<>();
+        baseResponse.setData(true);
+        baseResponse.success();
+        return baseResponse;
     }
 
     public BaseResponse<List<MajorDto>> searchMajors(SearchMajorDto searchMajorDto, QueryParams params) {

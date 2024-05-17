@@ -6,6 +6,7 @@ import com.example.course_mapping_be.dtos.QueryParams;
 import com.example.course_mapping_be.dtos.SearchMajorDto;
 import com.example.course_mapping_be.models.Major;
 import com.example.course_mapping_be.services.MajorService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class MajorController {
         BaseResponse<MajorDto> baseResponse = majorService.create(majorDto);
         return ResponseEntity.ok(baseResponse);
     }
-    
+
     @GetMapping(path = "majors/list")
     public ResponseEntity<BaseResponse<List<MajorDto>>> getAll() {
         BaseResponse<List<MajorDto>> baseResponse = majorService.getAll();
@@ -45,9 +46,10 @@ public class MajorController {
     }
 
     @DeleteMapping(path = "major/delete/{id}")
-    public ResponseEntity<Object> delete(@PathVariable Long id) throws Exception {
+    public ResponseEntity<BaseResponse<Boolean>> delete(@PathVariable Long id, HttpServletRequest request) throws Exception {
 
-        return ResponseEntity.ok(Map.of("success", majorService.deleteById(id)));
+        BaseResponse<Boolean> baseResponse = majorService.deleteById(id, request);
+        return ResponseEntity.ok(baseResponse);
     }
 
     @PutMapping(path = "major/update_enabled/{id}")

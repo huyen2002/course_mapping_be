@@ -24,6 +24,10 @@ public interface ProgramEducationRepository extends JpaRepository<ProgramEducati
     Page<ProgramEducation> findAllByMajorId(Long id, Pageable pageable);
 
 
+    @Query("SELECT p FROM ProgramEducation p WHERE p.major.id = :id")
+    List<ProgramEducation> getAllByMajorId(Long id);
+
+
     @Query("SELECT p FROM ProgramEducation p WHERE p.university.code = :universityCode AND p.code = :programEducationCode")
     ProgramEducation findByUniversityCodeAndProgramEducationCode(String universityCode, String programEducationCode);
 
