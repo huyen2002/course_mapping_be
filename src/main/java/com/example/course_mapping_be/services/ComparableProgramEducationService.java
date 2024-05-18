@@ -52,18 +52,24 @@ public class ComparableProgramEducationService {
                 comparedCourseDto = new ComparedCourseDto(
                         modelMapper.map(firstCourse, CourseDto.class),
                         modelMapper.map(secondCourse, CourseDto.class),
+                        element.getNameSimilarity(),
+                        element.getOutlineSimilarity(),
                         element.getSimilarity()
                 );
             } else if (firstCourse == null) {
                 comparedCourseDto = new ComparedCourseDto(
                         null,
                         modelMapper.map(secondCourse, CourseDto.class),
+                        element.getNameSimilarity(),
+                        element.getOutlineSimilarity(),
                         element.getSimilarity()
                 );
             } else {
                 comparedCourseDto = new ComparedCourseDto(
                         modelMapper.map(firstCourse, CourseDto.class),
                         null,
+                        element.getNameSimilarity(),
+                        element.getOutlineSimilarity(),
                         element.getSimilarity()
                 );
 

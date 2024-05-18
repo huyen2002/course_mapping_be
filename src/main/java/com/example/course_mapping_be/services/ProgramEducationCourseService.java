@@ -29,6 +29,7 @@ public class ProgramEducationCourseService {
     private final ProgramEducationCourseRepository programEducationCourseRepository;
     private CourseService courseService;
     private final ComparableProgramEducationRepository comparableProgramEducationRepository;
+    private DocumentService documentService;
 
     public void deleteComparableProgram(Long programCourseId) {
         ProgramEducationCourse programEducationCourse = programEducationCourseRepository.findById(programCourseId).orElse(null);
@@ -47,11 +48,14 @@ public class ProgramEducationCourseService {
     }
 
     public BaseResponse<ProgramEducationCourseDto> create(ProgramEducationCourseDto programEducationCourseDto) throws Exception {
+        BaseResponse<ProgramEducationCourseDto> baseResponse = new BaseResponse<>();
         ProgramEducation programEducation = programEducationRepository.findById(programEducationCourseDto.getProgramEducationId()).orElseThrow(() -> new Exception("Program education is not found"));
         Course course = courseRepository.findById(programEducationCourseDto.getCourseId()).orElseThrow(() -> new Exception("Course is not found"));
         ProgramEducationCourse findProgramEducationCourse = programEducationCourseRepository.findByProgramEducationIdAndCourseId(programEducation.getId(), course.getId()).orElse(null);
         if (findProgramEducationCourse != null) {
-            throw new Exception("Program education course is already exist");
+            baseResponse.setStatus(400);
+            baseResponse.setMessage("Môn học đã tồn tại trong chương trình đào tạo");
+            return baseResponse;
         }
         ProgramEducationCourse programEducationCourse = ProgramEducationCourse.builder()
                 .programEducation(programEducation).course(course).
@@ -60,7 +64,6 @@ public class ProgramEducationCourseService {
 
         programEducationCourseRepository.save(programEducationCourse);
         deleteComparableProgram(programEducationCourse.getId());
-        BaseResponse<ProgramEducationCourseDto> baseResponse = new BaseResponse<>();
         baseResponse.setData(convertToDto(programEducationCourse));
         baseResponse.success();
         return baseResponse;
@@ -86,13 +89,19 @@ public class ProgramEducationCourseService {
         for (Course course : courseList1) {
             Pair<Course, Float> mostSimilarCourse = courseService.getMostSimilarCourse(course, courseList2);
             if (mostSimilarCourse != null) {
+                Float nameSimilarity = Math.round(documentService.compareTwoVectorsFromString(course.getVectorName(), mostSimilarCourse.getFirst().getVectorName()) * 100 * 100.0) / 100.0f;
+                float outlineSimilarity = 0f;
+                if (course.getVectorOutline() != null && mostSimilarCourse.getFirst().getVectorOutline() != null) {
+                    outlineSimilarity = Math.round(documentService.compareTwoVectorsFromString(course.getVectorOutline(), mostSimilarCourse.getFirst().getVectorOutline()) * 100 * 100.0) / 100.0f;
+                }
+
                 comparedCourseElements.add(
-                        new ComparedCourseElement(course.getId(), mostSimilarCourse.getFirst().getId(), mostSimilarCourse.getSecond()));
+                        new ComparedCourseElement(course.getId(), mostSimilarCourse.getFirst().getId(), nameSimilarity, outlineSimilarity, mostSimilarCourse.getSecond()));
 
                 copyCourseList2.remove(mostSimilarCourse.getFirst());
             } else {
                 comparedCourseElements.add(
-                        new ComparedCourseElement(course.getId(), null, 0f));
+                        new ComparedCourseElement(course.getId(), null, 0f, 0f, 0f));
             }
 
         }
@@ -100,7 +109,7 @@ public class ProgramEducationCourseService {
         if (!copyCourseList2.isEmpty()) {
             for (Course course : copyCourseList2) {
                 comparedCourseElements.add(
-                        new ComparedCourseElement(null, course.getId(), 0f)
+                        new ComparedCourseElement(null, course.getId(), 0f, 0f, 0f)
                 );
             }
         }

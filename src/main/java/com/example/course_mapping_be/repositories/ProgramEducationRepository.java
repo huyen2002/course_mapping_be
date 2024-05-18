@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 @Transactional
 public interface ProgramEducationRepository extends JpaRepository<ProgramEducation, Long>, CustomProgramEducationRepository {
@@ -43,6 +44,8 @@ public interface ProgramEducationRepository extends JpaRepository<ProgramEducati
     @Modifying
     @Query("Update ProgramEducation p set p.enabled = ?2 where p.major.id = ?1")
     void updateEnabledByMajorId(Long id, Boolean enabled);
+
+    Optional<Object> findByCode(String code);
 
 
 //    boolean existsByCode(String code);

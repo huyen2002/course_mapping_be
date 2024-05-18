@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 public class ComparedCourseDto {
     private CourseDto firstCourse;
     private CourseDto secondCourse;
+    private Float nameSimilarity;
+    private Float outlineSimilarity;
     private Float similarity;
 
 }

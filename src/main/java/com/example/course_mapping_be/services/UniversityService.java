@@ -41,6 +41,23 @@ public class UniversityService {
     }
 
     public BaseResponse<UniversityDto> create(UniversityDto universityDto) {
+        BaseResponse<UniversityDto> baseResponse = new BaseResponse<>();
+
+        if (universityDto.getName() != null) {
+            if (universityRepository.findByName(universityDto.getName()).isPresent()) {
+                baseResponse.setStatus(400);
+                baseResponse.setMessage("Tên trường đại học đã tồn tại");
+                return baseResponse;
+            }
+
+        }
+        if (universityDto.getCode() != null) {
+            if (universityRepository.findByCode(universityDto.getCode()).isPresent()) {
+                baseResponse.setStatus(400);
+                baseResponse.setMessage("Mã trường đại học đã tồn tại");
+                return baseResponse;
+            }
+        }
         Address address = null;
         if (universityDto.getAddress() != null) {
             AddressDto addressDto = universityDto.getAddress();
@@ -54,9 +71,10 @@ public class UniversityService {
         University university = University.builder()
                 .name(universityDto.getName()).code(universityDto.getCode()).user(null).
                 introduction(universityDto.getIntroduction()).address(address)
-                .feature(universityDto.getFeature()).build();
+                .feature(universityDto.getFeature())
+                .enabled(true).
+                build();
 
-        BaseResponse<UniversityDto> baseResponse = new BaseResponse<>();
         baseResponse.setData(modelMapper.map(universityRepository.save(university), UniversityDto.class));
         baseResponse.success();
         return baseResponse;
@@ -68,13 +86,17 @@ public class UniversityService {
 
         if (universityDto.getName() != null) {
             if (universityRepository.findByName(universityDto.getName()).isPresent()) {
-                throw new Exception("University with name is existed");
+                baseResponse.setStatus(400);
+                baseResponse.setMessage("Tên trường đại học đã tồn tại");
+                return baseResponse;
             }
             university.setName(universityDto.getName());
         }
         if (universityDto.getCode() != null) {
             if (universityRepository.findByCode(universityDto.getCode()).isPresent()) {
-                throw new Exception("University with code is existed");
+                baseResponse.setStatus(400);
+                baseResponse.setMessage("Mã trường đại học đã tồn tại");
+                return baseResponse;
             }
             university.setCode(universityDto.getCode());
         }
@@ -143,8 +165,14 @@ public class UniversityService {
         Long userId = tokenProvider.getUserIdFromRequest(request);
         University university = universityRepository.findByUserId(userId).orElse(null);
         BaseResponse<UniversityDto> baseResponse = new BaseResponse<>();
-        baseResponse.setData(modelMapper.map(university, UniversityDto.class));
-        baseResponse.success();
+        if (university == null) {
+            baseResponse.setStatus(400);
+            baseResponse.setMessage("Not found University by user id");
+        } else {
+            baseResponse.setData(modelMapper.map(university, UniversityDto.class));
+            baseResponse.success();
+        }
+
         return baseResponse;
     }
 

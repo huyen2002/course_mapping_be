@@ -48,7 +48,9 @@ public class CourseService {
 
         BaseResponse<CourseDto> baseResponse = new BaseResponse<>();
         if (courseRepository.existsByCode(courseDto.getCode())) {
-            throw new Exception("Code is already used");
+            baseResponse.setStatus(400);
+            baseResponse.setMessage("Mã khóa học đã tồn tại");
+            return baseResponse;
         }
         String vectorOutline = null;
         if (courseDto.getOutline() != null) {
@@ -85,7 +87,8 @@ public class CourseService {
         }
         if (courseDto.getCode() != null) {
             if (courseRepository.existsByCode(courseDto.getCode())) {
-                throw new Exception("Code is already used");
+                baseResponse.setStatus(400);
+                baseResponse.setMessage("Mã khóa học đã tồn tại");
             }
             course.setCode(courseDto.getCode());
         }
@@ -185,11 +188,5 @@ public class CourseService {
 
     }
 
-    public BaseResponse<Boolean> existedByCode(String code) {
-        BaseResponse<Boolean> baseResponse = new BaseResponse<>();
-        baseResponse.setData(courseRepository.existsByCode(code));
-        baseResponse.success();
-        return baseResponse;
-    }
 
 }

@@ -38,7 +38,9 @@ public class MajorService {
     public BaseResponse<MajorDto> create(MajorDto majorDto) throws Exception {
         BaseResponse<MajorDto> baseResponse = new BaseResponse<>();
         if (majorRepository.findByCode(majorDto.getCode()).isPresent()) {
-            throw new Exception("Major with code is already exist");
+            baseResponse.setStatus(400);
+            baseResponse.setMessage("Mã ngành học đã tồn tại");
+            return baseResponse;
         }
         Major major = new Major(majorDto.getCode(), majorDto.getName());
 
@@ -58,18 +60,20 @@ public class MajorService {
     }
 
     public BaseResponse<MajorDto> update(Long id, MajorDto majorDto) throws Exception {
+        BaseResponse<MajorDto> baseResponse = new BaseResponse<>();
         Major major = majorRepository.findById(id).orElseThrow(() -> new Exception("Major with id is not found"));
         if (majorDto.getName() != null) {
             major.setName(majorDto.getName());
         }
         if (majorDto.getCode() != null) {
-            if (majorRepository.findByCode(majorDto.getCode()).isPresent())
-                throw new Exception("Major with code is already exist");
-
+            if (majorRepository.findByCode(majorDto.getCode()).isPresent()) {
+                baseResponse.setStatus(400);
+                baseResponse.setMessage("Mã ngành học đã tồn tại");
+                return baseResponse;
+            }
             major.setCode(majorDto.getCode());
         }
         majorRepository.save(major);
-        BaseResponse<MajorDto> baseResponse = new BaseResponse<>();
         baseResponse.setData(modelMapper.map(major, MajorDto.class));
         baseResponse.success();
         return baseResponse;

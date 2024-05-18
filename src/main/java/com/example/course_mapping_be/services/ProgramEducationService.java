@@ -42,6 +42,7 @@ public class ProgramEducationService {
     private final ComparableProgramEducationRepository comparableProgramEducationRepository;
 
     public BaseResponse<ProgramEducationDto> create(ProgramEducationDto programEducationDto, HttpServletRequest request) throws Exception {
+        BaseResponse<ProgramEducationDto> baseResponse = new BaseResponse<>();
         Long userId = tokenProvider.getUserIdFromRequest(request);
         User user = userRepository.findById(userId).orElseThrow(() -> new Exception("User is not found"));
         University university;
@@ -54,11 +55,11 @@ public class ProgramEducationService {
             throw new Exception("You are not authorized to create program education");
 
         }
-
-//        if (programEducationRepository.existsByCode(programEducationDto.getCode())) {
-//            throw new Exception("Code is already used");
-//        }
-
+        if (programEducationRepository.findByCode(programEducationDto.getCode()).isPresent()) {
+            baseResponse.setStatus(400);
+            baseResponse.setMessage("Mã chương trình đã tồn tại");
+            return baseResponse;
+        }
         Major major = majorRepository.findById(programEducationDto.getMajorId()).orElseThrow(() -> new Exception("Major is not found"));
         String documentVector = null;
         String vectorName = documentService.convertDocumentToVectorDbow(programEducationDto.getName()).getData();
@@ -85,7 +86,7 @@ public class ProgramEducationService {
 
 
         programEducationRepository.save(programEducation);
-        BaseResponse<ProgramEducationDto> baseResponse = new BaseResponse<>();
+
 
         baseResponse.setData((modelMapper.map(programEducation, ProgramEducationDto.class)));
         baseResponse.success();
@@ -108,6 +109,7 @@ public class ProgramEducationService {
 
 
     public BaseResponse<ProgramEducationDto> update(Long id, ProgramEducationDto programEducationDto, HttpServletRequest request) throws Exception {
+        BaseResponse<ProgramEducationDto> baseResponse = new BaseResponse<>();
         ProgramEducation programEducation = programEducationRepository.findById(id).orElseThrow(() -> new Exception("Program education is not found"));
         Long userId = tokenProvider.getUserIdFromRequest(request);
         User user = userRepository.findById(userId).orElseThrow(() -> new Exception("User is not found"));
@@ -126,6 +128,11 @@ public class ProgramEducationService {
             programEducation.setVectorName(documentService.convertDocumentToVectorDbow(programEducationDto.getName()).getData());
         }
         if (programEducationDto.getCode() != null) {
+            if (programEducationRepository.findByCode(programEducationDto.getCode()).isPresent()) {
+                baseResponse.setStatus(400);
+                baseResponse.setMessage("Mã chương trình đã tồn tại");
+                return baseResponse;
+            }
             programEducation.setCode(programEducationDto.getCode());
         }
         if (programEducationDto.getLanguage() != null) {
@@ -168,7 +175,6 @@ public class ProgramEducationService {
         }
 
         programEducationRepository.save(programEducation);
-        BaseResponse<ProgramEducationDto> baseResponse = new BaseResponse<>();
         baseResponse.setData(modelMapper.map(programEducation, ProgramEducationDto.class));
         baseResponse.success();
         return baseResponse;
@@ -239,7 +245,7 @@ public class ProgramEducationService {
 
     }
 
-    public BaseResponse<List<Pair<ProgramEducationDto, Float>>> getTopSimilar(Long id, SortParam sortParam, FilterProgramParams filterProgramParams) throws Exception {
+    public BaseResponse<List<Pair<ProgramEducationDto, Float>>> getTopSimilar(Long id, FilterProgramParams filterProgramParams) throws Exception {
         ProgramEducation programEducation = programEducationRepository.findById(id).orElseThrow(() -> new Exception("Program education is not found"));
         List<ProgramEducation> programEducations = programEducationRepository.findAllByFilterParams(filterProgramParams);
         List<Pair<ProgramEducationDto, Float>> programEducationDtos = new ArrayList<>();
@@ -257,38 +263,36 @@ public class ProgramEducationService {
             return 0;
         });
         BaseResponse<List<Pair<ProgramEducationDto, Float>>> baseResponse = new BaseResponse<>();
-        switch (sortParam.getSortType()) {
-            case SIMILARITY_DESC:
-                // get top 10 most similar program educations
-                baseResponse.setData(programEducationDtos.subList(0, Math.min(10, programEducationDtos.size())));
-                break;
-            case SIMILARITY_ASC:
-                // get top 10 least similar program educations and sort by similarity from low to high
-                List<Pair<ProgramEducationDto, Float>> result = programEducationDtos.subList(Math.max(0, programEducationDtos.size() - 10), programEducationDtos.size());
-                // reverse the order of result
-                List<Pair<ProgramEducationDto, Float>> reversedResult = new ArrayList<>();
-                for (int i = result.size() - 1; i >= 0; i--) {
-                    reversedResult.add(result.get(i));
-                }
-                baseResponse.setData(reversedResult);
-                break;
-            case ALPHABET_DESC:
-                programEducationDtos.sort((o1, o2) -> {
-                    if (o1.getFirst().getName().compareTo(o2.getFirst().getName()) > 0) return -1;
-                    if (o1.getFirst().getName().compareTo(o2.getFirst().getName()) < 0) return 1;
-                    return 0;
-                });
-                baseResponse.setData(programEducationDtos.subList(0, Math.min(10, programEducationDtos.size())));
-                break;
-            case ALPHABET_ASC:
-                programEducationDtos.sort(Comparator.comparing(o -> o.getFirst().getName()));
-                baseResponse.setData(programEducationDtos.subList(0, Math.min(10, programEducationDtos.size())));
-                break;
-
-            default:
-                baseResponse.setData(programEducationDtos.subList(0, Math.min(10, programEducationDtos.size())));
-                break;
-        }
+//        switch (sortParam.getSortType()) {
+//            case SIMILARITY_DESC:
+//                baseResponse.setData(programEducationDtos.subList(0, Math.min(10, programEducationDtos.size())));
+//                break;
+//            case SIMILARITY_ASC:
+//                List<Pair<ProgramEducationDto, Float>> result = programEducationDtos.subList(Math.max(0, programEducationDtos.size() - 10), programEducationDtos.size());
+//                List<Pair<ProgramEducationDto, Float>> reversedResult = new ArrayList<>();
+//                for (int i = result.size() - 1; i >= 0; i--) {
+//                    reversedResult.add(result.get(i));
+//                }
+//                baseResponse.setData(reversedResult);
+//                break;
+//            case ALPHABET_DESC:
+//                programEducationDtos.sort((o1, o2) -> {
+//                    if (o1.getFirst().getName().compareTo(o2.getFirst().getName()) > 0) return -1;
+//                    if (o1.getFirst().getName().compareTo(o2.getFirst().getName()) < 0) return 1;
+//                    return 0;
+//                });
+//                baseResponse.setData(programEducationDtos.subList(0, Math.min(10, programEducationDtos.size())));
+//                break;
+//            case ALPHABET_ASC:
+//                programEducationDtos.sort(Comparator.comparing(o -> o.getFirst().getName()));
+//                baseResponse.setData(programEducationDtos.subList(0, Math.min(10, programEducationDtos.size())));
+//                break;
+//
+//            default:
+//                baseResponse.setData(programEducationDtos.subList(0, Math.min(10, programEducationDtos.size())));
+//                break;
+//        }
+        baseResponse.setData(programEducationDtos.subList(0, Math.min(10, programEducationDtos.size())));
         baseResponse.success();
         return baseResponse;
 

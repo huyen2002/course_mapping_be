@@ -23,11 +23,11 @@ public class ProgramEducationController {
     }
 
     @GetMapping(path = "program_education/{id}/top_similar")
-    public ResponseEntity<BaseResponse<List<Pair<ProgramEducationDto, Float>>>> getTopSimilar(@PathVariable Long id, SortParam sortParam, FilterProgramParams filterProgramParams) throws Exception {
-        BaseResponse<List<Pair<ProgramEducationDto, Float>>> baseResponse = programEducationService.getTopSimilar(id, sortParam, filterProgramParams);
+    public ResponseEntity<BaseResponse<List<Pair<ProgramEducationDto, Float>>>> getTopSimilar(@PathVariable Long id, FilterProgramParams filterProgramParams) throws Exception {
+        BaseResponse<List<Pair<ProgramEducationDto, Float>>> baseResponse = programEducationService.getTopSimilar(id, filterProgramParams);
         return ResponseEntity.ok(baseResponse);
     }
-    
+
 
     @PutMapping(path = "program_education/update/{id}")
     public ResponseEntity<BaseResponse<ProgramEducationDto>> update(@PathVariable Long id, @RequestBody ProgramEducationDto programEducationDto, HttpServletRequest request) throws Exception {
@@ -70,12 +70,6 @@ public class ProgramEducationController {
         BaseResponse<List<ProgramEducationDto>> baseResponse = programEducationService.filterProgramEducations(filterProgramParams);
         return ResponseEntity.ok(baseResponse);
     }
-
-//    @GetMapping(path = "program_education/check_existed_by_code")
-//    public ResponseEntity<BaseResponse<Boolean>> existedByCode(@RequestParam String code) {
-//        BaseResponse<Boolean> baseResponse = programEducationService.existedByCode(code);
-//        return ResponseEntity.ok(baseResponse);
-//    }
 
     @PutMapping(path = "program_education/update_enabled/{id}")
     public ResponseEntity<BaseResponse<ProgramEducationDto>> updateEnabled(@PathVariable Long id, @RequestBody ProgramEducationDto programEducationDto) throws Exception {

@@ -10,5 +10,7 @@ import lombok.*;
 public class ComparedCourseElement {
     private Long firstCourseId;
     private Long secondCourseId;
+    private Float nameSimilarity;
+    private Float outlineSimilarity;
     private Float similarity;
 }
