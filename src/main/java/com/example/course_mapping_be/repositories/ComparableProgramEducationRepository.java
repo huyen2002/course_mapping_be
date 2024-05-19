@@ -11,7 +11,7 @@ import java.util.Optional;
 @Transactional
 public interface ComparableProgramEducationRepository extends JpaRepository<ComparableProgramEducation, Long> {
 
-    @Query("SELECT c FROM ComparableProgramEducation c WHERE c.firstProgramId = ?1 AND c.secondProgramId = ?2 OR c.firstProgramId = ?2 AND c.secondProgramId = ?1")
+    @Query("SELECT c FROM ComparableProgramEducation c WHERE c.firstProgramId = ?1 AND c.secondProgramId = ?2")
     Optional<ComparableProgramEducation> findByFirstProgramIdAndSecondProgramId(Long firstProgramId, Long secondProgramId);
 
     @Modifying

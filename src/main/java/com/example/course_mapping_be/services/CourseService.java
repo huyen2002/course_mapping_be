@@ -135,7 +135,7 @@ public class CourseService {
         Course mostSimilarCourse = null;
         float maxSimilarity = 0;
         for (Course c : courseList) {
-            if (!Objects.equals(c.getName(), course.getName())) {
+            if (!Objects.equals(c.getId(), course.getId())) {
                 float similarity = compareTwoCourse(course.getId(), c.getId());
                 if (similarity > maxSimilarity) {
                     maxSimilarity = similarity;
@@ -146,7 +146,6 @@ public class CourseService {
             }
         }
         if (mostSimilarCourse != null && maxSimilarity > 50.0f) {
-            // round similarity to 2 decimal places
             maxSimilarity = Math.round(maxSimilarity * 100.0f) / 100.0f;
             result = Pair.of(mostSimilarCourse, maxSimilarity);
         }

@@ -233,7 +233,7 @@ public class ProgramEducationService {
         Float nameSimilarity = documentService.compareTwoVectorsFromString(programEducation1.getVectorName(), programEducation2.getVectorName());
 
         if (programEducation1.getVectorOutline() == null || programEducation2.getVectorOutline() == null) {
-            baseResponse.setData(Math.round(nameSimilarity * 100.0f * 100.0f) / 100.0f);
+            baseResponse.setData(Math.round(nameSimilarity * 80.0f * 100.0f) / 100.0f);
             baseResponse.success();
             return baseResponse;
         }
@@ -249,7 +249,6 @@ public class ProgramEducationService {
         ProgramEducation programEducation = programEducationRepository.findById(id).orElseThrow(() -> new Exception("Program education is not found"));
         List<ProgramEducation> programEducations = programEducationRepository.findAllByFilterParams(filterProgramParams);
         List<Pair<ProgramEducationDto, Float>> programEducationDtos = new ArrayList<>();
-        // similarity between program education and other program educations and sort by similarity from high to low
         for (ProgramEducation program : programEducations) {
             if (!Objects.equals(program.getId(), id)) {
                 Float similarity = compareTwoPrograms(id, program.getId()).getData();

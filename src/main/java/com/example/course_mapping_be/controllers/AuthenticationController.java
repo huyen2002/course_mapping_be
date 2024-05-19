@@ -34,8 +34,9 @@ public class AuthenticationController {
     }
 
     @PostMapping(path = "/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody @Valid LoginRequestDto loginRequestDto) {
-        return ResponseEntity.ok(authenticationService.login(loginRequestDto));
+    public ResponseEntity<BaseResponse<Map<String, Object>>> login(@RequestBody @Valid LoginRequestDto loginRequestDto) {
+        BaseResponse<Map<String, Object>> baseResponse = authenticationService.login(loginRequestDto);
+        return ResponseEntity.ok(baseResponse);
     }
 
     @GetMapping(path = "/me")

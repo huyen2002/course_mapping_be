@@ -44,8 +44,14 @@ public class AuthenticationService {
         return baseResponse;
     }
 
-    public Map<String, Object> login(LoginRequestDto loginRequestDto) {
+    public BaseResponse<Map<String, Object>> login(LoginRequestDto loginRequestDto) {
+        BaseResponse<Map<String, Object>> baseResponse = new BaseResponse<>();
         User user = userService.getUserByEmail(loginRequestDto.getEmail());
+        if (!user.isEnabled()) {
+            baseResponse.setStatus(400);
+            baseResponse.setMessage("Tài khoản đã bị vô hiệu hóa");
+            return baseResponse;
+        }
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -56,11 +62,13 @@ public class AuthenticationService {
 
         //  Return JWT
         String jwt = tokenProvider.generateToken((CustomUserDetails) authentication.getPrincipal());
-        return Map.of(
+        baseResponse.setData(Map.of(
                 "tokenType", "Bearer",
                 "accessToken", jwt,
                 "user", modelMapper.map(user, UserDto.class)
-        );
+        ));
+        baseResponse.success();
+        return baseResponse;
 //        return new JsonWebTokenModel("Bearer", jwt);
     }
 

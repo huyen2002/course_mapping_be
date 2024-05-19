@@ -63,6 +63,8 @@ public class ProgramEducationRepositoryImpl implements CustomProgramEducationRep
             predicates.add(criteriaBuilder.equal(root.get("enabled"), false));
         }
 
+        predicates.add(criteriaBuilder.or(criteriaBuilder.isNull(root.get("endYear")), criteriaBuilder.greaterThanOrEqualTo(root.get("endYear"), criteriaBuilder.function("YEAR", Integer.class, criteriaBuilder.currentDate()))));
+
 
         criteriaQuery.where(predicates.toArray(new Predicate[0]));
         return entityManager.createQuery(criteriaQuery).getResultList();
@@ -94,8 +96,8 @@ public class ProgramEducationRepositoryImpl implements CustomProgramEducationRep
 
         if (searchProgramDto.getStatus() != null) {
             if (searchProgramDto.getStatus().equals("ACTIVE")) {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("endYear"), criteriaBuilder.function("YEAR", Integer.class, criteriaBuilder.currentDate())));
-            } else if (searchProgramDto.getStatus().equals("INACTIVE")) {
+                predicates.add(criteriaBuilder.or(criteriaBuilder.isNull(root.get("endYear")), criteriaBuilder.greaterThanOrEqualTo(root.get("endYear"), criteriaBuilder.function("YEAR", Integer.class, criteriaBuilder.currentDate()))));
+            } else if (searchProgramDto.getStatus().equals("CLOSED")) {
                 predicates.add(criteriaBuilder.lessThan(root.get("endYear"), criteriaBuilder.function("YEAR", Integer.class, criteriaBuilder.currentDate())));
             }
         }
@@ -145,8 +147,8 @@ public class ProgramEducationRepositoryImpl implements CustomProgramEducationRep
 
         if (searchProgramDto.getStatus() != null) {
             if (searchProgramDto.getStatus().equals("ACTIVE")) {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("endYear"), criteriaBuilder.function("YEAR", Integer.class, criteriaBuilder.currentDate())));
-            } else if (searchProgramDto.getStatus().equals("INACTIVE")) {
+                predicates.add(criteriaBuilder.or(criteriaBuilder.isNull(root.get("endYear")), criteriaBuilder.greaterThanOrEqualTo(root.get("endYear"), criteriaBuilder.function("YEAR", Integer.class, criteriaBuilder.currentDate()))));
+            } else if (searchProgramDto.getStatus().equals("CLOSED")) {
                 predicates.add(criteriaBuilder.lessThan(root.get("endYear"), criteriaBuilder.function("YEAR", Integer.class, criteriaBuilder.currentDate())));
             }
         }
