@@ -39,9 +39,9 @@ public class University {
     @Column(name = "introduction", columnDefinition = "LONGTEXT")
     private String introduction;
 
-    @Column(name = "feature")
+    @Column(name = "feature", columnDefinition = "TEXT")
     private String feature;
-    
+
     @Column(name = "enabled", nullable = false)
     private boolean enabled = true;
 

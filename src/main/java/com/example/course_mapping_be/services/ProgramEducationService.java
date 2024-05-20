@@ -82,6 +82,7 @@ public class ProgramEducationService {
                 .sourceLinks(programEducationDto.getSourceLinks())
                 .vectorOutline(documentVector)
                 .vectorName(vectorName)
+                .enabled(true)
                 .build();
 
 

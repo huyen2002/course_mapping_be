@@ -4,6 +4,8 @@ import com.example.course_mapping_be.constraints.RoleType;
 import com.example.course_mapping_be.dtos.*;
 import com.example.course_mapping_be.models.University;
 import com.example.course_mapping_be.models.User;
+import com.example.course_mapping_be.repositories.UniversityRepository;
+import com.example.course_mapping_be.repositories.UserRepository;
 import com.example.course_mapping_be.security.CustomUserDetails;
 import com.example.course_mapping_be.security.JsonWebTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,9 +31,32 @@ public class AuthenticationService {
 
     private AuthenticationManager authenticationManager;
     private JsonWebTokenProvider tokenProvider;
+    private final UniversityRepository universityRepository;
+    private final UserRepository userRepository;
 
     public BaseResponse<UserDto> register(UserCreateDto userCreateDto) throws Exception {
         BaseResponse<UserDto> baseResponse = new BaseResponse<>();
+        if (userRepository.findByEmail(userCreateDto.getEmail()).isPresent()) {
+            baseResponse.setStatus(400);
+            baseResponse.setMessage("Email đã tồn tại");
+            return baseResponse;
+        }
+        if (userRepository.findByUsername(userCreateDto.getUsername()).isPresent()) {
+            baseResponse.setStatus(400);
+            baseResponse.setMessage("Username đã tồn tại");
+            return baseResponse;
+        }
+
+        if (universityRepository.findByCode(userCreateDto.getUniversity().getCode()).isPresent()) {
+            baseResponse.setStatus(400);
+            baseResponse.setMessage("Mã trường đã tồn tại");
+            return baseResponse;
+        }
+        if (universityRepository.findByName(userCreateDto.getUniversity().getName()).isPresent()) {
+            baseResponse.setStatus(400);
+            baseResponse.setMessage("Tên trường đã tồn tại");
+            return baseResponse;
+        }
         User user = userService.createUser(userCreateDto);
 
         if (user.getRole() == RoleType.UNIVERSITY) {
@@ -47,6 +72,11 @@ public class AuthenticationService {
     public BaseResponse<Map<String, Object>> login(LoginRequestDto loginRequestDto) {
         BaseResponse<Map<String, Object>> baseResponse = new BaseResponse<>();
         User user = userService.getUserByEmail(loginRequestDto.getEmail());
+        if (user == null) {
+            baseResponse.setStatus(400);
+            baseResponse.setMessage("Tài khoản không tồn tại");
+            return baseResponse;
+        }
         if (!user.isEnabled()) {
             baseResponse.setStatus(400);
             baseResponse.setMessage("Tài khoản đã bị vô hiệu hóa");
