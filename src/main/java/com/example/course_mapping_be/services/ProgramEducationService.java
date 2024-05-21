@@ -127,6 +127,7 @@ public class ProgramEducationService {
         if (programEducationDto.getName() != null) {
             programEducation.setName(programEducationDto.getName());
             programEducation.setVectorName(documentService.convertDocumentToVectorDbow(programEducationDto.getName()).getData());
+            comparableProgramEducationRepository.deleteByProgramId(id);
         }
         if (programEducationDto.getCode() != null) {
             if (programEducationRepository.findByCode(programEducationDto.getCode()).isPresent()) {
@@ -141,6 +142,7 @@ public class ProgramEducationService {
         }
         if (programEducationDto.getIntroduction() != null) {
             programEducation.setIntroduction(programEducationDto.getIntroduction());
+            comparableProgramEducationRepository.deleteByProgramId(id);
         }
         if (programEducationDto.getDurationYear() != null) {
             programEducation.setDurationYear(programEducationDto.getDurationYear());
@@ -156,6 +158,7 @@ public class ProgramEducationService {
             String data = readFileService.readData(programEducationDto.getOutline());
             String vectorDocument = documentService.convertDocumentToVector(data).getData();
             programEducation.setVectorOutline(vectorDocument);
+            comparableProgramEducationRepository.deleteByProgramId(id);
         }
         if (programEducationDto.getStartYear() != null) {
             programEducation.setStartYear(programEducationDto.getStartYear());

@@ -77,7 +77,7 @@ public class AuthenticationService {
             baseResponse.setMessage("Tài khoản không tồn tại");
             return baseResponse;
         }
-        if (!user.isEnabled()) {
+        if (!user.getEnabled()) {
             baseResponse.setStatus(400);
             baseResponse.setMessage("Tài khoản đã bị vô hiệu hóa");
             return baseResponse;

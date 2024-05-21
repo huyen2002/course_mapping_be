@@ -19,5 +19,5 @@ public class UserDto {
     Date createAt;
     Date updateAt;
     String role;
-    boolean enabled;
+    Boolean enabled;
 }

@@ -38,6 +38,12 @@ public class UserController {
         return ResponseEntity.ok(baseResponse);
     }
 
+    @DeleteMapping(path = "user/{id}/delete")
+    public ResponseEntity<BaseResponse<Boolean>> delete(@PathVariable Long id) {
+        BaseResponse<Boolean> baseResponse = userService.delete(id);
+        return ResponseEntity.ok(baseResponse);
+    }
+
     @GetMapping(path = "users/search")
     public ResponseEntity<BaseResponse<List<UserDto>>> search(SearchUserParams searchUserParams, QueryParams params) {
         BaseResponse<List<UserDto>> baseResponse = userService.search(searchUserParams, params);

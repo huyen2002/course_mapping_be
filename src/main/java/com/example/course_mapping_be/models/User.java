@@ -51,7 +51,7 @@ public class User {
     private RoleType role;
 
     @Column(name = "enabled", nullable = false)
-    private boolean enabled = true;
+    private Boolean enabled = true;
 
 
     public User(String email, String password, String username, RoleType role) {

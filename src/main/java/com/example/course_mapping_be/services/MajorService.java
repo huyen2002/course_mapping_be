@@ -37,6 +37,7 @@ public class MajorService {
 
     public BaseResponse<MajorDto> create(MajorDto majorDto) throws Exception {
         BaseResponse<MajorDto> baseResponse = new BaseResponse<>();
+     
         if (majorRepository.findByCode(majorDto.getCode()).isPresent()) {
             baseResponse.setStatus(400);
             baseResponse.setMessage("Mã ngành học đã tồn tại");

@@ -1,7 +1,10 @@
 package com.example.course_mapping_be.services;
 
+import com.example.course_mapping_be.constraints.RoleType;
 import com.example.course_mapping_be.dtos.*;
+import com.example.course_mapping_be.models.University;
 import com.example.course_mapping_be.models.User;
+import com.example.course_mapping_be.repositories.UniversityRepository;
 import com.example.course_mapping_be.repositories.UserRepository;
 import com.example.course_mapping_be.security.JsonWebTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,6 +28,7 @@ public class UserService {
     private final ModelMapper modelMapper;
 
     private final PasswordEncoder passwordEncoder;
+    private final UniversityRepository universityRepository;
 
     public User createUser(UserCreateDto userCreateDto) {
         if (userRepository.findByEmail(userCreateDto.getEmail()).isPresent()) {
@@ -78,8 +82,8 @@ public class UserService {
             }
             user.setEmail(userDto.getEmail());
         }
-        if (userDto.isEnabled() != user.isEnabled()) {
-            user.setEnabled(userDto.isEnabled());
+        if (userDto.getEnabled() != null) {
+            user.setEnabled(userDto.getEnabled());
         }
         userRepository.save(user);
         BaseResponse<UserDto> baseResponse = new BaseResponse<>();
@@ -113,5 +117,30 @@ public class UserService {
         baseResponse.success();
         return baseResponse;
 
+    }
+
+    public BaseResponse<Boolean> delete(Long id) {
+        BaseResponse<Boolean> baseResponse = new BaseResponse<>();
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null) {
+            baseResponse.setData(false);
+            baseResponse.setStatus(HttpStatus.NOT_FOUND.value());
+            baseResponse.setMessage("User is not found");
+            return baseResponse;
+        }
+        if (user.getRole() == RoleType.UNIVERSITY) {
+            University university = universityRepository.findByUserId(id).orElse(null);
+            if (university == null) {
+                baseResponse.setData(false);
+                baseResponse.setStatus(HttpStatus.NOT_FOUND.value());
+                baseResponse.setMessage("University is not found");
+                return baseResponse;
+            }
+            universityRepository.deleteById(university.getId());
+        }
+        userRepository.deleteById(id);
+        baseResponse.setData(true);
+        baseResponse.success();
+        return baseResponse;
     }
 }
